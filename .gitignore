@@ -32,3 +32,5 @@ gradle-app.setting
 .project
 .settings/
 
+bin/
+
