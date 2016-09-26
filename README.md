@@ -40,3 +40,4 @@ Se está utilizando un sistema de buildeo llamado Gradle, similar a Maven. Este 
     ```
     ./gradelw run
     ```
+* Desde el IDE. Eclipse, IntelliJ o Netbeans tienen soporte para gradle. Deberíais poder encontrar una lista de tasks, estan run entre ellas.
