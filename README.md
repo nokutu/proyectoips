@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/nokutu/proyectoips.svg?branch=master)](https://travis-ci.org/nokutu/proyectoips)
 # Proyecto IPS. Grupo 1 Lab2
 
 ## Ciclo de desarrollo
