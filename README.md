@@ -11,33 +11,24 @@ Los pasos de un ciclo normal de desarrollo son:
 
 ## Instrucciones de instalación
 * Clonar el repositorio para tenerlo en local. Se puede usar Sourcetree o otra herramienta a tu elección.
-* Si se está usando eclipse, abrir un terminal en el directorio raiz y ejecutar:
-  * Windows 
-  
-    ```
-    gradelw eclipse
-    ```
-    
-  * Linux 
-
-    ```
-    ./gradelw eclipse
-    ```
-    
+* Dependiendo del IDE tienes que:
+    * Eclipse: (probado con Eclipse Neon, no puedo asegurar que funcione en versiones más antiguas). File -> Import -> Gradle -> Gradle project. Seleccionas el path al proyecto y le das a finish.
 * Importar proyecto con normalidad
 
 ## Como ejectuar
 Se está utilizando un sistema de buildeo llamado Gradle, similar a Maven. Este se encarga de la compilación, ejecución de tests y descarga de dependencias (si las hubiera). Hay dos formas principales de utilizarlo:
+
 * Desde terminal. Tendrías que ir a la carpeta raiz y ejecutar:
-  * Windows 
+    * Windows 
   
     ```
     gradelw run
     ```
-    
-  * Linux 
+
+    * Linux 
 
     ```
     ./gradelw run
     ```
 * Desde el IDE. Eclipse, IntelliJ o Netbeans tienen soporte para gradle. Deberíais poder encontrar una lista de tasks, estan run entre ellas.
+    * Eclipse: Las distintas opciones de gradle están en el menú inferior, donde pone *Gradle Tasks*. Las principales son *build* y *run*.
