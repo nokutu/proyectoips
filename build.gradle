@@ -10,6 +10,8 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.12'
+    compile 'jdbc:jdbc:2.0'
+    compile 'com.h2database:h2:1.4.192'
 }
 
 task wrapper(type: Wrapper) {

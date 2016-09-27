@@ -15,7 +15,7 @@ Los pasos de un ciclo normal de desarrollo son:
     * Eclipse: (probado con Eclipse Neon, no puedo asegurar que funcione en versiones más antiguas). File -> Import -> Gradle -> Gradle project. Seleccionas el path al proyecto y le das a finish.
 * Importar proyecto con normalidad
 
-## Como ejectuar
+## Cómo ejectuar
 Se está utilizando un sistema de buildeo llamado Gradle, similar a Maven. Este se encarga de la compilación, ejecución de tests y descarga de dependencias (si las hubiera). Hay dos formas principales de utilizarlo:
 
 * Desde terminal. Tendrías que ir a la carpeta raiz y ejecutar:
@@ -32,3 +32,11 @@ Se está utilizando un sistema de buildeo llamado Gradle, similar a Maven. Este 
     ```
 * Desde el IDE. Eclipse, IntelliJ o Netbeans tienen soporte para gradle. Deberíais poder encontrar una lista de tasks, estan run entre ellas.
     * Eclipse: Las distintas opciones de gradle están en el menú inferior, donde pone *Gradle Tasks*. Las principales son *build* y *run*.
+
+## Arrancar la base de datos
+La base de datos más simple que pude encontrar se llama H2. Para arrancarla hay que hacer lo siguiente:
+
+* Ir a la carpeta BBDD del proyecto.
+* Descomprimir el archivo *.zip*
+* Ir a h2 -> bin.
+* Ejectutar el archivo *h2.bat* (Windows) o *h2.sh* (Linux).
