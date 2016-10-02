@@ -14,6 +14,10 @@ Los pasos de un ciclo normal de desarrollo con Git son:
 * Clonar el repositorio para tenerlo en local. Se puede usar Sourcetree o otra herramienta a tu elección.
 * Dependiendo del IDE tienes que:
     * Eclipse: (probado con Eclipse Neon, no puedo asegurar que funcione en versiones más antiguas). File -> Import -> Gradle -> Gradle project. Seleccionas el path al proyecto y le das a finish.
+    * Si lo anterior de eclipse te da un error, puedes hacer lo siguiente:
+         * Vas a la carpeta del proyecto, y abres allí una terminal.
+         * Escribes "gradlew eclipse".
+         * Importas el proyecto como se hace normalmente, ya que el anterior comando te genera el .project y .classpath.
 
 ## Ejecutar el proyecto
 Se está utilizando un sistema de buildeo llamado Gradle, similar a Maven. Este se encarga de la compilación, ejecución de tests y descarga de dependencias (jdbc y el driver de la bbdd por ahora). Hay dos formas principales de utilizarlo:
