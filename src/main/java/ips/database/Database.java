@@ -1,9 +1,10 @@
 package ips.database;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -14,6 +15,10 @@ public class Database {
     private static Database instance;
     private Connection conn;
 
+    private List<Facility> facilities;
+    private List<FacilityBooking> facilityBookings;
+    private List<Member> members;
+
     public static Database getInstance() {
         if (instance == null) {
             instance = new Database();
@@ -22,13 +27,19 @@ public class Database {
     }
 
     private Database() {
+        facilities = new ArrayList<>();
+        facilityBookings = new ArrayList<>();
+        members = new ArrayList<>();
+
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
         try {
             conn = DriverManager.getConnection("jdbc:h2:~/test", connectionProps);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
         }
+
+        fillDatabase();
     }
 
     public void close() {
@@ -37,5 +48,9 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void fillDatabase() {
+        // TODO fill the lists with values from the database
     }
 }

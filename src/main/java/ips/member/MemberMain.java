@@ -3,7 +3,9 @@ package ips.member;
 import javax.swing.*;
 
 /**
- * Created by nokutu on 3/10/16.
+ * Main panel for members.
+ *
+ * @since 03/10/2016
  */
 public class MemberMain extends JPanel {
 

@@ -40,6 +40,10 @@ public class MainWindow extends JFrame {
         return instance;
     }
 
+    /**
+     * Changes the view in the center area.
+     * @param p The {@link JPanel} that is going to be shown.
+     */
     public void setContent(JPanel p) {
         if (center != null) {
             mainPanel.remove(center);

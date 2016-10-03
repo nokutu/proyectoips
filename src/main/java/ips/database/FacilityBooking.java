@@ -3,7 +3,7 @@ package ips.database;
 /**
  * Created by nokutu on 27/09/16.
  */
-public class FacilityBooking {
+public class FacilityBooking implements DatabaseItem {
 
     private int timeStart;
     private int timeEnd;
@@ -15,5 +15,15 @@ public class FacilityBooking {
         this.timeEnd = timeEnd;
         this.facilityId = facilityId;
         this.memberId = memberId;
+    }
+
+    @Override
+    public void create() {
+        // TODO
+    }
+
+    @Override
+    public void update() {
+        // TODO
     }
 }

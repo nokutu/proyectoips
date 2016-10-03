@@ -1,10 +1,6 @@
 package ips;
 
-import ips.administrator.AdministratorMain;
-import ips.member.MemberMain;
-
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by nokutu on 3/10/16.
