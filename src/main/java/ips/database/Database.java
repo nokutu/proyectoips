@@ -18,11 +18,10 @@ public class Database {
         if (instance == null) {
             instance = new Database();
         }
-        return new Database();
+        return instance;
     }
 
     private Database() {
-        Connection conn = null;
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
         try {
