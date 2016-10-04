@@ -18,8 +18,7 @@ public class MainWindow extends JFrame {
     private MainWindow() {
         super();
         setPreferredSize(new Dimension(800, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -31,6 +30,7 @@ public class MainWindow extends JFrame {
         setContent(new ChoosePanel());
 
         pack();
+        setLocationRelativeTo(null);
     }
 
     public static MainWindow getInstance() {
