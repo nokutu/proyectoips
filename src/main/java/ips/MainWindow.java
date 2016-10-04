@@ -50,6 +50,9 @@ public class MainWindow extends JFrame {
         }
         mainPanel.add(p, BorderLayout.CENTER);
         center = p;
+
+        // Tell the window to redraw the contents
         repaint();
+        revalidate();
     }
 }
