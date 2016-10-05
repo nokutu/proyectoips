@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by nokutu on 3/10/16.
  */
-public class BookingDialog extends JDialog {
+public class BookForMemberDialog extends JDialog {
 
     private Date date;
     private int hourStart;
@@ -28,7 +28,7 @@ public class BookingDialog extends JDialog {
     private JButton cancel;
 
 
-    public BookingDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
+    public BookForMemberDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
         super(owner);
         setResizable(false);
 

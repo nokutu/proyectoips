@@ -1,21 +1,18 @@
 package ips;
 
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
 /**
  * This class adds autocompletion to a text field.
- *
+ * <p>
  * You must use the following code:
- *
+ * <p>
  * <pre>
  *     {@code
  *     JButton textField = new JTextField(20);
@@ -29,7 +26,9 @@ public class Autocomplete implements DocumentListener {
     private static enum Mode {
         INSERT,
         COMPLETION
-    };
+    }
+
+    ;
 
     private JTextField textField;
     private final List<String> keywords;
@@ -42,10 +41,12 @@ public class Autocomplete implements DocumentListener {
     }
 
     @Override
-    public void changedUpdate(DocumentEvent ev) { }
+    public void changedUpdate(DocumentEvent ev) {
+    }
 
     @Override
-    public void removeUpdate(DocumentEvent ev) { }
+    public void removeUpdate(DocumentEvent ev) {
+    }
 
     @Override
     public void insertUpdate(DocumentEvent ev) {

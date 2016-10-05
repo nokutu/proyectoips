@@ -42,6 +42,7 @@ public class MainWindow extends JFrame {
 
     /**
      * Changes the view in the center area.
+     *
      * @param p The {@link JPanel} that is going to be shown.
      */
     public void setContent(JPanel p) {
