@@ -17,14 +17,16 @@ public class FacilityBooking implements DatabaseItem {
     private int facilityId;
     private int memberId;
     private String paymentMethod;
-    private boolean payed;
+    private boolean paid;
 
-    public FacilityBooking(int timeStart, int timeEnd, int facilityId, int memberId, String paymentMethod) {
+    public FacilityBooking(int facilityId, int memberId, Date date, int timeStart,
+                           int timeEnd, String paymentMethod, boolean paid) {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.facilityId = facilityId;
         this.memberId = memberId;
         this.paymentMethod = paymentMethod;
+        this.paid = paid;
     }
 
     public String getPaymentMethod() {
@@ -35,12 +37,12 @@ public class FacilityBooking implements DatabaseItem {
         this.paymentMethod = paymentMethod;
     }
 
-    public boolean isPayed() {
-        return payed;
+    public boolean isPaid() {
+        return paid;
     }
 
-    public void setPayed(boolean payed) {
-        this.payed = payed;
+    public void setPayed(boolean paid) {
+        this.paid = paid;
     }
 
     @Override

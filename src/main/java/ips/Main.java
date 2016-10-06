@@ -8,7 +8,9 @@ import ips.database.Database;
 public class Main {
 
     public static void main(String[] args) {
+        // Load database
         Database.getInstance();
+
         MainWindow.getInstance().setVisible(true);
     }
 }

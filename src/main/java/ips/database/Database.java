@@ -11,6 +11,8 @@ import java.util.Properties;
 public class Database {
 
     private final static String QUERY_FACILITIES = "SELECT * FROM facility";
+    private final static String QUERY_MEMBERS = "SELECT * FROM member";
+    private final static String QUERY_FACILITYBOOKINGS = "SELECT * FROM facilitybooking";
 
     private static Database instance;
     private Connection conn;
@@ -64,6 +66,20 @@ public class Database {
         while (rs.next()) {
             facilities.add(new Facility(rs.getInt(1), rs.getString(2)));
         }
-        // TODO fill the lists with values from the database
+
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_MEMBERS);
+        while (rs.next()) {
+            members.add(new Member(rs.getInt(1), rs.getString(2)));
+        }
+
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_FACILITYBOOKINGS);
+        while (rs.next()) {
+            facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getInt(4),
+                    rs.getInt(5), rs.getString(6), rs.getBoolean(7)));
+        }
+
+        // TODO missing fee and feeitem
     }
 }
