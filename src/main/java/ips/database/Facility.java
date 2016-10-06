@@ -6,9 +6,11 @@ package ips.database;
 public class Facility implements DatabaseItem {
 
     private int facility_id;
+    private String facility_name;
 
-    public Facility(int facility_id) {
+    public Facility(int facility_id, String facility_name) {
         this.facility_id = facility_id;
+        this.facility_name = facility_name;
     }
 
     @Override

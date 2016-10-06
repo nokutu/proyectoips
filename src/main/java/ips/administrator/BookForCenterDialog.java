@@ -13,8 +13,7 @@ public class BookForCenterDialog extends JDialog {
     private int hourEnd;
 
     public BookForCenterDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
-        // TODOpublic BookForMemberDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
-        super(owner);
+        super(owner, true);
         setResizable(false);
 
         this.date = date;

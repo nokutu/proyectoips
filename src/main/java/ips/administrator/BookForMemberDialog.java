@@ -29,7 +29,7 @@ public class BookForMemberDialog extends JDialog {
 
 
     public BookForMemberDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
-        super(owner);
+        super(owner, true);
         setResizable(false);
 
         this.date = date;
