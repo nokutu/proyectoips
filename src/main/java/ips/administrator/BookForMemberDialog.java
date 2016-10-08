@@ -1,11 +1,14 @@
 package ips.administrator;
 
-import ips.Autocomplete;
+import com.toedter.calendar.JDateChooser;
+import ips.gui.AutocompleteJTextField;
+import ips.gui.Form;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -17,8 +20,7 @@ public class BookForMemberDialog extends JDialog {
     private int hourStart;
     private int hourEnd;
 
-    private Autocomplete memberAutocomplete;
-    private JTextField memberField;
+    private AutocompleteJTextField memberField;
     private JLabel memberLabel;
 
     private JLabel paymentLabel;
@@ -26,7 +28,11 @@ public class BookForMemberDialog extends JDialog {
 
     private JButton confirm;
     private JButton cancel;
+    private JDateChooser dateChooser;
 
+    public BookForMemberDialog(JFrame owner) {
+        this(owner, null, -1, -1);
+    }
 
     public BookForMemberDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
         super(owner, true);
@@ -45,11 +51,10 @@ public class BookForMemberDialog extends JDialog {
         content.setLayout(new BorderLayout());
         setContentPane(content);
 
-        JPanel form = new JPanel();
-        form.setLayout(new GridBagLayout());
-        content.add(form, BorderLayout.CENTER);
+        Form form = new Form();
+        content.add(form.getPanel(), BorderLayout.CENTER);
 
-        addForm(form);
+        addForm(form, date == null);
         addButtons(content);
 
         pack();
@@ -57,7 +62,7 @@ public class BookForMemberDialog extends JDialog {
     }
 
     private void addButtons(JPanel content) {
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints c;
 
         JPanel bottom = new JPanel();
         bottom.setLayout(new BorderLayout());
@@ -74,23 +79,16 @@ public class BookForMemberDialog extends JDialog {
         buttons.add(cancel, c);
     }
 
-    private void addForm(JPanel form) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.LINE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        // First line
-        c.insets = new Insets(10, 10, 2, 10);
-        form.add(memberLabel, c);
-        c.gridx = 1;
-        form.add(memberField, c);
+    private void addForm(Form form, boolean addDate) {
 
-        // Middle lines
-        c.insets = new Insets(2, 10, 2, 10);
-        c.gridx = 0;
-        c.gridy = 1;
-        form.add(paymentLabel, c);
-        c.gridx = 1;
-        form.add(paymentCombo, c);
+        if (addDate) {
+            dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+            dateChooser.setCalendar(Calendar.getInstance());
+            form.addLine(new JLabel("Date:"), dateChooser);
+        }
+
+        form.addLine(memberLabel, memberField);
+        form.addLine(paymentLabel, paymentCombo);
     }
 
     private void createButtons() {
@@ -109,9 +107,7 @@ public class BookForMemberDialog extends JDialog {
 
     private void createMember() {
         memberLabel = new JLabel("Member ID:");
-        memberField = new JTextField(20);
-        memberAutocomplete = new Autocomplete(memberField, Arrays.asList("uoo245115", "uoooo124444"));
-        memberField.getDocument().addDocumentListener(memberAutocomplete);
+        memberField = new AutocompleteJTextField(20, Arrays.asList("uoo245115", "uoooo124444"));
     }
 
     private void confirm(ActionEvent actionEvent) {

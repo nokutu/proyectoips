@@ -3,13 +3,15 @@ package ips;
 import ips.database.Database;
 
 /**
- * Created by nokutu on 26/09/16.
+ * Main class of the application. Starts database, runs application and closes the database at the end.
  */
 public class Main {
+  public static void main(String[] args) {
+    // Load database
+    Database.getInstance();
 
-    public static void main(String[] args) {
-        // Load database
-        Database.getInstance();
-        MainWindow.getInstance().setVisible(true);
-    }
+    MainWindow.getInstance().setVisible(true);
+
+    Database.getInstance().close();
+  }
 }

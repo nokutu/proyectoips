@@ -14,7 +14,7 @@ public class AdministratorMain extends JPanel {
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
-        book.addActionListener((e) -> new BookForMemberDialog(MainWindow.getInstance(), null, 0, 0).setVisible(true));
+        book.addActionListener((e) -> new BookForMemberDialog(MainWindow.getInstance()).setVisible(true));
         add(book);
         add(getBtnBookActivity());
     }
