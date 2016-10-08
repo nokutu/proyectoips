@@ -77,7 +77,7 @@ public class Database {
         rs = s.executeQuery(QUERY_FACILITYBOOKINGS);
         while (rs.next()) {
             facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getInt(4),
-                    rs.getInt(5), rs.getString(6), rs.getBoolean(7)));
+                    rs.getInt(5), rs.getString(6), rs.getBoolean(7),rs.getBoolean(8)));
         }
 
         // TODO missing fee and feeitem

@@ -18,15 +18,17 @@ public class FacilityBooking implements DatabaseItem {
     private int memberId;
     private String paymentMethod;
     private boolean paid;
+    private boolean deleted_flag;
 
     public FacilityBooking(int facilityId, int memberId, Date date, int timeStart,
-                           int timeEnd, String paymentMethod, boolean paid) {
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-        this.facilityId = facilityId;
-        this.memberId = memberId;
+                           int timeEnd, String paymentMethod, boolean paid,boolean deleted_flag) {
+        this.setTimeStart(timeStart);
+        this.setTimeEnd(timeEnd);
+        this.setFacilityId(facilityId);
+        this.setMemberId(memberId);
         this.paymentMethod = paymentMethod;
         this.paid = paid;
+        this.deleted_flag=deleted_flag;
     }
 
     public String getPaymentMethod() {
@@ -54,4 +56,52 @@ public class FacilityBooking implements DatabaseItem {
     public void update() {
         // TODO
     }
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public int getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(int timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	public boolean isDeleted_flag() {
+		return deleted_flag;
+	}
+
+	public void setDeleted_flag(boolean deleted_flag) {
+		this.deleted_flag = deleted_flag;
+	}
+
+	public int getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
+	}
+
+	public int getFacilityId() {
+		return facilityId;
+	}
+
+	public void setFacilityId(int facilityId) {
+		this.facilityId = facilityId;
+	}
+
+	public int getTimeEnd() {
+		return timeEnd;
+	}
+
+	public void setTimeEnd(int timeEnd) {
+		this.timeEnd = timeEnd;
+	}
 }
