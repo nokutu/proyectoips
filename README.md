@@ -61,3 +61,4 @@ Esto ha sucedido porque la versión que tienes en local no se corresponde con la
   * Si vas a file status, verás una serie de archivos en el bloque inferior. Esos son los que tienen problemas. Vete uno a uno, haciendo click derecho -> Resolve Conflicts -> Launch External Merge Tool.
   * Ahora se abrirá meld. Hay tres columnas. La de la izquierda y la derecha son los cambios, tuyos o los del servidor. En el medio tienes que dejar el archivo tal y como quieres que quede.
   * Se irán añadiendo archivos al commit a medida que lo vayas haciendo. Cuando termines, haz un nuevo commit y pushea.
+  * No añadas los archivos .orig que genera meld, borralos más tarde. Si vuelve a suceder, empiezas por la parte del click derecho.
