@@ -26,7 +26,7 @@ public class AdministratorMain extends JPanel {
         if (btnBookActivity == null) {
             btnBookActivity = new JButton("Book for the center");
             btnBookActivity.addActionListener(e -> {
-                BookForCenterDialog adminbook = new BookForCenterDialog(MainWindow.getInstance(), null, 0, 0);
+                BookForCenterDialog adminbook = new BookForCenterDialog(MainWindow.getInstance().setVisible(true));
                 adminbook.setVisible(true);
             });
         }
