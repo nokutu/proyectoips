@@ -8,7 +8,11 @@ import java.util.Date;
  */
 public class BookForCenterDialog extends JDialog {
 
-    private Date date;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8497586255693077533L;
+	private Date date;
     private int hourStart;
     private int hourEnd;
 

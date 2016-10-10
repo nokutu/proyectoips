@@ -8,7 +8,9 @@ import java.awt.*;
  */
 public class ChoosePanel extends JPanel {
 
-    private JButton administration;
+   
+	private static final long serialVersionUID = -8043605828508774926L;
+	private JButton administration;
     private JButton member;
 
     public ChoosePanel() {

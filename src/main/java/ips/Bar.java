@@ -10,7 +10,9 @@ import javax.swing.*;
  */
 public class Bar extends JMenuBar {
 
-    public final static int MODE_ADMINISTRATION = 1;
+    
+	private static final long serialVersionUID = 8555548018850300676L;
+	public final static int MODE_ADMINISTRATION = 1;
     public final static int MODE_MEMBER = 2;
     private static Bar instance;
 

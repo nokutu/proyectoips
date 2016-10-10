@@ -10,7 +10,11 @@ import java.awt.event.ActionListener;
  * Main panel for administration
  */
 public class AdministratorMain extends JPanel {
-    private JButton btnBookActivity;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4556204503732370163L;
+	private JButton btnBookActivity;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");

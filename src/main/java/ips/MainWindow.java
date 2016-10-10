@@ -9,7 +9,12 @@ import java.awt.*;
  */
 public class MainWindow extends JFrame {
 
-    private static MainWindow instance;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2273433528921048086L;
+
+	private static MainWindow instance;
 
     private JPanel mainPanel;
 
