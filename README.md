@@ -53,12 +53,16 @@ Travis está disponible [aquí](https://travis-ci.org/nokutu/proyectoips)
 Esto ha sucedido porque la versión que tienes en local no se corresponde con la que hay en el servidor. Hay dos posibles casos:
 
 * *Los archivos que se han modificado en ambos sitios no coinciden.* En este caso la solución es más simple. Basta con hacer pull (ten seleccionado la casilla de merge) y luego volver a hacer push.
-* *Los archivos coinciden.* En este caso lo anterior fallará. Es bastante más complejo de arreglar, en caso de duda, avísame por whatsapp. Los pasos son:
-  * Descargarse [meld](http://meldmerge.org/) e instalarlo.
-  * Ir a configuración en Sourcetree. Luego Tools -> Options. En el panel superior, selecciona Diff.
-  * En los dropdowns, tienes que seleccionar en ambos custom. Y poner lo siguiente en los campos de abajo. "C:\Program Files (x86)\Meld\meld.exe" en el primero y "$LOCAL $BASE $REMOTE" en el segundo. Lo mismo en ambos sitios. Pulsa OK.
-  * En el log/history, selecciona el último commit, el de unindexed changes.
-  * Si vas a file status, verás una serie de archivos en el bloque inferior. Esos son los que tienen problemas. Vete uno a uno, haciendo click derecho -> Resolve Conflicts -> Launch External Merge Tool.
-  * Ahora se abrirá meld. Hay tres columnas. La de la izquierda y la derecha son los cambios, tuyos o los del servidor. En el medio tienes que dejar el archivo tal y como quieres que quede.
-  * Se irán añadiendo archivos al commit a medida que lo vayas haciendo. Cuando termines, haz un nuevo commit y pushea.
-  * No añadas los archivos .orig que genera meld, borralos más tarde. Si vuelve a suceder, empiezas por la parte del click derecho.
+* *Los archivos coinciden.* En este caso lo anterior fallará. Es bastante más complejo de arreglar, en caso de duda, avísame por whatsapp. Hay dos formas de solucionarlo:
+  * Crear una nueva rama y que lo arregle yo:
+    * En la parte superior de Sourcetree, pulsar en Branch, y cread una nueva rama con el nombre que querais.
+    * Hacer push, marcando sólamente la rama que acabas de crear.
+  * Hacerlo por ti mismo:
+    * Descargarse [meld](http://meldmerge.org/) e instalarlo.
+    * Ir a configuración en Sourcetree. Luego Tools -> Options. En el panel superior, selecciona Diff.
+    * En los dropdowns, tienes que seleccionar en ambos custom. Y poner lo siguiente en los campos de abajo. "C:\Program Files (x86)\Meld\meld.exe" en el primero y "$LOCAL $BASE $REMOTE" en el segundo. Lo mismo en ambos sitios. Pulsa OK.
+    * En el log/history, selecciona el último commit, el de unindexed changes.
+    * Si vas a file status, verás una serie de archivos en el bloque inferior. Esos son los que tienen problemas. Vete uno a uno, haciendo click derecho -> Resolve Conflicts -> Launch External Merge Tool.
+    * Ahora se abrirá meld. Hay tres columnas. La de la izquierda y la derecha son los cambios, tuyos o los del servidor. En el medio tienes que dejar el archivo tal y como quieres que quede.
+    * Se irán añadiendo archivos al commit a medida que lo vayas haciendo. Cuando termines, haz un nuevo commit y pushea.
+    * No añadas los archivos .orig que genera meld, borralos más tarde. Si vuelve a suceder, empiezas por la parte del click derecho.
