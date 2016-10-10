@@ -2,7 +2,7 @@ package ips.member;
 
 import ips.database.FacilityBooking;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.time.LocalDateTime;
 
 /**
@@ -32,7 +32,7 @@ public class MemberBookingCancelDialog {
         if (isPossible(current)) {
             int r = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this booking?", "Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
             if (r == JOptionPane.OK_OPTION) {
-                booking.setDeleted_flag(true);// to have a bookings log, we dont delete, we mark a deleted flag
+                booking.setDeletedFlag(true);// to have a bookings log, we dont delete, we mark a deleted flag
                 booking.update(); // update de database maybe?
             } else {
                 // nothing, is just an emphatic else
@@ -50,7 +50,7 @@ public class MemberBookingCancelDialog {
      */
     @SuppressWarnings("deprecation")
     private boolean isPossible(LocalDateTime current) {
-        if (!booking.isPaid() && !booking.isDeleted_flag())// por revisar este metodo
+        if (!booking.isPaid() && !booking.isDeletedFlag())// por revisar este metodo
             if ((current.getYear() <= booking.getTimeStart().getYear() && current.getMonthValue() <= booking.getTimeStart().getMonth()))
                 if (current.getDayOfMonth() <= booking.getTimeStart().getDay() && current.getHour() < booking.getTimeStart().getHours())
                     return true; // the booking can be done

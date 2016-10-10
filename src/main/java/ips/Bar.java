@@ -3,16 +3,19 @@ package ips;
 import ips.administrator.AdministratorMain;
 import ips.member.MemberMain;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JRadioButtonMenuItem;
 
 /**
  * Created by nokutu on 03/10/2016.
  */
 public class Bar extends JMenuBar {
 
-    
-	private static final long serialVersionUID = 8555548018850300676L;
-	public final static int MODE_ADMINISTRATION = 1;
+
+    private static final long serialVersionUID = 8555548018850300676L;
+    public final static int MODE_ADMINISTRATION = 1;
     public final static int MODE_MEMBER = 2;
     private static Bar instance;
 

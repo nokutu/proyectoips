@@ -1,17 +1,22 @@
 package ips.administrator;
 
 import com.toedter.calendar.JDateChooser;
-import ips.gui.AutocompleteJTextField;
+import ips.Utils;
+import ips.database.Database;
+import ips.database.Facility;
+import ips.database.FacilityBooking;
 import ips.gui.Form;
-import javafx.scene.control.Spinner;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created by nokutu on 3/10/16.
@@ -20,36 +25,24 @@ public class BookForMemberDialog extends JDialog {
 
     private final Form form;
 
-    private Date date;
-    private int hourStart;
-    private int hourEnd;
-
-    private AutocompleteJTextField memberField;
-    private JLabel memberLabel;
-
-    private JLabel paymentLabel;
-    private JComboBox<String> paymentCombo;
+    private Facility facility;
+    private Date timeStart;
+    private Date timeEnd;
 
     private JButton confirm;
     private JButton cancel;
-    private JDateChooser dateChooser;
-    private JSpinner hourStartSpinner;
-    private JSpinner hourEndSpinner;
 
     public BookForMemberDialog(JFrame owner) {
-        this(owner, null, -1, -1);
+        this(owner, null, null, null);
     }
 
-    public BookForMemberDialog(JFrame owner, Date date, int hourStart, int hourEnd) {
+    public BookForMemberDialog(JFrame owner, Facility facility, Date timeStart, Date timeEnd) {
         super(owner, true);
         setResizable(false);
 
-        this.date = date;
-        this.hourStart = hourStart;
-        this.hourEnd = hourEnd;
-
-        createMember();
-        createPayment();
+        this.facility = facility;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
 
         createButtons();
 
@@ -60,7 +53,7 @@ public class BookForMemberDialog extends JDialog {
         form = new Form();
         content.add(form.getPanel(), BorderLayout.CENTER);
 
-        addForm(date == null);
+        addForm(timeStart == null);
         addButtons(content);
 
         pack();
@@ -88,19 +81,25 @@ public class BookForMemberDialog extends JDialog {
     private void addForm(boolean addExtra) {
 
         if (addExtra) {
-            dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+            JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
             form.addLine(new JLabel("Date:"), dateChooser);
 
-            hourStartSpinner = new JSpinner(new SpinnerNumberModel());
+            JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
             form.addLine(new JLabel("Start time:"), hourStartSpinner);
 
-            hourEndSpinner = new JSpinner(new SpinnerNumberModel());
+            JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
             form.addLine(new JLabel("End time:"), hourEndSpinner);
+
+            form.addLine(new JLabel("Facility ID:"), new JTextField(20));
         }
 
-        form.addLine(memberLabel, memberField);
-        form.addLine(paymentLabel, paymentCombo);
+        form.addLine(new JLabel("Member ID:"), new JTextField(20));
+
+        JComboBox<String> paymentCombo = new JComboBox<>();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
+        paymentCombo.setModel(model);
+        form.addLine(new JLabel("Payment type:"), paymentCombo);
     }
 
     private void createButtons() {
@@ -110,21 +109,37 @@ public class BookForMemberDialog extends JDialog {
         cancel.addActionListener(this::cancel);
     }
 
-    private void createPayment() {
-        paymentLabel = new JLabel("Payment type:");
-        paymentCombo = new JComboBox<>();
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
-        paymentCombo.setModel(model);
-    }
-
-    private void createMember() {
-        memberLabel = new JLabel("Member ID:");
-        memberField = new AutocompleteJTextField(20, Arrays.asList("uoo245115", "uoooo124444"));
-    }
 
     private void confirm(ActionEvent actionEvent) {
-        // TODO check valid data
-        // TODO add data to the database
+        int facilityId = -1;
+        int memberId = -1;
+        Date timeStart;
+        Date timeEnd;
+        String paymentMethod;
+
+        List<String> results = form.getResults();
+        if (this.timeStart == null) {
+            timeStart = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
+            timeEnd = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+            facilityId = Integer.parseInt(results.get(3));
+            memberId = Integer.parseInt(results.get(4));
+            paymentMethod = results.get(5);
+        } else {
+            facilityId = facility.getFacilityId();
+            timeStart = this.timeStart;
+            timeEnd = this.timeEnd;
+            memberId = Integer.parseInt(results.get(0));
+            paymentMethod = results.get(1);
+        }
+
+        FacilityBooking fb = new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+        Database.getInstance().getFacilityBookings().add(fb);
+        try {
+            fb.create();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         dispose();
     }
 

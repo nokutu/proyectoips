@@ -1,6 +1,6 @@
 package ips.member;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * Main panel for members.

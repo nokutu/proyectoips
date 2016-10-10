@@ -11,7 +11,8 @@ CREATE TABLE facilityBooking (
 	time_end DATE,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
-    CONSTRAINT chk_payment_method CHECK (payment_method IN ('fee', 'cash'))
+    facilitybooking_deleted BOOLEAN,
+    CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash'))
 );
 
 CREATE TABLE member (

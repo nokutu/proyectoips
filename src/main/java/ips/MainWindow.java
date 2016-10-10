@@ -1,8 +1,13 @@
 package ips;
 
 
-import javax.swing.*;
-import java.awt.*;
+import ips.database.Database;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 /**
  * Created by nokutu on 3/10/16.
@@ -10,11 +15,11 @@ import java.awt.*;
 public class MainWindow extends JFrame {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2273433528921048086L;
+     *
+     */
+    private static final long serialVersionUID = -2273433528921048086L;
 
-	private static MainWindow instance;
+    private static MainWindow instance;
 
     private JPanel mainPanel;
 
@@ -60,5 +65,11 @@ public class MainWindow extends JFrame {
         // Tell the window to redraw the contents
         repaint();
         revalidate();
+    }
+
+    @Override
+    public void dispose() {
+        Database.getInstance().close();
+        super.dispose();
     }
 }

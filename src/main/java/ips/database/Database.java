@@ -77,9 +77,21 @@ public class Database {
         rs = s.executeQuery(QUERY_FACILITYBOOKINGS);
         while (rs.next()) {
             facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDate(4),
-                    rs.getString(6), rs.getBoolean(7), rs.getBoolean(8)));
+                    rs.getString(5), rs.getBoolean(6), rs.getBoolean(7)));
         }
 
         // TODO missing fee and feeitem
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public List<Facility> getFacilities() {
+        return facilities;
+    }
+
+    public List<FacilityBooking> getFacilityBookings() {
+        return facilityBookings;
     }
 }

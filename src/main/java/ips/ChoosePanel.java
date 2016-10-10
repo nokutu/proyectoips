@@ -1,16 +1,19 @@
 package ips;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 /**
  * Created by nokutu on 3/10/16.
  */
 public class ChoosePanel extends JPanel {
 
-   
-	private static final long serialVersionUID = -8043605828508774926L;
-	private JButton administration;
+
+    private static final long serialVersionUID = -8043605828508774926L;
+    private JButton administration;
     private JButton member;
 
     public ChoosePanel() {

@@ -5,12 +5,12 @@ package ips.database;
  */
 public class Facility implements DatabaseItem {
 
-    private int facility_id;
-    private String facility_name;
+    private int facilityId;
+    private String facilityName;
 
-    public Facility(int facility_id, String facility_name) {
-        this.facility_id = facility_id;
-        this.facility_name = facility_name;
+    public Facility(int facilityId, String facilityName) {
+        this.facilityId = facilityId;
+        this.facilityName = facilityName;
     }
 
     @Override
@@ -21,5 +21,9 @@ public class Facility implements DatabaseItem {
     @Override
     public void update() {
         // TODO
+    }
+
+    public int getFacilityId() {
+        return facilityId;
     }
 }

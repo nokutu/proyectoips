@@ -1,7 +1,5 @@
 package ips.database;
 
-import java.util.List;
-
 /**
  * Created by nokutu on 27/09/16.
  */

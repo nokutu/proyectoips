@@ -1,6 +1,6 @@
 package ips.gui;
 
-import javax.swing.*;
+import javax.swing.JTextField;
 import java.util.List;
 
 /**
@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class AutocompleteJTextField extends JTextField {
 
-   
-	private static final long serialVersionUID = -5186837131977619392L;
-	Autocomplete autocomplete;
+
+    private static final long serialVersionUID = -5186837131977619392L;
+    Autocomplete autocomplete;
 
     public AutocompleteJTextField(int columns, List<String> words) {
         super(columns);
