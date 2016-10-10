@@ -3,18 +3,22 @@ package ips.administrator;
 import com.toedter.calendar.JDateChooser;
 import ips.gui.AutocompleteJTextField;
 import ips.gui.Form;
+import javafx.scene.control.Spinner;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 /**
  * Created by nokutu on 3/10/16.
  */
 public class BookForMemberDialog extends JDialog {
+
+    private final Form form;
 
     private Date date;
     private int hourStart;
@@ -29,6 +33,8 @@ public class BookForMemberDialog extends JDialog {
     private JButton confirm;
     private JButton cancel;
     private JDateChooser dateChooser;
+    private JSpinner hourStartSpinner;
+    private JSpinner hourEndSpinner;
 
     public BookForMemberDialog(JFrame owner) {
         this(owner, null, -1, -1);
@@ -51,10 +57,10 @@ public class BookForMemberDialog extends JDialog {
         content.setLayout(new BorderLayout());
         setContentPane(content);
 
-        Form form = new Form();
+        form = new Form();
         content.add(form.getPanel(), BorderLayout.CENTER);
 
-        addForm(form, date == null);
+        addForm(date == null);
         addButtons(content);
 
         pack();
@@ -79,12 +85,18 @@ public class BookForMemberDialog extends JDialog {
         buttons.add(cancel, c);
     }
 
-    private void addForm(Form form, boolean addDate) {
+    private void addForm(boolean addExtra) {
 
-        if (addDate) {
+        if (addExtra) {
             dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
             form.addLine(new JLabel("Date:"), dateChooser);
+
+            hourStartSpinner = new JSpinner(new SpinnerNumberModel());
+            form.addLine(new JLabel("Start time:"), hourStartSpinner);
+
+            hourEndSpinner = new JSpinner(new SpinnerNumberModel());
+            form.addLine(new JLabel("End time:"), hourEndSpinner);
         }
 
         form.addLine(memberLabel, memberField);
@@ -111,6 +123,7 @@ public class BookForMemberDialog extends JDialog {
     }
 
     private void confirm(ActionEvent actionEvent) {
+        // TODO check valid data
         // TODO add data to the database
         dispose();
     }

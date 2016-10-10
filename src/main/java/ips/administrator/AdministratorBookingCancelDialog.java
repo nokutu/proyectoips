@@ -9,7 +9,7 @@ import ips.database.FacilityBooking;
  * Class to be used when the admin clicks in the 
  * CANCEL button in the panel where the bookings are shown.
  * It cashes to the member if the time is out
- * @author Sergio Flórez
+ * @author Sergio Flï¿½rez
  *
  */
 public class AdministratorBookingCancelDialog {
@@ -50,8 +50,8 @@ public class AdministratorBookingCancelDialog {
 	private boolean isRequieredPayment() {
 		LocalDateTime current = LocalDateTime.now(); // the current time
 		if(!booking.isPaid() && !booking.isDeleted_flag() && 
-				current.getYear()<=booking.getDate().getYear() && current.getMonthValue()<=booking.getDate().getMonth() 
-				&& current.getDayOfMonth()<=booking.getDate().getDay() && current.getHour()<booking.getTimeStart())
+				current.getYear()<=booking.getTimeStart().getYear() && current.getMonthValue()<=booking.getTimeStart().getMonth()
+				&& current.getDayOfMonth()<=booking.getTimeStart().getDay() && current.getHour()<booking.getTimeStart().getHours())
 			return false; 
 		return true;
 	}

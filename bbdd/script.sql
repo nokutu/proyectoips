@@ -7,9 +7,8 @@ DROP TABLE feeItem;
 CREATE TABLE facilityBooking (
 	facility_id INTEGER,
 	member_id INTEGER,
-	dayDate DATE,
-	hour_start INTEGER,
-	hour_end INTEGER,
+	time_start DATE,
+	time_end DATE,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
     CONSTRAINT chk_payment_method CHECK (payment_method IN ('fee', 'cash'))
