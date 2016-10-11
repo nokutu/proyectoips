@@ -1,8 +1,8 @@
-DROP TABLE facilityBooking;
-DROP TABLE member;
-DROP TABLE facility;
-DROP TABLE fee;
-DROP TABLE feeItem;
+DROP TABLE IF EXISTS facilityBooking;
+DROP TABLE IF EXISTS member;
+DROP TABLE IF EXISTS facility;
+DROP TABLE IF EXISTS fee;
+DROP TABLE IF EXISTS feeItem;
 
 CREATE TABLE facilityBooking (
 	facility_id INTEGER,

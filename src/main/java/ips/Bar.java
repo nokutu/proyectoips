@@ -47,8 +47,8 @@ public class Bar extends JMenuBar {
 
     private void fillChange(JMenu change) {
         ButtonGroup g = new ButtonGroup();
-        addMember(change, g);
         addAdministration(change, g);
+        addMember(change, g);
     }
 
     private void addMember(JMenu change, ButtonGroup g) {
