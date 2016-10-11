@@ -94,4 +94,8 @@ public class Database {
     public List<FacilityBooking> getFacilityBookings() {
         return facilityBookings;
     }
+
+    public List<Member> getMembers() {
+        return members;
+    }
 }

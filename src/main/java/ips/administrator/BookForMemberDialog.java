@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by nokutu on 3/10/16.
@@ -79,7 +80,6 @@ public class BookForMemberDialog extends JDialog {
     }
 
     private void addForm(boolean addExtra) {
-
         if (addExtra) {
             JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
@@ -111,6 +111,21 @@ public class BookForMemberDialog extends JDialog {
 
 
     private void confirm(ActionEvent actionEvent) {
+        FacilityBooking fb = createBooking();
+
+        if (checkValid(fb)) {
+            Database.getInstance().getFacilityBookings().add(fb);
+            try {
+                fb.create();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dispose();
+        }
+    }
+
+    private FacilityBooking createBooking() {
         int facilityId = -1;
         int memberId = -1;
         Date timeStart;
@@ -132,18 +147,37 @@ public class BookForMemberDialog extends JDialog {
             paymentMethod = results.get(1);
         }
 
-        FacilityBooking fb = new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
-        Database.getInstance().getFacilityBookings().add(fb);
-        try {
-            fb.create();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        dispose();
+        return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
     }
 
     private void cancel(ActionEvent actionEvent) {
         dispose();
+    }
+
+    private boolean checkValid(FacilityBooking fb) {
+        boolean valid = true;
+        if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
+                fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() < 0) {
+            // More than 2 hours
+            valid = false;
+        } else if (!Database.getInstance().getMembers().stream()
+                .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny().isPresent()) {
+            // Member not valid
+            valid = false;
+        }
+        Optional<Facility> of = Database.getInstance().getFacilities().stream()
+                .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+
+        if (!of.isPresent()) {
+            // Facility not valid
+            valid = false;
+        } else {
+            if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+                // Facility not free
+                valid = false;
+            }
+        }
+
+        return valid;
     }
 }

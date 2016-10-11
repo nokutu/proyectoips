@@ -5,12 +5,12 @@ package ips.database;
  */
 public class Member implements DatabaseItem {
 
-    private int member_id;
-    private String member_name;
+    private int memberId;
+    private String memberName;
 
-    public Member(int member_id, String member_name) {
-        this.member_id = member_id;
-        this.member_name = member_name;
+    public Member(int memberId, String memberName) {
+        this.memberId = memberId;
+        this.memberName = memberName;
     }
 
     @Override
@@ -21,5 +21,9 @@ public class Member implements DatabaseItem {
     @Override
     public void update() {
         // TODO
+    }
+
+    public int getMemberId() {
+        return memberId;
     }
 }
