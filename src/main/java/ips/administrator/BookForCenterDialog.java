@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 public class BookForCenterDialog extends JDialog {
 
@@ -61,7 +62,7 @@ public class BookForCenterDialog extends JDialog {
         btnConfirm.setMnemonic('A');
 
         JButton btnCancel = new JButton("Cancel");
-        btnCancel.addActionListener(this::confirm);
+        btnCancel.addActionListener(this::cancel);
         btnCancel.setMnemonic('C');
 
 
@@ -116,13 +117,16 @@ public class BookForCenterDialog extends JDialog {
         form.addLine(new JLabel("Facility ID:"), new JTextField(20));
     }
 
+    private void cancel(ActionEvent actionEvent) {
+        dispose();
+    }
 
-    public void confirm(ActionEvent arg0) {
+    public void confirm(ActionEvent arg0) 
+    {
 
         Date hourStart;
         Date hourEnd;
         int facilityId = -1;
-        String paymentMethod = "non";
         List<String> results = form.getResults();
 
 
@@ -137,9 +141,12 @@ public class BookForCenterDialog extends JDialog {
         }
 
 
-        FacilityBooking fb = new FacilityBooking(facilityId, centerId, hourStart, hourEnd, paymentMethod, false, false);
-
+        FacilityBooking fb = new FacilityBooking(facilityId, centerId, hourStart, hourEnd, null, false, false);
+        
+        if(valid(fb))
+        {
         Database.getInstance().getFacilityBookings().add(fb);
+        }
 
         try {
             fb.create();
@@ -150,35 +157,27 @@ public class BookForCenterDialog extends JDialog {
         dispose();
 
     }
-        /*for (int i = 0; i < 24; i++) {
-            hourSp1.addItem(i + ":00");
-        }
-
-        hourSp1.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent arg0) {
-                //hourStart = hourSp1.getSelectedIndex();
-                selectEndTime(form);
-
-            }
-        });*/
-
-       
     
+    private boolean valid(FacilityBooking fb) 
+    {
+        boolean valid = true;
+        
+        
+        Optional<Facility> facility = Database.getInstance().getFacilities().stream().filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
 
-   /* protected void selectEndTime(Form form) {
-        hourSp2.setEnabled(true);
-        for (int i = hourEnd + 1; i < 24; i++) {
-            hourSp1.addItem(i + ":00");
-        }
-        hourSp1.addActionListener(new ActionListener() {
+        //la facility debe existir
+        if (!facility.isPresent()) 
+        {
+            valid = false;
+        } 
+        
+        //invalided de los spinners 
+        if (fb.getTimeEnd().getTime()-fb.getTimeStart().getTime() < 0) 
+        {
+            valid = false;
+        } 
 
-            public void actionPerformed(ActionEvent arg0) {
-                hourStart = hourSp1.getSelectedIndex();
-                selectEndTime(form);
-            }
-        });
-
-    }*/
-
+        return valid;
+    }
+       
 }
