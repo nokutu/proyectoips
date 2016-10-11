@@ -32,9 +32,6 @@ public class BookForMemberDialog extends JDialog {
     private JButton confirm;
     private JButton cancel;
 
-    /**
-     * @wbp.parser.constructor
-     */
     public BookForMemberDialog(JFrame owner) {
         this(owner, null, null, null);
     }
