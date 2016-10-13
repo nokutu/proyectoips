@@ -25,7 +25,7 @@ public class Utils {
     public static boolean isFacilityFree(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         for (FacilityBooking fb : bookings) {
-            if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)) {
+            if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart) && !fb.isDeletedFlag()) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart()) ||
                         timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd()) ||
                         timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
