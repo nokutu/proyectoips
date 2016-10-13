@@ -132,22 +132,26 @@ public class BookForMemberDialog extends JDialog {
         Date timeEnd;
         String paymentMethod;
 
-        List<String> results = form.getResults();
-        if (this.timeStart == null) {
-            timeStart = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-            timeEnd = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
-            facilityId = Integer.parseInt(results.get(3));
-            memberId = Integer.parseInt(results.get(4));
-            paymentMethod = results.get(5);
-        } else {
-            facilityId = facility.getFacilityId();
-            timeStart = this.timeStart;
-            timeEnd = this.timeEnd;
-            memberId = Integer.parseInt(results.get(0));
-            paymentMethod = results.get(1);
-        }
+        try {
+            List<String> results = form.getResults();
+            if (this.timeStart == null) {
+                timeStart = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
+                timeEnd = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+                facilityId = Integer.parseInt(results.get(3));
+                memberId = Integer.parseInt(results.get(4));
+                paymentMethod = results.get(5);
+            } else {
+                facilityId = facility.getFacilityId();
+                timeStart = this.timeStart;
+                timeEnd = this.timeEnd;
+                memberId = Integer.parseInt(results.get(0));
+                paymentMethod = results.get(1);
+            }
 
-        return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void cancel(ActionEvent actionEvent) {
@@ -156,26 +160,43 @@ public class BookForMemberDialog extends JDialog {
 
     private boolean checkValid(FacilityBooking fb) {
         boolean valid = true;
-        if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
-                fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() < 0) {
-            // More than 2 hours
-            valid = false;
-        } else if (!Database.getInstance().getMembers().stream()
-                .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny().isPresent()) {
-            // Member not valid
-            valid = false;
-        }
-        Optional<Facility> of = Database.getInstance().getFacilities().stream()
-                .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+        String errors = "\n";
 
-        if (!of.isPresent()) {
-            // Facility not valid
-            valid = false;
-        } else {
-            if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-                // Facility not free
+        if (fb != null) {
+            if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
+                    fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
+                // More than 2 hours
+                valid = false;
+                errors += "A member can only book a maximum of 2 hours. End time must be after begin time\n";
+            }
+            if (!Database.getInstance().getMembers().stream()
+                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny().isPresent()) {
+                // Member not valid
+                errors += "Invalid member id\n";
                 valid = false;
             }
+            Optional<Facility> of = Database.getInstance().getFacilities().stream()
+                    .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+
+            if (!of.isPresent()) {
+                // Facility not valid
+                valid = false;
+                errors += "Invalid facility id\n";
+            } else {
+                if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+                    // Facility not free
+                    valid = false;
+                    errors += "Facility is occupied in the selected hours\n";
+                }
+            }
+        } else {
+            errors += "Please, fill all the fields\n";
+            valid = false;
+        }
+
+        if (!valid) {
+            form.setError(errors);
+            setSize(getWidth(), getPreferredSize().height);
         }
 
         return valid;

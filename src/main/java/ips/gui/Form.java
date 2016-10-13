@@ -2,14 +2,11 @@ package ips.gui;
 
 import com.toedter.calendar.JDateChooser;
 
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -21,14 +18,35 @@ import java.util.stream.Collectors;
 public class Form {
 
     private JPanel panel;
+    private JPanel gridPanel;
     private List<Supplier<String>> values;
+
+    private JTextPane errorPanel;
 
     private int line = 0;
 
     public Form() {
         panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+        panel.setLayout(new BorderLayout());
+
+        gridPanel = new JPanel();
+        gridPanel.setLayout(new GridBagLayout());
+
+        panel.add(gridPanel, BorderLayout.CENTER);
         values = new ArrayList<>();
+
+        createErrorPanel();
+        panel.add(errorPanel, BorderLayout.SOUTH);
+    }
+
+    private void createErrorPanel() {
+        errorPanel = new JTextPane();
+        errorPanel.setForeground(Color.red);
+        errorPanel.setBackground(null);
+        StyledDocument doc = errorPanel.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
 
     public void addLine(Component a, JTextField b) {
@@ -59,10 +77,10 @@ public class Form {
         c.insets = new Insets(2, 10, 2, 10);
 
         c.gridx = 0;
-        panel.add(a, c);
+        gridPanel.add(a, c);
 
         c.gridx = 1;
-        panel.add(b, c);
+        gridPanel.add(b, c);
 
         line++;
     }
@@ -73,5 +91,9 @@ public class Form {
 
     public List<String> getResults() {
         return values.stream().map(Supplier::get).collect(Collectors.toList());
+    }
+
+    public void setError(String error) {
+        errorPanel.setText(error);
     }
 }
