@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * CANCEL button in the panel where the bookings are shown.
  * It cashes to the member if the time is out
  *
- * @author Sergio Fl�rez
+ * @author Sergio Florez
  */
 public class AdministratorBookingCancelDialog {
 
