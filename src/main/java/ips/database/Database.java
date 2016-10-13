@@ -76,7 +76,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FACILITYBOOKINGS);
         while (rs.next()) {
-            facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDate(4),
+            facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getTimestamp(3), rs.getTimestamp(4),
                     rs.getString(5), rs.getBoolean(6), rs.getBoolean(7)));
         }
 

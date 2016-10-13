@@ -7,8 +7,8 @@ DROP TABLE IF EXISTS feeItem;
 CREATE TABLE facilityBooking (
 	facility_id INTEGER,
 	member_id INTEGER,
-	time_start DATE,
-	time_end DATE,
+	time_start TIMESTAMP,
+	time_end TIMESTAMP,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
     facilitybooking_deleted BOOLEAN,

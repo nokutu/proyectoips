@@ -15,6 +15,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +25,8 @@ public class BookForCenterDialog extends JDialog {
     private static final long serialVersionUID = 8497586255693077533L;
 
     private Facility facility;
-    private Date hourStart;
-    private Date hourEnd;
+    private Timestamp hourStart;
+    private Timestamp hourEnd;
     private int centerId = 0;
 
     private JDateChooser dateChooser;
@@ -33,8 +34,8 @@ public class BookForCenterDialog extends JDialog {
     private JSpinner hourSp2;
     private Form form;
 
-    public BookForCenterDialog(JFrame owner, Facility facility, Date hourStart,
-                               Date hourEnd) {
+    public BookForCenterDialog(JFrame owner, Facility facility, Timestamp hourStart,
+                               Timestamp hourEnd) {
         super(owner, true);
         setResizable(false);
 
@@ -121,18 +122,17 @@ public class BookForCenterDialog extends JDialog {
         dispose();
     }
 
-    public void confirm(ActionEvent arg0) 
-    {
+    public void confirm(ActionEvent arg0) {
 
-        Date hourStart;
-        Date hourEnd;
+        Timestamp hourStart;
+        Timestamp hourEnd;
         int facilityId = -1;
         List<String> results = form.getResults();
 
 
         if (this.hourStart == null) {
-            hourStart = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-            hourEnd = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+            hourStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
+            hourEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
             facilityId = Integer.parseInt(results.get(3));
         } else {
             facilityId = facility.getFacilityId();
@@ -142,10 +142,9 @@ public class BookForCenterDialog extends JDialog {
 
 
         FacilityBooking fb = new FacilityBooking(facilityId, centerId, hourStart, hourEnd, null, false, false);
-        
-        if(valid(fb))
-        {
-        Database.getInstance().getFacilityBookings().add(fb);
+
+        if (valid(fb)) {
+            Database.getInstance().getFacilityBookings().add(fb);
         }
 
         try {
@@ -157,27 +156,24 @@ public class BookForCenterDialog extends JDialog {
         dispose();
 
     }
-    
-    private boolean valid(FacilityBooking fb) 
-    {
+
+    private boolean valid(FacilityBooking fb) {
         boolean valid = true;
-        
-        
+
+
         Optional<Facility> facility = Database.getInstance().getFacilities().stream().filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
 
         //la facility debe existir
-        if (!facility.isPresent()) 
-        {
+        if (!facility.isPresent()) {
             valid = false;
-        } 
-        
+        }
+
         //invalided de los spinners 
-        if (fb.getTimeEnd().getTime()-fb.getTimeStart().getTime() < 0) 
-        {
+        if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() < 0) {
             valid = false;
-        } 
+        }
 
         return valid;
     }
-       
+
 }

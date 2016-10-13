@@ -15,6 +15,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +28,8 @@ public class BookForMemberDialog extends JDialog {
     private final Form form;
 
     private Facility facility;
-    private Date timeStart;
-    private Date timeEnd;
+    private Timestamp timeStart;
+    private Timestamp timeEnd;
 
     private JButton confirm;
     private JButton cancel;
@@ -37,7 +38,7 @@ public class BookForMemberDialog extends JDialog {
         this(owner, null, null, null);
     }
 
-    public BookForMemberDialog(JFrame owner, Facility facility, Date timeStart, Date timeEnd) {
+    public BookForMemberDialog(JFrame owner, Facility facility, Timestamp timeStart, Timestamp timeEnd) {
         super(owner, true);
         setResizable(false);
 
@@ -128,15 +129,15 @@ public class BookForMemberDialog extends JDialog {
     private FacilityBooking createBooking() {
         int facilityId = -1;
         int memberId = -1;
-        Date timeStart;
-        Date timeEnd;
+        Timestamp timeStart;
+        Timestamp timeEnd;
         String paymentMethod;
 
         try {
             List<String> results = form.getResults();
             if (this.timeStart == null) {
-                timeStart = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-                timeEnd = Utils.addHourToDay(new Date(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+                timeStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
+                timeEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
                 facilityId = Integer.parseInt(results.get(3));
                 memberId = Integer.parseInt(results.get(4));
                 paymentMethod = results.get(5);

@@ -1,8 +1,8 @@
 package ips.database;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * Created by nokutu on 27/09/16.
@@ -19,13 +19,13 @@ public class FacilityBooking implements DatabaseItem {
 
     private int facilityId;
     private int memberId;
-    private Date timeStart;
-    private Date timeEnd;
+    private Timestamp timeStart;
+    private Timestamp timeEnd;
     private String paymentMethod;
     private boolean paid;
     private boolean deletedFlag;
 
-    public FacilityBooking(int facilityId, int memberId, Date timeStart, Date timeEnd, String paymentMethod, boolean paid,
+    public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod, boolean paid,
                            boolean deletedFlag) {
         this.setTimeStart(timeStart);
         this.setTimeEnd(timeEnd);
@@ -59,8 +59,8 @@ public class FacilityBooking implements DatabaseItem {
         }
         createStatement.setInt(1, facilityId);
         createStatement.setInt(2, memberId);
-        createStatement.setDate(3, timeStart);
-        createStatement.setDate(4, timeEnd);
+        createStatement.setTimestamp(3, new Timestamp(timeStart.getTime()));
+        createStatement.setTimestamp(4, new Timestamp(timeEnd.getTime()));
         createStatement.setString(5, paymentMethod);
         createStatement.setBoolean(6, paid);
         createStatement.setBoolean(7, deletedFlag);
@@ -74,19 +74,19 @@ public class FacilityBooking implements DatabaseItem {
         throw new UnsupportedOperationException();
     }
 
-    public Date getTimeStart() {
+    public Timestamp getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(Date timeStart) {
+    public void setTimeStart(Timestamp timeStart) {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
+    public Timestamp getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(Date timeEnd) {
+    public void setTimeEnd(Timestamp timeEnd) {
         this.timeEnd = timeEnd;
     }
 

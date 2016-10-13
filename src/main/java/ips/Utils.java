@@ -4,8 +4,9 @@ import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,11 +22,13 @@ public class Utils {
      * @param timeEnd   the end time.
      * @return true if the facility is free; false otherwise.
      */
-    public static boolean isFacilityFree(Facility facility, Date timeStart, Date timeEnd) {
+    public static boolean isFacilityFree(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         for (FacilityBooking fb : bookings) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)) {
-                if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())) {
+                if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart()) ||
+                        timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd()) ||
+                        timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
                     return false;
                 }
             }
@@ -33,8 +36,8 @@ public class Utils {
         return true;
     }
 
-    public static Date addHourToDay(Date day, int hour) {
-        return new Date(day.getTime() + hour * 1000 * 3600);
+    public static Timestamp addHourToDay(Timestamp day, int hour) {
+        return new Timestamp(day.getTime() + hour * 1000 * 3600);
     }
 
     public static boolean areSameDay(Date a, Date b) {
