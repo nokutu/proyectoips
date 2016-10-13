@@ -39,7 +39,7 @@ public class AdministratorMain extends JPanel {
         if (btnPayDebts == null) {
         	btnPayDebts= new JButton("Pay Member Debts");
         	btnPayDebts.addActionListener(e -> {
-                BookForCenterDialog adminbook = new BookForCenterDialog(MainWindow.getInstance());
+                PayDebtsDialog adminbook = new PayDebtsDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);
             });
         }
