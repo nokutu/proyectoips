@@ -98,4 +98,7 @@ public class Database {
     public List<Member> getMembers() {
         return members;
     }
+	public List<Fee> getFees() {
+		return fees;
+	}
 }
