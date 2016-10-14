@@ -37,7 +37,7 @@ public class AdministratorMain extends JPanel {
     
     private JButton getBtnPayDebts() {
         if (btnPayDebts == null) {
-        	btnPayDebts= new JButton("Pay Member Debts");
+        	btnPayDebts= new JButton("Pay in effective");
         	btnPayDebts.addActionListener(e -> {
                 PayDebtsDialog adminbook = new PayDebtsDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);

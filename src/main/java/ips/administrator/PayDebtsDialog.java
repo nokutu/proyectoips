@@ -51,6 +51,7 @@ public class PayDebtsDialog extends JDialog {
 		
 		content.add(form.getPanel(), BorderLayout.CENTER);
 		getDeudores();
+		
 		if(deudores.isEmpty())
 		{
 			String errors = "\n";
@@ -79,7 +80,7 @@ public class PayDebtsDialog extends JDialog {
 		if (comboBox == null) {
 			comboBox = new JComboBox();
 	        
-	      String[] deudores1 = new String[20];
+	      String[] deudores1 = new String[deudores.size()];
 	      deudor=(FacilityBooking) comboBox.getItemAt(0);
 	      comboBox.addActionListener(this::select);
 	      
@@ -100,7 +101,7 @@ public class PayDebtsDialog extends JDialog {
 	      for( FacilityBooking f : bookings)
 	      {
 	    	  //si no esta pagado entra en cuenta
-          if(!f.isPaid())
+          if(!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
           {
           	debts.add(f);
           	deudores.add(Integer.toString(f.getMemberId()));
