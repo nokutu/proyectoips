@@ -13,6 +13,8 @@ public class Database {
     private final static String QUERY_FACILITIES = "SELECT * FROM facility";
     private final static String QUERY_MEMBERS = "SELECT * FROM member";
     private final static String QUERY_FACILITYBOOKINGS = "SELECT * FROM facilitybooking";
+	private static final String QUERY_FEE = "SELECT * FROM fee";
+	private static final String QUERY_FEEITEM = "SELECT * FROM feeItem";
 
     private static Database instance;
     private Connection conn;
@@ -64,7 +66,7 @@ public class Database {
         Statement s = conn.createStatement();
         ResultSet rs = s.executeQuery(QUERY_FACILITIES);
         while (rs.next()) {
-            facilities.add(new Facility(rs.getInt(1), rs.getString(2)));
+            facilities.add(new Facility(rs.getInt("facility_id"), rs.getString("facility_name"),rs.getInt("price")));
         }
 
         s = conn.createStatement();
@@ -79,8 +81,22 @@ public class Database {
             facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getTimestamp(3), rs.getTimestamp(4),
                     rs.getString(5), rs.getBoolean(6), rs.getBoolean(7)));
         }
-
+         
+        
         // TODO missing fee and feeitem
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_FEE);
+        while (rs.next()) {
+            fees.add(new Fee());
+        }
+        
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_FEEITEM);
+        while (rs.next()) {
+            feeItems.add(new FeeItem(rs.getInt("feeitem_amount"),rs.getInt("fee_id")));
+        }
+
+       
     }
 
     public Connection getConnection() {
@@ -98,7 +114,40 @@ public class Database {
     public List<Member> getMembers() {
         return members;
     }
-	public List<Fee> getFees() {
+    public List<Fee> getFees() {
 		return fees;
 	}
+    
+    public List<FeeItem> getFeeItems() {
+		return feeItems;
+	}
+
+	public Facility getFacilityById(int id){
+		for (Facility facility : facilities) {
+			if(facility.getFacilityId()==id)
+				return facility;
+		}
+		throw new RuntimeException("Do not exists");
+	}
+	
+	public Fee getFeeByFeeId(int id){
+    	for (Fee fee : fees) {
+			if(fee.getFeeId()==id)
+				return fee;
+		}
+		throw new RuntimeException("Do not exists");
+    }
+
+	public Fee getFeeByMember(int memberId,int month) {
+		for (Fee fee : fees) {
+			if(fee.getMember().getMemberId()==memberId && fee.getMonth().getMonth()==month)
+				return fee;
+		}
+		throw new RuntimeException("Do not exists");
+	}
+	
+	public Fee getFeeByMember(Member member,int m) {
+		return getFeeByMember(member.getMemberId(),m);
+	}
+	
 }

@@ -7,10 +7,11 @@ public class FeeItem implements DatabaseItem {
 
     // Represents cents
     private int amount;
-    private Fee fee;
+    private int fee_id;
 
-    public FeeItem() {
-        // TODO
+    public FeeItem(int amount,int fee) {
+        this.amount=amount;
+        this.fee_id=fee;
     }
 
     @Override
@@ -22,4 +23,5 @@ public class FeeItem implements DatabaseItem {
     public void update() {
         // TODO
     }
+    
 }

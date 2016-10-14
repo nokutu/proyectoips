@@ -22,6 +22,7 @@ CREATE TABLE member (
 
 CREATE TABLE facility (
 	facility_id INTEGER NOT NULL PRIMARY KEY,
+	price INTEGER,
 	facility_name VARCHAR(32)
 );
 
@@ -34,6 +35,7 @@ CREATE TABLE fee (
 CREATE TABLE feeitem (
     feeitem_id INTEGER NOT NULL PRIMARY KEY,
     feeitem_concept VARCHAR(64),
+	fee_id INTEGER NOT NULL,
     feeitem_amount INTEGER
 );
 
@@ -41,5 +43,5 @@ INSERT INTO member VALUES (1, 'Gabriel');
 INSERT INTO member VALUES (2, 'Jorge');
 INSERT INTO member VALUES (3, 'Sergio');
 
-INSERT INTO facility VALUES (1, 'Tennis 1');
-INSERT INTO facility VALUES (2, 'Tennis 2');
+INSERT INTO facility VALUES (1, 5,'Tennis 1');
+INSERT INTO facility VALUES (2, 3,'Tennis 2');

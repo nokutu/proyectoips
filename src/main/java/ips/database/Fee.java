@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Fee implements DatabaseItem {
 
+	private int FeeId;
     private Member member;
     // Use Date.valueOf(YYYY-MM--DD) to get the value. Use first day of the month
     private Date month;
@@ -26,4 +27,16 @@ public class Fee implements DatabaseItem {
     public void update() {
         // TODO
     }
+
+	public Member getMember() {
+		return member;
+	}
+
+	public Date getMonth() {
+		return month;
+	}
+
+	public int getFeeId() {
+		return FeeId;
+	}
 }

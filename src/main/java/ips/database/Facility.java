@@ -7,10 +7,12 @@ public class Facility implements DatabaseItem {
 
     private int facilityId;
     private String facilityName;
+    private int price;
 
-    public Facility(int facilityId, String facilityName) {
+    public Facility(int facilityId, String facilityName, int price) {
         this.facilityId = facilityId;
         this.facilityName = facilityName;
+        this.price=price;
     }
 
     @Override
@@ -26,4 +28,8 @@ public class Facility implements DatabaseItem {
     public int getFacilityId() {
         return facilityId;
     }
+
+	public int getPrice() {
+		return price;
+	}
 }
