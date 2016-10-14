@@ -113,4 +113,15 @@ public class FacilityBooking implements DatabaseItem {
     public void setFacilityId(int facilityId) {
         this.facilityId = facilityId;
     }
+    
+    public String toString()
+    {
+    	   String linea ="Facility: "+ Integer.toString(this.getFacilityId())+" \n";
+	        linea+="Member: "+ Integer.toString(this.getMemberId())+" \n";
+	        linea+="Start: "+ this.getTimeStart().toString()+" \n";
+	        linea+="End: "+this.getTimeEnd().toString()+" \n";
+	        linea+="Payment method: "+ this.getPaymentMethod()+" \n";
+	        return linea;
+    	
+    }
 }

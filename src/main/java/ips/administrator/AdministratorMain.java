@@ -50,7 +50,7 @@ public class AdministratorMain extends JPanel {
         if (btnPayDebts == null) {
         	btnPayDebts= new JButton("Booking details");
         	btnPayDebts.addActionListener(e -> {
-                BookingDetailsDialog adminbook = new BookingDetailsDialog(MainWindow.getInstance());
+                PayCurrentDebt adminbook = new PayCurrentDebt(MainWindow.getInstance());
                 adminbook.setVisible(true);
             });
         }

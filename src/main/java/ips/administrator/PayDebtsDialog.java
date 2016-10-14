@@ -151,6 +151,8 @@ public class PayDebtsDialog extends JDialog {
 	           else
 	           {
 	           Database.getInstance().getFacilityBookings().get(i).setPayed(true);
+	           Recibo recibo=new Recibo(Database.getInstance().getFacilityBookings().get(i));
+	           recibo.grabarRecibo();
 	           }
 	       
 
@@ -162,5 +164,13 @@ public class PayDebtsDialog extends JDialog {
 	       }
 	        
 	    }
+	  
+	  private void addTime()
+	  {
+		  JTextField start= new JTextField(20);
+		  start.setEnabled(false);
+		  form.addLine(new JLabel("Start time:"), start);
+		  
+	  }
 
 }
