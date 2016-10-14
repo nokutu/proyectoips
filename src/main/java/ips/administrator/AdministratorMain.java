@@ -45,4 +45,15 @@ public class AdministratorMain extends JPanel {
         }
         return btnPayDebts;
     }
+    
+    private JButton getBtnSeeDetails() {
+        if (btnPayDebts == null) {
+        	btnPayDebts= new JButton("Booking details");
+        	btnPayDebts.addActionListener(e -> {
+                BookingDetailsDialog adminbook = new BookingDetailsDialog(MainWindow.getInstance());
+                adminbook.setVisible(true);
+            });
+        }
+        return btnPayDebts;
+    }
 }
