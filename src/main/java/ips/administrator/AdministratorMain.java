@@ -1,9 +1,12 @@
 package ips.administrator;
 
 import ips.MainWindow;
+import ips.database.Database;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * Main panel for administration
@@ -15,6 +18,7 @@ public class AdministratorMain extends JPanel {
     private static final long serialVersionUID = -4556204503732370163L;
     private JButton btnBookActivity;
     private JButton btnPayDebts;
+    private JButton btnCancelar;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
@@ -22,6 +26,7 @@ public class AdministratorMain extends JPanel {
         add(book);
         add(getBtnBookActivity());
         add(getBtnPayDebts());
+        add(getBtnCancelar());
     }
 
     private JButton getBtnBookActivity() {
@@ -56,4 +61,13 @@ public class AdministratorMain extends JPanel {
         }
         return btnPayDebts;
     }
+	private JButton getBtnCancelar() {
+		if (btnCancelar == null) {
+			btnCancelar = new JButton("cancelar");
+			btnCancelar.addActionListener(e ->{
+				AdministratorBookingCancelDialog cancelDialog = new AdministratorBookingCancelDialog(Database.getInstance().getFacilityBookings().get(0));
+			});
+		}
+		return btnCancelar;
+	}
 }

@@ -10,12 +10,13 @@ import java.sql.Timestamp;
 public class FacilityBooking implements DatabaseItem {
 
     private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private final static String UPDATE_QUERY = "";
+    private final static String UPDATE_QUERY = "UPDATE FACILITYBOOKING SET PAYMENT_METHOD=?, PAID=?, FACILITYBOOKING_DELETED=?";
 
     private final static String PAYMENT_CASH = "cash";
     private final static String PAYMENT_FEE = "fee";
 
     private static PreparedStatement createStatement;
+    private static PreparedStatement updateStatement;
 
     private int facilityId;
     private int memberId;
@@ -69,9 +70,15 @@ public class FacilityBooking implements DatabaseItem {
     }
 
     @Override
-    public void update() {
-        // TODO
-        throw new UnsupportedOperationException();
+    public void update() throws SQLException {
+    	if (updateStatement == null) {
+            updateStatement = Database.getInstance().getConnection().prepareStatement(UPDATE_QUERY);
+        }
+        updateStatement.setString(1, paymentMethod);
+        updateStatement.setBoolean(2, paid);
+        updateStatement.setBoolean(3, deletedFlag);
+
+        updateStatement.execute();        
     }
 
     public Timestamp getTimeStart() {

@@ -14,6 +14,7 @@ public interface DatabaseItem {
 
     /**
      * Called when the object has been modified and the changes must be written in the database
+     * @throws SQLException 
      */
-    void update();
+    void update() throws SQLException;
 }

@@ -5,6 +5,9 @@ import ips.database.FacilityBooking;
 import javax.swing.JOptionPane;
 import java.util.Date;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import java.sql.SQLException;
+
 import static java.util.concurrent.TimeUnit.HOURS;
 
 /**
@@ -37,7 +40,11 @@ public class MemberBookingCancelDialog {
 				booking.setDeletedFlag(true);// to have a bookings log, we dont
 												// delete, we mark a deleted
 												// flag
-				booking.update(); // update de database maybe?
+				try {
+					booking.update();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			} else {
 				// nothing, is just an emphatic else
 			}

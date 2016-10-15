@@ -7,6 +7,8 @@ import ips.database.FeeItem;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.JOptionPane;
+
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -28,30 +30,41 @@ public class AdministratorBookingCancelDialog {
 		if (r == JOptionPane.OK_OPTION) {
 			if (booking.getMemberId()==0) {// ADMIN BOOKING (we identify the admin bookings by the 0 member id)
 				booking.setDeletedFlag(true);
-				booking.update();
-			} else { // MEMBER BOOKING
-				if (isRequieredPayment()) {
-					r = JOptionPane.showOptionDialog(null, "A payment shall be done. Charge into the member's fee?\n(in case of cash payment click \"No\")", "Warning",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-					if(r==JOptionPane.YES_OPTION){ // cobrar el pago
-						Database.getInstance().getFeeItems().add(
-								new FeeItem( 
-										Database.getInstance().getFacilityById(
-												booking.getFacilityId()
-												).getPrice(),
-										Database.getInstance().getFeeByMember(booking.getMemberId(),new Date().getMonth()).getFeeId()
-										)
-								);
+				try{
+					booking.update();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}			} else { // MEMBER BOOKING
+					if (isRequieredPayment()) {
+						r = JOptionPane.showOptionDialog(null, "A payment shall be done. Charge into the member's fee?\n(in case of cash payment click \"No\")", "Warning",
+								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+						if(r==JOptionPane.YES_OPTION){ // cobrar el pago
+							Database.getInstance().getFeeItems().add(
+									new FeeItem( 
+											Database.getInstance().getFacilityById(
+													booking.getFacilityId()
+													).getPrice(),
+											Database.getInstance().getFeeByMember(booking.getMemberId(),new Date().getMonth()).getFeeId()
+											)
+									);
 
+						}
+						Database.getInstance().getFees(); // TODO añadir el pago adicional
+						booking.setDeletedFlag(true);
+						try{
+							booking.update();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					} else {
+						booking.setDeletedFlag(true);
+						try{
+							booking.update();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
 					}
-					Database.getInstance().getFees(); // TODO añadir el pago adicional
-					booking.setDeletedFlag(true);
-					booking.update();
-				} else {
-					booking.setDeletedFlag(true);
-					booking.update();
 				}
-			}
 		} else {
 			// nothing, is just an emphatic else
 		}
