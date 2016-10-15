@@ -101,7 +101,7 @@ public class PayDebtsDialog extends JDialog {
 	      for( FacilityBooking f : bookings)
 	      {
 	    	  //si no esta pagado entra en cuenta
-          if(!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
+          if(f.getPaymentMethod()!=null&&!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
           {
           	debts.add(f);
           	deudores.add(Integer.toString(f.getMemberId()));
