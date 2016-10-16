@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -54,7 +55,7 @@ public class PayCurrentDebt  extends JDialog{
         form = new Form();
         content.add(form.getPanel(), BorderLayout.CENTER);
 
-        
+        addForm();
         addButtons(content);
 
         pack();
@@ -91,27 +92,54 @@ public class PayCurrentDebt  extends JDialog{
 	  {
 		  Date date =new Date();
 		  Timestamp fecha = new Timestamp(date.getTime());
-		 
 		  
-          if(fecha.after(book.getTimeEnd())||fecha.before(book.getTimeStart()))
-          {
-        	String errors = "\n";
-  			errors += "This faculty is not in use\n";
-  			form.setError(errors);
-          }
-          else
-          {
+		  //extract the correct booking
+		  List<String> results = form.getResults();
+		  List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+	      for( FacilityBooking f : bookings)
+	      {
+	    	  int facilityId = Integer.parseInt(results.get(0));
+              int memberId = Integer.parseInt(results.get(1));
+              
+              
+              if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId)
+              {
+            	  book=f;
+              }
+	      }
+	      
+	      //if there was a booking find if its currently in use
+	      if(book!=null)
+	      {
+		  
+	    	  if(fecha.after(book.getTimeEnd())||fecha.before(book.getTimeStart()))
+	    	  {
+	    		  String errors = "\n";
+	    		  errors += "This booking is not in use right now\n";
+	    		  form.setError(errors);
+	    	  }
+	    	  else
+	    	  {
         	  
-          int i=Database.getInstance().getFacilityBookings().indexOf(book);
-          if(i==-1)
-          {
-        	  Database.getInstance().getFacilityBookings().get(i).setPayed(true);
-        	  Recibo recibo=new Recibo(Database.getInstance().getFacilityBookings().get(i));
-        	  recibo.grabarRecibo();
-          }
+	    		  int i=Database.getInstance().getFacilityBookings().indexOf(book);
+	    		  if(i==-1)
+	    		  {
+	    			  Database.getInstance().getFacilityBookings().get(i).setPayed(true);
+	    			  Recibo recibo=new Recibo(Database.getInstance().getFacilityBookings().get(i));
+	    			  recibo.grabarRecibo();
+	    		  }
           
-          dispose();
-          }
+	    		  dispose();
+	    	  }
+	      }
+	      //if it wasnt found notify the user
+	      else
+	      {
+	    	  String errors = "\n";
+    		  errors += "The selected booking does not exist \n";
+    		  form.setError(errors);
+	      }
+	    
       
 
           
@@ -124,8 +152,8 @@ public class PayCurrentDebt  extends JDialog{
 	private void addForm() 
 	{
        
-
             form.addLine(new JLabel("Facility ID:"), new JTextField(20));
+            form.addLine(new JLabel("Member ID:"), new JTextField(20));
 	}
 	
 	private boolean valid()

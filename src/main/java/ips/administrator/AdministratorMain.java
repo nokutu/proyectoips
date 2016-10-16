@@ -19,6 +19,8 @@ public class AdministratorMain extends JPanel {
     private JButton btnBookActivity;
     private JButton btnPayDebts;
     private JButton btnCancelar;
+    private JButton btnCurrentDebts;
+    private JButton btnCurrentBooks;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
@@ -40,9 +42,21 @@ public class AdministratorMain extends JPanel {
         return btnBookActivity;
     }
     
+    private JButton getBtnCurrentBookings() 
+    {
+        if (btnCurrentBooks == null) {
+        	btnCurrentBooks= new JButton("List of bookings in use");
+        	btnCurrentBooks.addActionListener(e -> {
+                CurrentViewDialog adminbook = new CurrentViewDialog(MainWindow.getInstance());
+                adminbook.setVisible(true);
+            });
+        }
+        return btnCurrentBooks;
+    }
+    
     private JButton getBtnPayDebts() {
         if (btnPayDebts == null) {
-        	btnPayDebts= new JButton("Pay in effective");
+        	btnPayDebts= new JButton("Pay in effective(not current)");
         	btnPayDebts.addActionListener(e -> {
                 PayDebtsDialog adminbook = new PayDebtsDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);
@@ -51,16 +65,18 @@ public class AdministratorMain extends JPanel {
         return btnPayDebts;
     }
     
-    private JButton getBtnSeeDetails() {
-        if (btnPayDebts == null) {
-        	btnPayDebts= new JButton("Booking details");
-        	btnPayDebts.addActionListener(e -> {
+    private JButton getBtnCurrentDebt() {
+        if (btnCurrentDebts == null) {
+        	btnCurrentDebts= new JButton("Pay in effective(current)");
+        	btnCurrentDebts.addActionListener(e -> {
                 PayCurrentDebt adminbook = new PayCurrentDebt(MainWindow.getInstance());
                 adminbook.setVisible(true);
             });
         }
-        return btnPayDebts;
+        return btnCurrentDebts;
     }
+    
+    
 	private JButton getBtnCancelar() {
 		if (btnCancelar == null) {
 			btnCancelar = new JButton("cancelar");
