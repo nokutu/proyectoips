@@ -126,6 +126,9 @@ public class AvailabilityPane extends JPanel {
 		Date date = calendar.getTime();
 		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime())));
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		for (int i = 0; i < 24; i++) {
 			date = calendar.getTime();
 			long now = date.getTime();

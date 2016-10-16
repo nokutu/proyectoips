@@ -1,11 +1,13 @@
 package ips.administrator;
 
+import ips.AvailabilityPane;
 import ips.FeeUpdater;
 import ips.MainWindow;
 import ips.database.Database;
 import ips.member.MemberBookingCancelDialog;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,7 @@ public class AdministratorMain extends JPanel {
     private JButton btnCurrentDebts;
     private JButton btnCurrentBooks;
     private JButton btnFeeUpdater;
+    private JButton btnAvailabilityOfFacilities;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
@@ -30,8 +33,9 @@ public class AdministratorMain extends JPanel {
         add(book);
         add(getBtnBookActivity());
         add(getBtnPayDebts());
-        add( getBtnCurrentBookings() );
+        add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
+        add(getBtnAvailabilityOfFacilities());
     }
 
     private JButton getBtnBookActivity() {
@@ -88,5 +92,18 @@ public class AdministratorMain extends JPanel {
 			});
 		}
 		return btnFeeUpdater;
+	}
+	
+	private JButton getBtnAvailabilityOfFacilities() {
+		if (btnAvailabilityOfFacilities == null) {
+        	btnAvailabilityOfFacilities = new JButton("Availability of facilities");
+        	btnAvailabilityOfFacilities.addActionListener(e -> {
+        		JDialog adminbook = new JDialog(MainWindow.getInstance());
+        		adminbook.setContentPane(new AvailabilityPane(true));
+        		adminbook.setSize(MainWindow.getInstance().getPreferredSize());
+        		adminbook.setVisible(true);
+            });
+        }
+        return btnAvailabilityOfFacilities;
 	}
 }
