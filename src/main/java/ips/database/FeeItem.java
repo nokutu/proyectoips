@@ -2,7 +2,6 @@ package ips.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 /**
  * Created by nokutu on 03/10/2016.
@@ -18,12 +17,13 @@ public class FeeItem implements DatabaseItem {
     private int id;
     private int amount;
     private String concept;
-    private int fee_id;
+    private int member_id;
+   // private Timestamp date;// esta seria la fecha de la reserva realizada
 
-    public FeeItem(int amount,int fee) {
+    public FeeItem(int amount,int member) {
     	id=count++;
     	//
-        this.fee_id=fee;
+        this.member_id=member;
         this.amount=amount;
 
     }
@@ -35,7 +35,7 @@ public class FeeItem implements DatabaseItem {
         }
         createStatement.setInt(1, id);
         createStatement.setString(2, concept);
-        createStatement.setInt(3, fee_id);
+        createStatement.setInt(3, member_id);
         createStatement.setInt(4,amount);
 
         createStatement.execute();
@@ -45,5 +45,9 @@ public class FeeItem implements DatabaseItem {
     public void update() {
         // TODO
     }
+
+	public int getMember_id() {
+		return member_id;
+	}
     
 }

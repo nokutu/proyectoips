@@ -1,5 +1,6 @@
 package ips.administrator;
 
+import ips.FeeUpdater;
 import ips.MainWindow;
 import ips.database.Database;
 import ips.member.MemberBookingCancelDialog;
@@ -21,7 +22,7 @@ public class AdministratorMain extends JPanel {
     private JButton btnPayDebts;
     private JButton btnCurrentDebts;
     private JButton btnCurrentBooks;
-    private JButton btnCancelartsting;
+    private JButton btnFeeUpdater;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
@@ -30,7 +31,7 @@ public class AdministratorMain extends JPanel {
         add(getBtnBookActivity());
         add(getBtnPayDebts());
         add( getBtnCurrentBookings() );
-        //add(getBtnCancelartsting());
+        add(getBtnFeeUpdater());
     }
 
     private JButton getBtnBookActivity() {
@@ -79,13 +80,13 @@ public class AdministratorMain extends JPanel {
     }
     
 
-	private JButton getBtnCancelartsting() {
-		if (btnCancelartsting == null) {
-			btnCancelartsting = new JButton("cancelar (testing)");
-			btnCancelartsting.addActionListener(e -> {
-				MemberBookingCancelDialog.show(Database.getInstance().getFacilityBookings().get(0));
+	private JButton getBtnFeeUpdater() {
+		if (btnFeeUpdater == null) {
+			btnFeeUpdater = new JButton("Update Fees");
+			btnFeeUpdater.addActionListener(e -> {
+				FeeUpdater.update();
 			});
 		}
-		return btnCancelartsting;
+		return btnFeeUpdater;
 	}
 }

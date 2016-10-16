@@ -1,5 +1,12 @@
 package ips;
 
+import java.util.Date;
+
+import ips.database.Database;
+import ips.database.FacilityBooking;
+import ips.database.Fee;
+import ips.database.FeeItem;
+
 /**
  * <p>
  * Implementa la funcionalidad de la historia de usuario #34.
@@ -33,4 +40,47 @@ package ips;
  */
 public class FeeUpdater {
 
+	@SuppressWarnings("deprecation")
+	public static void update() {
+		Date now = new Date();
+		int previousMonth = now.getMonth() == 0 ? 11 : now.getMonth() - 1; // el anterior a enero es diciembre
+
+		for (FacilityBooking pago : Database.getInstance().getFacilityBookings()) {
+			if (!pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")) { // si no borrada
+																									// ni pagada
+
+				if ((pago.getTimeEnd().getMonth() == now.getMonth() && pago.getTimeEnd().getDate() <= 19)
+						|| (pago.getTimeEnd().getMonth() == previousMonth && pago.getTimeEnd().getDate() >= 20)) {
+
+					now.setDate(1);
+					int nextMonth = now.getMonth() == 11 ? 0 : now.getMonth() + 1;
+					try {
+						Fee thatFee = Database.getInstance().getFeeByMonth(pago.getMemberId(), nextMonth);
+						// if exists a fee for that month
+						int cost = Database.getInstance().getFacilityById(pago.getFacilityId()).getPrice();
+						thatFee.getFeeItems().add(new FeeItem(cost, pago.getMemberId()));
+						try {
+							thatFee.update();
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
+					} catch (RuntimeException e) {
+						// else, dont exists a fee for that month
+						now.setMonth(nextMonth);
+						java.sql.Date now2 = new java.sql.Date(now.getTime());
+						Fee newFee = new Fee(pago.getMemberId(), now2);
+						Database.getInstance().getFees().add(newFee);
+						try {
+							newFee.create();
+						} catch (Exception e3) {
+							e3.printStackTrace();
+						}
+					} finally {
+						pago.setPayed(true); // payed
+					}
+
+				} // end if month filter
+			} // end main if
+		} // end for
+	}
 }

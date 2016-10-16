@@ -22,7 +22,7 @@ public class AdministratorBookingCancelDialog {
 	 * the <code>FacilityBooking</code> of the booking to cancel
 	 */
 	private static FacilityBooking booking;
-
+	
 	public AdministratorBookingCancelDialog() {}
 	
 	public static void show(FacilityBooking booking){
@@ -45,8 +45,7 @@ public class AdministratorBookingCancelDialog {
 							"Warning", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 					FeeItem newFeeItem = new FeeItem(
 							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
-							Database.getInstance().getFeeByMember(booking.getMemberId(), new Date().getMonth())
-									.getFeeId());
+							booking.getMemberId());
 					Database.getInstance().getFeeItems().add(newFeeItem);
 					try {
 						newFeeItem.create(); // modify the database

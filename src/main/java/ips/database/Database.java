@@ -83,11 +83,10 @@ public class Database {
         }
          
         
-        // TODO missing fee and feeitem
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEE);
         while (rs.next()) {
-            fees.add(new Fee());
+            fees.add(new Fee(rs.getInt("fee_id"),rs.getDate("fee_month"),rs.getInt("fee_member_id")));
         }
         
         s = conn.createStatement();
@@ -140,7 +139,7 @@ public class Database {
 
 	public Fee getFeeByMember(int memberId,int month) {
 		for (Fee fee : fees) {
-			if(fee.getMember().getMemberId()==memberId && fee.getMonth().getMonth()==month)
+			if(fee.getMemberId()==memberId && fee.getMonth().getMonth()==month)
 				return fee;
 		}
 		throw new RuntimeException("Do not exists");
@@ -154,6 +153,14 @@ public class Database {
 		for (Member member : members) {
 			if(member.getMemberId()==id)
 				return member;
+		}
+		throw new RuntimeException("Do not exists");
+	}
+	
+	public Fee getFeeByMonth(int memberId, int month){
+		for (Fee fee : fees) {
+			if(fee.getMemberId()==memberId && fee.getMonth().getMonth()==month)
+				return fee;
 		}
 		throw new RuntimeException("Do not exists");
 	}
