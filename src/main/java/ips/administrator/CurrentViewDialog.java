@@ -21,12 +21,15 @@ public class CurrentViewDialog extends JDialog
 	private JTextPane textBookings;
 	private JPanel panel;
 
-	public CurrentViewDialog(JFrame instance) 
+	public CurrentViewDialog(JFrame owner) 
 	{
-		super(instance,true);
+		super(owner,true);
 		getContentPane().setLayout(null);
 		getContentPane().add(getBtnBack());
 		getContentPane().add(getPanel());
+		
+		pack();
+        setLocationRelativeTo(owner);
 		
 	}
 	private JButton getBtnBack() {

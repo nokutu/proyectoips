@@ -63,7 +63,7 @@ public class PayDebtsDialog extends JDialog {
 		form.addLine(new JLabel("Member:"), getComboBox());
 		}
 		
-		addButtons(content);
+		//addButtons(content);
 		pack();
 	    setLocationRelativeTo(owner);
 	}
