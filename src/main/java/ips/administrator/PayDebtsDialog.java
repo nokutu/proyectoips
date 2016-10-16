@@ -173,4 +173,27 @@ public class PayDebtsDialog extends JDialog {
 		  
 	  }
 
+	private void addForm(boolean addExtra) {
+	    if (addExtra) {
+	        JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+	        dateChooser.setCalendar(Calendar.getInstance());
+	        form.addLine(new JLabel("Date:"), dateChooser);
+	
+	        JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+	        form.addLine(new JLabel("Start time:"), hourStartSpinner);
+	
+	        JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+	        form.addLine(new JLabel("End time:"), hourEndSpinner);
+	
+	        form.addLine(new JLabel("Facility ID:"), new JTextField(20));
+	    }
+	
+	    form.addLine(new JLabel("Member ID:"), new JTextField(20));
+	
+	    JComboBox<String> paymentCombo = new JComboBox<>();
+	    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
+	    paymentCombo.setModel(model);
+	    form.addLine(new JLabel("Payment type:"), paymentCombo);
+	}
+
 }

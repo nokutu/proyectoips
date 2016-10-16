@@ -172,8 +172,7 @@ public class FacilityBooking implements DatabaseItem {
 	 */
 	public String toString() {
 		String linea = "Facility " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName()
-				+ " is being used from " + this.getTimeStart().getHours() + ":00 to " + this.getTimeEnd().getHours()
-				+ ":00 by member " + Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n";
+				+ "by member " + Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n";
 		return linea;
 
 	}

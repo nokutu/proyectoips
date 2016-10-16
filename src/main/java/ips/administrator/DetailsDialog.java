@@ -21,6 +21,8 @@ public class DetailsDialog extends JDialog
 		this.book = book;
 		getContentPane().add(getScrollPane(), BorderLayout.CENTER);
 		getContentPane().add(getBtnBack(), BorderLayout.SOUTH);
+		
+        setLocationRelativeTo(owner);
 	}
 	
 	
