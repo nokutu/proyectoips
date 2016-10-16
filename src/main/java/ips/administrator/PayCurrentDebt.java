@@ -102,7 +102,7 @@ public class PayCurrentDebt  extends JDialog{
               int memberId = Integer.parseInt(results.get(1));
               
               
-              if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId)
+              if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId&&!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
               {
             	  book=f;
               }
@@ -115,7 +115,7 @@ public class PayCurrentDebt  extends JDialog{
 	    	  if(fecha.after(book.getTimeEnd())||fecha.before(book.getTimeStart()))
 	    	  {
 	    		  String errors = "\n";
-	    		  errors += "This booking is not in use right now\n";
+	    		  errors += "This booking is not in use right now, is payed or the method of payment is not Cash\n";
 	    		  form.setError(errors);
 	    	  }
 	    	  else

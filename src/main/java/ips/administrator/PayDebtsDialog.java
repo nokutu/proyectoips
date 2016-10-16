@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 public class PayDebtsDialog extends JDialog {
 	
 	
-	private List<String> deudores;
 	private List<FacilityBooking> debts ;
 	private FacilityBooking deudor=null;
 	private final Form form;
@@ -52,7 +51,7 @@ public class PayDebtsDialog extends JDialog {
 		content.add(form.getPanel(), BorderLayout.CENTER);
 		getDeudores();
 		
-		if(deudores.isEmpty())
+		if(debts.isEmpty())
 		{
 			String errors = "\n";
 			errors += "There are no debts to pay\n";
@@ -60,7 +59,7 @@ public class PayDebtsDialog extends JDialog {
 		}
 		else
 		{
-		form.addLine(new JLabel("Member:"), getComboBox());
+			addForm();
 		}
 		
 		addButtons(content);
@@ -76,25 +75,10 @@ public class PayDebtsDialog extends JDialog {
     }
 	
 
-	private JComboBox getComboBox() {
-		if (comboBox == null) {
-			comboBox = new JComboBox();
-	        
-	      String[] deudores1 = new String[deudores.size()];
-	      deudor=(FacilityBooking) comboBox.getItemAt(0);
-	      comboBox.addActionListener(this::select);
-	      
-	      DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(deudores.toArray(deudores1));
-	      comboBox.setModel(model);
-		}
-		
-		return comboBox;
-	}
 	
 	private void getDeudores()
 	{
 		debts = new ArrayList<>();
-	      deudores= new ArrayList<>();
 	      
 	       
 	      List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
@@ -104,7 +88,6 @@ public class PayDebtsDialog extends JDialog {
           if(f.getPaymentMethod()!=null&&!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
           {
           	debts.add(f);
-          	deudores.add(Integer.toString(f.getMemberId()));
           }
 	      }
 	}
@@ -132,21 +115,18 @@ public class PayDebtsDialog extends JDialog {
         dispose();
 		}
 		
-		private void select(ActionEvent actionEvent) 
-		{
-			int i=comboBox.getSelectedIndex();
-			deudor=debts.get(i);
-		}
-
 
 	  private void confirm(ActionEvent actionEvent) 
 	  {
+		  getDeudor();
 	       if(deudor!=null)
 	       {
 	           int i= Database.getInstance().getFacilityBookings().indexOf(deudor);
 	           if(i==-1)
 	           {
-	        	   System.err.println("member not found");
+	        	   String errors = "\n";
+	   				errors += "Member not found\n";
+	   				form.setError(errors);
 	           }
 	           else
 	           {
@@ -165,16 +145,30 @@ public class PayDebtsDialog extends JDialog {
 	        
 	    }
 	  
-	  private void addTime()
+	  private void getDeudor() 
 	  {
-		  JTextField start= new JTextField(20);
-		  start.setEnabled(false);
-		  form.addLine(new JLabel("Start time:"), start);
-		  
-	  }
+		  List<String> results = form.getResults();
+          Timestamp timeStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
+          Timestamp timeEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+          int facilityId = Integer.parseInt(results.get(3));
+          int memberId = Integer.parseInt(results.get(4));
+          
+          for( FacilityBooking f : debts)
+          {
+        	  if(f.getFacilityId()==facilityId&&f.getTimeEnd().equals(timeEnd)&&f.getTimeStart().equals(timeStart)&&f.getMemberId()==memberId)
+        	  {
+        		  deudor=f;
+        	  }
+          }
+          
+          
+          
+		
+	}
 
-	private void addForm(boolean addExtra) {
-	    if (addExtra) {
+	private void addForm()
+	{
+	   
 	        JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
 	        dateChooser.setCalendar(Calendar.getInstance());
 	        form.addLine(new JLabel("Date:"), dateChooser);
@@ -186,14 +180,9 @@ public class PayDebtsDialog extends JDialog {
 	        form.addLine(new JLabel("End time:"), hourEndSpinner);
 	
 	        form.addLine(new JLabel("Facility ID:"), new JTextField(20));
-	    }
+	    
+	        form.addLine(new JLabel("Member ID:"), new JTextField(20));
 	
-	    form.addLine(new JLabel("Member ID:"), new JTextField(20));
-	
-	    JComboBox<String> paymentCombo = new JComboBox<>();
-	    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
-	    paymentCombo.setModel(model);
-	    form.addLine(new JLabel("Payment type:"), paymentCombo);
 	}
 
 }
