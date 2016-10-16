@@ -1,6 +1,15 @@
 package ips.member;
 
+import ips.MainWindow;
+import ips.database.Database;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 /**
  * Main panel for members.
@@ -9,7 +18,51 @@ import javax.swing.JPanel;
  */
 public class MemberMain extends JPanel {
 
-    public MemberMain() {
+    public static int userID;
 
+    private JTextField userIDField;
+    private boolean userValid = false;
+    private JPanel center;
+
+    public MemberMain() {
+        setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel();
+        userIDField = new JTextField(20);
+        userIDField.addActionListener(l -> {
+            if (checkUser(userIDField.getText())) {
+                userID = Integer.parseInt(userIDField.getText());
+                userValid = true;
+            } else {
+                userValid = false;
+            }
+        });
+        userIDField.setMaximumSize(userIDField.getPreferredSize());
+
+        topPanel.add(new JLabel("User id:"));
+        topPanel.add(userIDField);
+        add(topPanel, BorderLayout.NORTH);
+
+        center = new JPanel();
+        add(center, BorderLayout.CENTER);
+        center.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
+        JButton bookForMember = new JButton("Book for member");
+        bookForMember.addActionListener(l -> {
+            if (userValid) {
+                new MemberBookingDialog(MainWindow.getInstance()).setVisible(true);
+            }
+        });
+        center.add(bookForMember);
+    }
+
+    public boolean checkUser(String id) {
+        try {
+            return Database.getInstance().getMembers().stream().filter(m -> m.getMemberId() == Integer.parseInt(id)).findAny().isPresent();
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
