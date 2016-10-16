@@ -47,6 +47,7 @@ public class Form {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        errorPanel.setFocusable(false);
     }
 
     public void addLine(Component a, JTextField b) {
