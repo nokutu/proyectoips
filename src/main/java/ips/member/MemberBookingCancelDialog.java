@@ -22,7 +22,7 @@ public class MemberBookingCancelDialog {
 	/**
 	 * the <code>FacilityBooking</code> of the booking to cancel
 	 */
-	FacilityBooking booking;
+	private static FacilityBooking booking;
 
 	/**
 	 * Using the date of a booking, determines if you can delete or not that
@@ -31,8 +31,10 @@ public class MemberBookingCancelDialog {
 	 *
 	 * @param booking
 	 */
-	public MemberBookingCancelDialog(FacilityBooking booking) {
-		this.booking = booking;
+	public MemberBookingCancelDialog() { }
+	
+	public static void show(FacilityBooking booking){
+		MemberBookingCancelDialog.booking = booking;
 		if (isPossible()) {
 			int r = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this booking?",
 					"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
@@ -60,7 +62,7 @@ public class MemberBookingCancelDialog {
 	 * @return if it's possible or not to cancel (actualy just mark as deleted)
 	 *         the pertintent booking
 	 */
-	private boolean isPossible() {
+	private static boolean isPossible() {
 		long current = new Date().getTime(); // the current time
 		long MAX_DURATION = MILLISECONDS.convert(1, HOURS);
 

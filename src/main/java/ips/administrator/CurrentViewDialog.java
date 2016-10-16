@@ -62,7 +62,7 @@ public class CurrentViewDialog extends JDialog
             if(fecha.after(f.getTimeEnd())||fecha.before(f.getTimeStart()))
             {
             	found=true;
-          	  line+="Facility "+f.getFacilityId()+"is being used from "+f.getTimeStart().getHours()+":00 to"+f.getTimeEnd().getHours()+":00 by member "+f.getMemberId()+" \n";
+          	  line+=f.toString();
             }
 	      }
 	      

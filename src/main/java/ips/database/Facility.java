@@ -32,4 +32,9 @@ public class Facility implements DatabaseItem {
 	public int getPrice() {
 		return price;
 	}
+
+	public String getFacilityName() {
+		return facilityName;
+	}
+
 }

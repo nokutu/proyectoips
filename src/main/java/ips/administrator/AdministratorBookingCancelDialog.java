@@ -22,49 +22,46 @@ public class AdministratorBookingCancelDialog {
 	/**
 	 * the <code>FacilityBooking</code> of the booking to cancel
 	 */
-	FacilityBooking booking;
+	private static FacilityBooking booking;
 
-	public AdministratorBookingCancelDialog(FacilityBooking booking) {
-		this.booking = booking;
-		int r = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this booking?", "Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
+	public AdministratorBookingCancelDialog() {}
+	
+	public static void show(FacilityBooking booking){
+		AdministratorBookingCancelDialog.booking = booking;
+		int r = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this booking?",
+				"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
 		if (r == JOptionPane.OK_OPTION) {
-			if (booking.getMemberId()==0) {// ADMIN BOOKING (we identify the admin bookings by the 0 member id)
+			if (booking.getMemberId() == 0) {// ADMIN BOOKING (we identify the
+												// admin bookings by the 0
+												// member id)
 				booking.setDeletedFlag(true);
-				try{
+				try {
 					booking.update();
 				} catch (SQLException e) {
 					e.printStackTrace();
-				}			} else { // MEMBER BOOKING
-					if (isRequieredPayment()) {
-						r = JOptionPane.showOptionDialog(null, "A payment shall be done. Charge into the member's fee?\n(in case of cash payment click \"No\")", "Warning",
-								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-						if(r==JOptionPane.YES_OPTION){ // cobrar el pago
-							Database.getInstance().getFeeItems().add(
-									new FeeItem( 
-											Database.getInstance().getFacilityById(
-													booking.getFacilityId()
-													).getPrice(),
-											Database.getInstance().getFeeByMember(booking.getMemberId(),new Date().getMonth()).getFeeId()
-											)
-									);
-
-						}
-						Database.getInstance().getFees(); // TODO añadir el pago adicional
-						booking.setDeletedFlag(true);
-						try{
-							booking.update();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-					} else {
-						booking.setDeletedFlag(true);
-						try{
-							booking.update();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
+				}
+			} else { // MEMBER BOOKING
+				if (isRequieredPayment()) { // cobrar el pago
+					r = JOptionPane.showOptionDialog(null, "A payment shall be charged into the member's fee",
+							"Warning", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+					FeeItem newFeeItem = new FeeItem(
+							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
+							Database.getInstance().getFeeByMember(booking.getMemberId(), new Date().getMonth())
+									.getFeeId());
+					Database.getInstance().getFeeItems().add(newFeeItem);
+					try {
+						newFeeItem.create(); // modify the database
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
 				}
+				booking.setDeletedFlag(true);
+				try {
+					booking.update();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		} else {
 			// nothing, is just an emphatic else
 		}
@@ -76,14 +73,14 @@ public class AdministratorBookingCancelDialog {
 	 *
 	 * @return true if the time of the booking has passed
 	 */
-	private boolean isRequieredPayment() {
+	private static boolean isRequieredPayment() {
 		long current = new Date().getTime(); // the current time
 
 		long duration = current - booking.getTimeStart().getTime();
 		if (duration > 0) { // the time hasnt overtaken
 			return false; // a payment is not needed
 		} else // the booking time has passed (or is just now) and a payment is
-			// needed
+				// needed
 			return true;
 	}
 

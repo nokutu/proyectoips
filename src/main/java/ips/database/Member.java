@@ -26,4 +26,9 @@ public class Member implements DatabaseItem {
     public int getMemberId() {
         return memberId;
     }
+
+	public String getMemberName() {
+		return memberName;
+	}
+
 }

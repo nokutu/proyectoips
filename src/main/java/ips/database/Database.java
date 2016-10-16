@@ -149,5 +149,13 @@ public class Database {
 	public Fee getFeeByMember(Member member,int m) {
 		return getFeeByMember(member.getMemberId(),m);
 	}
+
+	public Member getMemberById(int id) {
+		for (Member member : members) {
+			if(member.getMemberId()==id)
+				return member;
+		}
+		throw new RuntimeException("Do not exists");
+	}
 	
 }

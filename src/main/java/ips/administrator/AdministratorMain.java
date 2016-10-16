@@ -2,6 +2,7 @@ package ips.administrator;
 
 import ips.MainWindow;
 import ips.database.Database;
+import ips.member.MemberBookingCancelDialog;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,9 +19,9 @@ public class AdministratorMain extends JPanel {
     private static final long serialVersionUID = -4556204503732370163L;
     private JButton btnBookActivity;
     private JButton btnPayDebts;
-    private JButton btnCancelar;
     private JButton btnCurrentDebts;
     private JButton btnCurrentBooks;
+    private JButton btnCancelartsting;
 
     public AdministratorMain() {
         JButton book = new JButton("Book for a member");
@@ -28,7 +29,8 @@ public class AdministratorMain extends JPanel {
         add(book);
         add(getBtnBookActivity());
         add(getBtnPayDebts());
-        add(getBtnCancelar());
+        add( getBtnCurrentBookings() );
+        //add(getBtnCancelartsting());
     }
 
     private JButton getBtnBookActivity() {
@@ -76,14 +78,14 @@ public class AdministratorMain extends JPanel {
         return btnCurrentDebts;
     }
     
-    
-	private JButton getBtnCancelar() {
-		if (btnCancelar == null) {
-			btnCancelar = new JButton("cancelar");
-			btnCancelar.addActionListener(e ->{
-				AdministratorBookingCancelDialog cancelDialog = new AdministratorBookingCancelDialog(Database.getInstance().getFacilityBookings().get(0));
+
+	private JButton getBtnCancelartsting() {
+		if (btnCancelartsting == null) {
+			btnCancelartsting = new JButton("cancelar (testing)");
+			btnCancelartsting.addActionListener(e -> {
+				MemberBookingCancelDialog.show(Database.getInstance().getFacilityBookings().get(0));
 			});
 		}
-		return btnCancelar;
+		return btnCancelartsting;
 	}
 }
