@@ -42,7 +42,7 @@ public class Form {
     private void createErrorPanel() {
         errorPanel = new JTextPane();
         errorPanel.setForeground(Color.red);
-        errorPanel.setBackground(null);
+        errorPanel.setBackground(UIManager.getColor("Panel.background"));
         StyledDocument doc = errorPanel.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -94,6 +94,6 @@ public class Form {
     }
 
     public void setError(String error) {
-        errorPanel.setText(error);
+        errorPanel.setText(error.trim());
     }
 }

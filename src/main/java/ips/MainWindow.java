@@ -10,6 +10,7 @@ import javax.swing.WindowConstants;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 
 /**
@@ -33,7 +34,7 @@ public class MainWindow extends JFrame {
         setPreferredSize(new Dimension(800, 600));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        try {
+        /*try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
@@ -42,8 +43,7 @@ public class MainWindow extends JFrame {
             }
         } catch (Exception e) {
             // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
-        
+        }*/
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
