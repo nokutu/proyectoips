@@ -21,7 +21,7 @@ public class Recibo
 	{
 		try {
 		        BufferedWriter fichero = new BufferedWriter(new FileWriter("files/" + nombreFichero + ".dat"));
-		        String linea =done.toString();
+		        String linea =done.toStringFull();
 		        
 		        Date date= new Date();
 		        linea+="Was paid at "+new Timestamp(date.getTime())+" \n";
