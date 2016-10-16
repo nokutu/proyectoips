@@ -24,8 +24,6 @@ public class DetailsDialog extends JDialog
 	}
 	
 	
-	
-	
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
@@ -47,7 +45,7 @@ public class DetailsDialog extends JDialog
 	private JTextArea getTextDescription() {
 		if (textDescription == null) {
 			textDescription = new JTextArea();
-			textDescription.setText(book.toString());
+			textDescription.setText(book.toStringFull());
 		}
 		return textDescription;
 	}

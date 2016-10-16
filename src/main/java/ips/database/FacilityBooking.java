@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class FacilityBooking implements DatabaseItem {
 
 	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_QUERY = "UPDATE FACILITYBOOKING SET PAYMENT_METHOD=?, PAID=?, FACILITYBOOKING_DELETED=?";
+	private final static String UPDATE_QUERY = "UPDATE FACILITYBOOKING SET PAYMENT_METHOD=?, PAID=?, FACILITYBOOKING_DELETED=?, ENTRANCE=?, ABANDON=?";
 
 	private final static String PAYMENT_CASH = "cash";
 	private final static String PAYMENT_FEE = "fee";
@@ -25,9 +25,14 @@ public class FacilityBooking implements DatabaseItem {
 	private String paymentMethod;
 	private boolean paid;
 	private boolean deletedFlag;
+	private Timestamp entrance;
+	private Timestamp abandon;
+	
+	
 
-	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod, boolean paid,
-			boolean deletedFlag) {
+	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
+			boolean paid, boolean deletedFlag, Timestamp entrance, Timestamp abandon) 
+	{
 		this.setTimeStart(timeStart);
 		this.setTimeEnd(timeEnd);
 		this.setFacilityId(facilityId);
@@ -35,6 +40,31 @@ public class FacilityBooking implements DatabaseItem {
 		this.paymentMethod = paymentMethod;
 		this.paid = paid;
 		this.deletedFlag = deletedFlag;
+		this.entrance = entrance;
+		this.abandon = abandon;
+	}
+
+	public Timestamp getEntrance() {
+		return entrance;
+	}
+
+	public void setEntrance(Timestamp entrance) {
+		this.entrance = entrance;
+	}
+
+	public Timestamp getAbandon() {
+		return abandon;
+	}
+
+	public void setAbandon(Timestamp abandon) {
+		this.abandon = abandon;
+	}
+
+	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod, boolean paid,
+			boolean deletedFlag) 
+	{
+			this(facilityId, memberId, timeStart,  timeEnd, paymentMethod, paid,
+			 deletedFlag,null,null);
 	}
 
 	public String getPaymentMethod() {
@@ -65,6 +95,7 @@ public class FacilityBooking implements DatabaseItem {
 		createStatement.setString(5, paymentMethod);
 		createStatement.setBoolean(6, paid);
 		createStatement.setBoolean(7, deletedFlag);
+		
 
 		createStatement.execute();
 	}
@@ -77,6 +108,9 @@ public class FacilityBooking implements DatabaseItem {
 		updateStatement.setString(1, paymentMethod);
 		updateStatement.setBoolean(2, paid);
 		updateStatement.setBoolean(3, deletedFlag);
+		createStatement.setTimestamp(4, new Timestamp(entrance.getTime()));
+		createStatement.setTimestamp(5, new Timestamp(abandon.getTime()));
+		
 
 		updateStatement.execute();        
 	}
