@@ -5,7 +5,10 @@ import ips.database.Database;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.UIManager.LookAndFeelInfo;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -30,6 +33,17 @@ public class MainWindow extends JFrame {
         setPreferredSize(new Dimension(800, 600));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
+        }
+        
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 

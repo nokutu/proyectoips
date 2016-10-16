@@ -1,5 +1,6 @@
 package ips.member;
 
+import ips.MainWindow;
 import ips.database.FacilityBooking;
 
 import javax.swing.JOptionPane;
@@ -36,7 +37,7 @@ public class MemberBookingCancelDialog {
 	public static void show(FacilityBooking booking){
 		MemberBookingCancelDialog.booking = booking;
 		if (isPossible()) {
-			int r = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this booking?",
+			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "Are you sure you want to delete this booking?",
 					"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
 			if (r == JOptionPane.OK_OPTION) {
 				booking.setDeletedFlag(true);// to have a bookings log, we dont
@@ -51,7 +52,7 @@ public class MemberBookingCancelDialog {
 				// nothing, is just an emphatic else
 			}
 		} else {
-			JOptionPane.showMessageDialog(null,
+			JOptionPane.showMessageDialog(MainWindow.getInstance(),
 					"This booking cannot be canceled because it is booked to less than one hour since now");
 		}
 	}
