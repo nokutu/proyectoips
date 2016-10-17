@@ -57,11 +57,11 @@ public class BookForCenterDialog extends JDialog {
 
         //botones
 
-        JButton btnConfirm = new JButton("Confirm");
+        JButton btnConfirm = new JButton("OK");
         btnConfirm.addActionListener(this::confirm);
         btnConfirm.setMnemonic('A');
 
-        JButton btnCancel = new JButton("Cancel");
+        JButton btnCancel = new JButton("Cancelar");
         btnCancel.addActionListener(this::cancel);
         btnCancel.setMnemonic('C');
 
@@ -100,7 +100,7 @@ public class BookForCenterDialog extends JDialog {
         if (addDate) {
             dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
-            form.addLine(new JLabel("Date:"), dateChooser);
+            form.addLine(new JLabel("Fecha:"), dateChooser);
         }
 
         selectStartEndTime(form);
@@ -109,9 +109,9 @@ public class BookForCenterDialog extends JDialog {
 
     private void selectStartEndTime(Form form) {
         hourSp1 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("Start time:"), hourSp1);
+        form.addLine(new JLabel("Hora de inicio:"), hourSp1);
         hourSp2 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("End time: "), hourSp2);
+        form.addLine(new JLabel("Hora de fin: "), hourSp2);
 
 
         form.addLine(new JLabel("Facility ID:"), new JTextField(20));

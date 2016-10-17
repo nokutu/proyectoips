@@ -32,14 +32,14 @@ public class Bar extends JMenuBar {
     }
 
     private Bar() {
-        options = new JMenu("Options");
+        options = new JMenu("Opciones");
         add(options);
 
         fillOptions();
     }
 
     private void fillOptions() {
-        JMenu change = new JMenu("Change mode");
+        JMenu change = new JMenu("Cambiar modo");
         options.add(change);
 
         fillChange(change);
@@ -52,14 +52,14 @@ public class Bar extends JMenuBar {
     }
 
     private void addMember(JMenu change, ButtonGroup g) {
-        member = new JRadioButtonMenuItem("Member");
+        member = new JRadioButtonMenuItem("Socio");
         member.addActionListener((e) -> MainWindow.getInstance().setContent(new MemberMain()));
         g.add(member);
         change.add(member);
     }
 
     private void addAdministration(JMenu change, ButtonGroup g) {
-        administration = new JRadioButtonMenuItem("Administration");
+        administration = new JRadioButtonMenuItem("Administración");
         administration.addActionListener((e) -> MainWindow.getInstance().setContent(new AdministratorMain()));
         g.add(administration);
         change.add(administration);

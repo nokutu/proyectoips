@@ -81,34 +81,45 @@ public class BookForMemberDialog extends JDialog {
         if (addExtra) {
             JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
-            form.addLine(new JLabel("Date:"), dateChooser);
+            form.addLine(new JLabel("Fecha:"), dateChooser);
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            form.addLine(new JLabel("Start time:"), hourStartSpinner);
-
             JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            form.addLine(new JLabel("End time:"), hourEndSpinner);
+
+            JCheckBox wholeDay = new JCheckBox("Reservar para todo el día");
+            wholeDay.addActionListener(l -> {
+                hourStartSpinner.setEnabled(!wholeDay.isSelected());
+                hourEndSpinner.setEnabled(!wholeDay.isSelected());
+                if (wholeDay.isSelected()) {
+                    hourStartSpinner.setValue(0);
+                    hourEndSpinner.setValue(23);
+                }
+            });
+            form.addLine(new JLabel(), wholeDay);
+
+            form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
+            form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
             JComboBox<String> facilities = new JComboBox<>();
             List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
-            DefaultComboBoxModel model = new DefaultComboBoxModel<>();
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
             names.forEach(model::addElement);
             facilities.setModel(model);
-            form.addLine(new JLabel("Facility ID:"), facilities, false);
+            form.addLine(new JLabel("Instalación:"), facilities, false);
         }
 
-        form.addLine(new JLabel("Member ID:"), new JTextField(20));
+        form.addLine(new JLabel("ID de socio:"), new JTextField(20));
 
         JComboBox<String> paymentCombo = new JComboBox<>();
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
         paymentCombo.setModel(model);
-        form.addLine(new JLabel("Payment type:"), paymentCombo);
+        form.addLine(new JLabel("Método de pago:"), paymentCombo);
     }
 
     private void createButtons() {
-        confirm = new JButton("Confirm");
+        confirm = new JButton("OK");
         confirm.addActionListener(this::confirm);
-        cancel = new JButton("Cancel");
+        cancel = new JButton("Cancelar");
         cancel.addActionListener(this::cancel);
     }
 
@@ -141,15 +152,15 @@ public class BookForMemberDialog extends JDialog {
                 timeStart = new Timestamp(
                         Utils.addHourToDay(
                                 new Timestamp(Long.parseLong(results.get(0))),
-                                Integer.parseInt(results.get(1))).getTime()
+                                Integer.parseInt(results.get(2))).getTime()
                 );
                 timeEnd = new Timestamp(Utils.addHourToDay(
                         new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(2))).getTime()
+                        Integer.parseInt(results.get(3))).getTime()
                 );
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
-                memberId = Integer.parseInt(results.get(4));
-                paymentMethod = results.get(5);
+                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(4))).getFacilityId();
+                memberId = Integer.parseInt(results.get(5));
+                paymentMethod = results.get(6);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;
@@ -194,17 +205,12 @@ public class BookForMemberDialog extends JDialog {
             }
             Optional<Facility> of = Database.getInstance().getFacilities().stream()
                     .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+            assert of.isPresent();
 
-            if (!of.isPresent()) {
-                // Facility not valid
+            if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+                // Facility not free
                 valid = false;
-                errors += "Invalid facility id\n";
-            } else {
-                if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-                    // Facility not free
-                    valid = false;
-                    errors += "La instalación está ocupada en la horas seleccionadas\n";
-                }
+                errors += "La instalación está ocupada en la horas seleccionadas\n";
             }
         } else {
             errors += "Por favor, rellena todos los campos\n";

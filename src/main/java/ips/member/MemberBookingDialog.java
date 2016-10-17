@@ -63,27 +63,38 @@ public class MemberBookingDialog extends JDialog {
         if (addExtra) {
             JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setCalendar(Calendar.getInstance());
-            form.addLine(new JLabel("Date:"), dateChooser);
+            form.addLine(new JLabel("Fecha:"), dateChooser);
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            form.addLine(new JLabel("Start time:"), hourStartSpinner);
-
             JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            form.addLine(new JLabel("End time:"), hourEndSpinner);
+
+            JCheckBox wholeDay = new JCheckBox("Reservar para todo el día");
+            wholeDay.addActionListener(l -> {
+                hourStartSpinner.setEnabled(!wholeDay.isSelected());
+                hourEndSpinner.setEnabled(!wholeDay.isSelected());
+                if (wholeDay.isSelected()) {
+                    hourStartSpinner.setValue(0);
+                    hourEndSpinner.setValue(23);
+                }
+            });
+            form.addLine(new JLabel(), wholeDay);
+
+            form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
+            form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
             JComboBox<String> facilities = new JComboBox<>();
             List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
-            DefaultComboBoxModel model = new DefaultComboBoxModel<>();
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
             names.forEach(model::addElement);
             facilities.setModel(model);
-            form.addLine(new JLabel("Facility ID:"), facilities, false
+            form.addLine(new JLabel("Instalación:"), facilities, false
             );
         }
 
         JComboBox<String> paymentCombo = new JComboBox<>();
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
         paymentCombo.setModel(model);
-        form.addLine(new JLabel("Payment type:"), paymentCombo);
+        form.addLine(new JLabel("Método de pago:"), paymentCombo);
     }
 
     private void addButtons(JPanel content) {
@@ -131,13 +142,13 @@ public class MemberBookingDialog extends JDialog {
             if (this.timeStart == null) {
                 timeStart = new Timestamp(Utils.addHourToDay(
                         new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(1))).getTime());
+                        Integer.parseInt(results.get(2))).getTime());
                 timeEnd = new Timestamp(Utils.addHourToDay(
                         new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(2))).getTime());
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
+                        Integer.parseInt(results.get(3))).getTime());
+                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(4))).getFacilityId();
                 memberId = MemberMain.userID;
-                paymentMethod = results.get(4);
+                paymentMethod = results.get(5);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;

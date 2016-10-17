@@ -55,6 +55,11 @@ public class Form {
         values.add(b::getText);
     }
 
+    public void addLine(Component a, JCheckBox b) {
+        doAddLine(a, b);
+        values.add(() -> String.valueOf(b.isSelected()));
+    }
+
     public void addLine(Component a, JDateChooser b) {
         doAddLine(a, b);
         values.add(() -> String.valueOf(b.getDate().getTime()));

@@ -28,7 +28,7 @@ public class AdministratorMain extends JPanel {
     private JButton btnAvailabilityOfFacilities;
 
     public AdministratorMain() {
-        JButton book = new JButton("Book for a member");
+        JButton book = new JButton("Reservar para socio");
         book.addActionListener((e) -> new BookForMemberDialog(MainWindow.getInstance()).setVisible(true));
         add(book);
         add(getBtnBookActivity());
@@ -40,7 +40,7 @@ public class AdministratorMain extends JPanel {
 
     private JButton getBtnBookActivity() {
         if (btnBookActivity == null) {
-            btnBookActivity = new JButton("Book for the center");
+            btnBookActivity = new JButton("Reservar para el centro");
             btnBookActivity.addActionListener(e -> {
                 BookForCenterDialog adminbook = new BookForCenterDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);
@@ -52,7 +52,7 @@ public class AdministratorMain extends JPanel {
     private JButton getBtnCurrentBookings() 
     {
         if (btnCurrentBooks == null) {
-        	btnCurrentBooks= new JButton("List of bookings in use");
+        	btnCurrentBooks= new JButton("Listar reservas en uso");
         	btnCurrentBooks.addActionListener(e -> {
                 CurrentViewDialog adminbook = new CurrentViewDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);

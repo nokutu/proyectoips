@@ -32,7 +32,7 @@ public class MemberMain extends JPanel {
 
         userIDField.setMaximumSize(userIDField.getPreferredSize());
 
-        topPanel.add(new JLabel("User id:"));
+        topPanel.add(new JLabel("ID de socio:"));
         topPanel.add(userIDField);
         add(topPanel, BorderLayout.NORTH);
 
@@ -42,7 +42,7 @@ public class MemberMain extends JPanel {
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
-        JButton bookForMember = new JButton("Book for member");
+        JButton bookForMember = new JButton("Reservar");
         bookForMember.addActionListener(l -> {
             if (checkUser(userIDField.getText())) {
                 userID = Integer.parseInt(userIDField.getText());
