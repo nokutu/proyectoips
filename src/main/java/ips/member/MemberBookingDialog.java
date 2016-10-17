@@ -5,6 +5,7 @@ import ips.Utils;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
+import ips.database.Member;
 import ips.gui.Form;
 
 import javax.swing.*;
@@ -67,17 +68,6 @@ public class MemberBookingDialog extends JDialog {
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
             JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-
-            JCheckBox wholeDay = new JCheckBox("Reservar para todo el día");
-            wholeDay.addActionListener(l -> {
-                hourStartSpinner.setEnabled(!wholeDay.isSelected());
-                hourEndSpinner.setEnabled(!wholeDay.isSelected());
-                if (wholeDay.isSelected()) {
-                    hourStartSpinner.setValue(0);
-                    hourEndSpinner.setValue(23);
-                }
-            });
-            form.addLine(new JLabel(), wholeDay);
 
             form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
             form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
@@ -142,13 +132,13 @@ public class MemberBookingDialog extends JDialog {
             if (this.timeStart == null) {
                 timeStart = new Timestamp(Utils.addHourToDay(
                         new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(2))).getTime());
+                        Integer.parseInt(results.get(1))).getTime());
                 timeEnd = new Timestamp(Utils.addHourToDay(
                         new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(3))).getTime());
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(4))).getFacilityId();
+                        Integer.parseInt(results.get(2))).getTime());
+                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
                 memberId = MemberMain.userID;
-                paymentMethod = results.get(5);
+                paymentMethod = results.get(4);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;
@@ -174,27 +164,33 @@ public class MemberBookingDialog extends JDialog {
         if (fb != null) {
             if (fb.getTimeStart().before(Utils.getCurrentDate())) {
                 valid = false;
-                errors += "No puedes reservar para el pasado\n";
+                errors += "No puedes reservar para el pasado.\n";
             } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentDate(), 24 * 15))) {
                 valid = false;
-                errors += "Solo puedes reservar hasta 15 días en adelante\n";
+                errors += "Solo puedes reservar hasta 15 días en adelante.\n";
             }
             if (fb.getTimeStart().before(Utils.addHourToDay(Utils.getCurrentDate(), 1))) {
                 valid = false;
-                errors += "Tienes que reservar con una hora de antelación\n";
+                errors += "Tienes que reservar con una hora de antelación.\n";
             }
             if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
                     fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
                 // More than 2 hours
                 valid = false;
-                errors += "Un socio solo puedo reservar un máximo de 2 horas. El tiempo de finalización debe ser posterior al de inicio\n";
+                errors += "Un socio solo puedo reservar un máximo de 2 horas. El tiempo de finalización debe ser posterior al de inicio.\n";
             }
-            if (!Database.getInstance().getMembers().stream()
-                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny().isPresent()) {
+
+            Optional<Member> member = Database.getInstance().getMembers().stream()
+                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
+            if (!member.isPresent()) {
                 // Member not valid
-                errors += "Invalid member id\n";
+                errors += "Id de miembro no válida.\n";
+                valid = false;
+            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())){
+                errors += "Ya tienes una reserva en esta franja de tiempo.";
                 valid = false;
             }
+
             Optional<Facility> of = Database.getInstance().getFacilities().stream()
                     .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
             assert of.isPresent();
@@ -202,10 +198,10 @@ public class MemberBookingDialog extends JDialog {
             if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
                 // Facility not free
                 valid = false;
-                errors += "La instalación está ocupada en la horas seleccionadas\n";
+                errors += "La instalación está ocupada en la horas seleccionadas.\n";
             }
         } else {
-            errors += "Por favor, rellena todos los campos\n";
+            errors += "Por favor, rellena todos los campos.\n";
             valid = false;
         }
 

@@ -49,9 +49,9 @@ CREATE TABLE activity (
     activity_name VARCHAR(32) NOT NULL,
     assistant_limit INTEGER,
     activity_time_start TIMESTAMP,
-    activity_recursive BOOLEAN,
-    activity_duration INTEGER,
     activity_time_end TIMESTAMP,
+    activity_duration INTEGER,
+    activity_recursive BOOLEAN,
 );
 
 CREATE TABLE activitybooking (

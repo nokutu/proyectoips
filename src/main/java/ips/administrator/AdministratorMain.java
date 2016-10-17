@@ -36,6 +36,9 @@ public class AdministratorMain extends JPanel {
         add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
         add(getBtnAvailabilityOfFacilities());
+        JButton createActivity = new JButton("Crear actividad");
+        createActivity.addActionListener((e) -> new CreateActivityDialog(MainWindow.getInstance()).setVisible(true));
+        add(createActivity);
     }
 
     private JButton getBtnBookActivity() {
