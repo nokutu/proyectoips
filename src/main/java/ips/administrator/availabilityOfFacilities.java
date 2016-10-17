@@ -6,8 +6,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import java.awt.BorderLayout;
 
-public class availabilityOfFacilities extends JPanel {
-    public availabilityOfFacilities() {
+public class AvailabilityOfFacilities extends JPanel {
+    public AvailabilityOfFacilities() {
         setLayout(new BorderLayout(0, 0));
 
         JSplitPane splitPane = new JSplitPane();

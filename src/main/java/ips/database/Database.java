@@ -169,4 +169,12 @@ public class Database {
         throw new RuntimeException("Do not exists");
     }
 
+	public FacilityBooking getBookingById(int id, int hora) {
+		for (FacilityBooking b : facilityBookings) {
+            if (b.getFacilityId() == id && b.getTimeStart().getHours()==hora)
+                return b;
+        }
+        throw new RuntimeException("Do not exists");
+    }
+
 }

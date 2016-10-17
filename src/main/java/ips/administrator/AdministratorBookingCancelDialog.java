@@ -41,12 +41,13 @@ public class AdministratorBookingCancelDialog {
 				}
 			} else { // MEMBER BOOKING
 				if (isRequieredPayment()) { // cobrar el pago
-					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "A payment shall be charged into the member's fee",
-							"Warning", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargará el pago a la cuota del socio",
+							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 					FeeItem newFeeItem = new FeeItem(
 							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
 							booking.getMemberId());
 					Database.getInstance().getFeeItems().add(newFeeItem);
+					booking.setPayed(true);
 					try {
 						newFeeItem.create(); // modify the database
 					} catch (SQLException e) {
@@ -75,7 +76,7 @@ public class AdministratorBookingCancelDialog {
 		long current = new Date().getTime(); // the current time
 
 		long duration = current - booking.getTimeStart().getTime();
-		if (duration > 0) { // the time hasnt overtaken
+		if (duration < 0) { // the time hasnt overtaken
 			return false; // a payment is not needed
 		} else // the booking time has passed (or is just now) and a payment is
 				// needed

@@ -7,18 +7,21 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
 
 public class DetailsDialog extends JDialog {
     FacilityBooking book;
     private JScrollPane scrollPane;
     private JButton btnBack;
     private JTextArea textDescription;
+    private JPanel panelSur;
+    private JButton btnCancelarEstaReserva;
 
     public DetailsDialog(JFrame owner, FacilityBooking book) {
         super(owner, true);
         this.book = book;
         getContentPane().add(getScrollPane(), BorderLayout.CENTER);
-        getContentPane().add(getBtnBack(), BorderLayout.SOUTH);
+        getContentPane().add(getPanelSur(), BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(owner);
@@ -52,4 +55,24 @@ public class DetailsDialog extends JDialog {
         }
         return textDescription;
     }
+	private JPanel getPanelSur() {
+		if (panelSur == null) {
+			panelSur = new JPanel();
+			panelSur.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			panelSur.add(getBtnCancelarEstaReserva());
+			panelSur.setBackground(UIManager.getColor("Panel.background"));
+			panelSur.add(getBtnBack());
+		}
+		return panelSur;
+	}
+	private JButton getBtnCancelarEstaReserva() {
+		if (btnCancelarEstaReserva == null) {
+			btnCancelarEstaReserva = new JButton("Cancelar esta reserva");
+			btnCancelarEstaReserva.addActionListener(e -> {
+				AdministratorBookingCancelDialog.show(book);
+				this.dispose();
+			});
+		}
+		return btnCancelarEstaReserva;
+	}
 }

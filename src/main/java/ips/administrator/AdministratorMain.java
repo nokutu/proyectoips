@@ -8,6 +8,7 @@ import ips.member.MemberBookingCancelDialog;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ public class AdministratorMain extends JPanel {
     private JButton btnCurrentBooks;
     private JButton btnFeeUpdater;
     private JButton btnAvailabilityOfFacilities;
+    private JButton btnBorrarCuandoEl;
 
     public AdministratorMain() {
         JButton book = new JButton("Reservar para socio");
@@ -36,6 +38,7 @@ public class AdministratorMain extends JPanel {
         add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
         add(getBtnAvailabilityOfFacilities());
+        add(getBtnBorrarCuandoEl());
     }
 
     private JButton getBtnBookActivity() {
@@ -105,5 +108,19 @@ public class AdministratorMain extends JPanel {
             });
         }
         return btnAvailabilityOfFacilities;
+	}
+	private JButton getBtnBorrarCuandoEl() {
+		if (btnBorrarCuandoEl == null) {
+			btnBorrarCuandoEl = new JButton("Borrar esto cuando el panel de detalles este integrado con el panel de de ver las reservas");
+			btnBorrarCuandoEl.addActionListener(e -> {
+				String id = JOptionPane.showInputDialog("Dame el id de la reserva");
+				String hIn = JOptionPane.showInputDialog("Dame la hora de inicio de la reserva");
+				try{
+				DetailsDialog d = new DetailsDialog(MainWindow.getInstance(), Database.getInstance().getBookingById(Integer.parseInt(id),Integer.parseInt(hIn)));
+				d.setVisible(true);
+				}catch(Exception ex){System.err.println("Ups, no existe");}
+			});
+		}
+		return btnBorrarCuandoEl;
 	}
 }
