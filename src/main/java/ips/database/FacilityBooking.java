@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * Created by nokutu on 27/09/16.
+ * Represents each of the bookings made in a facility.
  */
 public class FacilityBooking implements DatabaseItem {
 
@@ -83,6 +83,7 @@ public class FacilityBooking implements DatabaseItem {
         if (createStatement == null) {
             createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
         }
+
         createStatement.setInt(1, facilityId);
         createStatement.setInt(2, memberId);
         createStatement.setTimestamp(3, new Timestamp(timeStart.getTime()));

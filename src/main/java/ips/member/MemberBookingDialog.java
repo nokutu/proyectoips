@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Created by nokutu on 03/10/2016.
+ * The member makes a booking for himself.
  */
 public class MemberBookingDialog extends JDialog {
 
@@ -131,8 +131,8 @@ public class MemberBookingDialog extends JDialog {
     }
 
     private FacilityBooking createBooking() {
-        int facilityId = -1;
-        int memberId = -1;
+        int facilityId;
+        int memberId;
         Timestamp timeStart;
         Timestamp timeEnd;
         String paymentMethod;

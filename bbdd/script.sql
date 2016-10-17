@@ -3,11 +3,13 @@ DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS fee;
 DROP TABLE IF EXISTS feeItem;
+DROP TABLE IF EXISTS activity;
+DROP TABLE IF EXISTS activitybooking;
 
 CREATE TABLE facilityBooking (
-	facility_id INTEGER,
-	member_id INTEGER,
-	time_start TIMESTAMP,
+	facility_id INTEGER NOT NULL PRIMARY KEY,
+	member_id INTEGER NOT NULL,
+	time_start TIMESTAMP NOT NULL PRIMARY KEY,
 	time_end TIMESTAMP,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
@@ -40,6 +42,20 @@ CREATE TABLE feeitem (
 	fee_id INTEGER NOT NULL,
     feeitem_amount INTEGER
 );
+
+CREATE TABLE activity {
+    activity_id INTEGER NOT NULL PRIMARY KEY,
+    activity_name VARCHAR(32),
+    assistant_limit INTEGER,
+    activity_time_start TIMESTAMP,
+    activity_time_end TIMESTAMP,
+}
+
+CREATE TABLE activitybooking {
+    activity_id INTEGER NOT NULL PRIMARY KEY,
+    facility_id INTEGER NOT NULL PRIMARY KEY,
+    booking_time_start TIMESTAMP NOT NULL PRIMARY KEY
+}
 
 INSERT INTO member VALUES (0, 'Administrator');
 INSERT INTO member VALUES (1, 'Gabriel');
