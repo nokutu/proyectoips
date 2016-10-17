@@ -45,10 +45,20 @@ public class MemberBookingDialog extends JDialog {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
 
+        JPanel content = new JPanel();
+        content.setLayout(new BorderLayout());
+        setContentPane(content);
+
+        createButtons();
+
         form = new Form();
         addForm(timeStart == null);
 
+        content.add(form.getPanel());
+        addButtons(content);
+
         pack();
+        setLocationRelativeTo(owner);
     }
 
     private void addForm(boolean addExtra) {
@@ -115,8 +125,12 @@ public class MemberBookingDialog extends JDialog {
         try {
             List<String> results = form.getResults();
             if (this.timeStart == null) {
-                timeStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-                timeEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+                timeStart = new Timestamp(Utils.addHourToDay(
+                        new Timestamp(Long.parseLong(results.get(0))),
+                        Integer.parseInt(results.get(1))).getTime());
+                timeEnd = new Timestamp(Utils.addHourToDay(
+                        new Timestamp(Long.parseLong(results.get(0))),
+                        Integer.parseInt(results.get(2))).getTime());
                 facilityId = Integer.parseInt(results.get(3));
                 memberId = MemberMain.userID;
                 paymentMethod = results.get(4);
@@ -180,5 +194,12 @@ public class MemberBookingDialog extends JDialog {
         }
 
         return valid;
+    }
+
+    private void createButtons() {
+        confirm = new JButton("Confirm");
+        confirm.addActionListener(this::confirm);
+        cancel = new JButton("Cancel");
+        cancel.addActionListener(this::cancel);
     }
 }

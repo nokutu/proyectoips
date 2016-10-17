@@ -13,7 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -131,8 +130,12 @@ public class BookForCenterDialog extends JDialog {
 
 
         if (this.hourStart == null) {
-            hourStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-            hourEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+            hourStart = new Timestamp(
+                    Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))),
+                            Integer.parseInt(results.get(1))).getTime());
+            hourEnd = new Timestamp(Utils.addHourToDay(
+                    new Timestamp(Long.parseLong(results.get(0))),
+                    Integer.parseInt(results.get(2))).getTime());
             facilityId = Integer.parseInt(results.get(3));
         } else {
             facilityId = facility.getFacilityId();

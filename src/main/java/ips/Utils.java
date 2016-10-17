@@ -36,8 +36,8 @@ public class Utils {
         return true;
     }
 
-    public static Timestamp addHourToDay(Timestamp day, int hour) {
-        return new Timestamp(day.getTime() + hour * 1000 * 3600);
+    public static Date addHourToDay(Date day, int hour) {
+        return new Date(day.getTime() + hour * 1000 * 3600);
     }
 
     public static boolean areSameDay(Date a, Date b) {
@@ -58,5 +58,9 @@ public class Utils {
 
         return calA.get(Calendar.WEEK_OF_YEAR) == calB.get(Calendar.WEEK_OF_YEAR) &&
                 calA.get(Calendar.YEAR) == calB.get(Calendar.YEAR);
+    }
+
+    public static Date getCurrentDate() {
+        return new Date(System.currentTimeMillis());
     }
 }

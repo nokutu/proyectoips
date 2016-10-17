@@ -29,14 +29,7 @@ public class MemberMain extends JPanel {
 
         JPanel topPanel = new JPanel();
         userIDField = new JTextField(20);
-        userIDField.addActionListener(l -> {
-            if (checkUser(userIDField.getText())) {
-                userID = Integer.parseInt(userIDField.getText());
-                userValid = true;
-            } else {
-                userValid = false;
-            }
-        });
+
         userIDField.setMaximumSize(userIDField.getPreferredSize());
 
         topPanel.add(new JLabel("User id:"));
@@ -51,6 +44,12 @@ public class MemberMain extends JPanel {
         c.gridy = 0;
         JButton bookForMember = new JButton("Book for member");
         bookForMember.addActionListener(l -> {
+            if (checkUser(userIDField.getText())) {
+                userID = Integer.parseInt(userIDField.getText());
+                userValid = true;
+            } else {
+                userValid = false;
+            }
             if (userValid) {
                 new MemberBookingDialog(MainWindow.getInstance()).setVisible(true);
             }

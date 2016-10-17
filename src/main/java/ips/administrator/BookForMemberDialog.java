@@ -13,7 +13,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -136,8 +135,15 @@ public class BookForMemberDialog extends JDialog {
         try {
             List<String> results = form.getResults();
             if (this.timeStart == null) {
-                timeStart = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)));
-                timeEnd = Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)));
+                timeStart = new Timestamp(
+                        Utils.addHourToDay(
+                                new Timestamp(Long.parseLong(results.get(0))),
+                                Integer.parseInt(results.get(1))).getTime()
+                );
+                timeEnd = new Timestamp(Utils.addHourToDay(
+                        new Timestamp(Long.parseLong(results.get(0))),
+                        Integer.parseInt(results.get(2))).getTime()
+                );
                 facilityId = Integer.parseInt(results.get(3));
                 memberId = Integer.parseInt(results.get(4));
                 paymentMethod = results.get(5);
@@ -164,6 +170,13 @@ public class BookForMemberDialog extends JDialog {
         String errors = "\n";
 
         if (fb != null) {
+            if (fb.getTimeStart().before(Utils.getCurrentDate())) {
+                valid = false;
+                errors += "No puedes reservar para el pasado";
+            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentDate(), 24 * 15))) {
+                valid = false;
+                errors += "Solo puedes reservar hasta 15 días en adelante";
+            }
             if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
                     fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
                 // More than 2 hours
