@@ -41,6 +41,7 @@ CREATE TABLE feeitem (
     feeitem_amount INTEGER
 );
 
+INSERT INTO member VALUES (0, 'Administrator');
 INSERT INTO member VALUES (1, 'Gabriel');
 INSERT INTO member VALUES (2, 'Jorge');
 INSERT INTO member VALUES (3, 'Sergio');

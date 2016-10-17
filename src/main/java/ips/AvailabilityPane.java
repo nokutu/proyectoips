@@ -174,8 +174,10 @@ public class AvailabilityPane extends JPanel {
 				btnNot.setBackground(Color.BLUE);
 		} 
 		else{
-			if (user.equals(userName)) 
+			if (user.equals(userName)) {
+				btnNot.setText(user);
 				btnNot.setBackground(Color.GREEN);
+			}
 			else
 				btnNot.setBackground(Color.BLUE);
 		}
