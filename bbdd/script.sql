@@ -7,16 +7,17 @@ DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS activitybooking;
 
 CREATE TABLE facilityBooking (
-	facility_id INTEGER NOT NULL PRIMARY KEY,
+	facility_id INTEGER NOT NULL,
 	member_id INTEGER NOT NULL,
-	time_start TIMESTAMP NOT NULL PRIMARY KEY,
+	time_start TIMESTAMP NOT NULL,
 	time_end TIMESTAMP,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
     facilitybooking_deleted BOOLEAN,
 	entrance TIMESTAMP,
 	abandon TIMESTAMP,
-    CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash'))
+    CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
+    PRIMARY KEY (facility_id, time_start)
 );
 
 CREATE TABLE member (
@@ -43,19 +44,29 @@ CREATE TABLE feeitem (
     feeitem_amount INTEGER
 );
 
-CREATE TABLE activity {
+CREATE TABLE activity (
     activity_id INTEGER NOT NULL PRIMARY KEY,
-    activity_name VARCHAR(32),
+    activity_name VARCHAR(32) NOT NULL,
     assistant_limit INTEGER,
     activity_time_start TIMESTAMP,
     activity_time_end TIMESTAMP,
-}
+    activity_duration INTEGER,
+    activity_recursive BOOLEAN,
+);
 
-CREATE TABLE activitybooking {
-    activity_id INTEGER NOT NULL PRIMARY KEY,
-    facility_id INTEGER NOT NULL PRIMARY KEY,
-    booking_time_start TIMESTAMP NOT NULL PRIMARY KEY
-}
+CREATE TABLE activitybooking (
+    activity_id INTEGER NOT NULL,
+    facility_id INTEGER NOT NULL,
+    booking_time_start TIMESTAMP NOT NULL,
+    PRIMARY KEY (activity_id, facility_id, booking_time_start)
+);
+
+CREATE TABLE activitymembers (
+    activity_id INTEGER NOT NULL,
+    member_id INTEGER NOT NULL,
+    assistance BOOLEAN,
+    PRIMARY KEY(activity_id, member_id),
+);
 
 INSERT INTO member VALUES (0, 'Administrator');
 INSERT INTO member VALUES (1, 'Gabriel');
@@ -68,4 +79,4 @@ INSERT INTO facility VALUES (2, 3,'Tennis 2');
 INSERT INTO facilitybooking VALUES (1, 1,
     PARSEDATETIME('17-10-2016 18:0:0', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('17-10-2016 19:0:0', 'dd-MM-yyyy hh:mm:ss'),
-    'Cash', false, false, null, null)
+    'Cash', false, false, null, null);

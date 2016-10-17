@@ -3,6 +3,7 @@ package ips;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
+import ips.database.Member;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -26,6 +27,28 @@ public class Utils {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         for (FacilityBooking fb : bookings) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart) && !fb.isDeletedFlag()) {
+                if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart()) ||
+                        timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd()) ||
+                        timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a given member has any other reservation during the given time range.
+     *
+     * @param member  the Member.
+     * @param timeStart the start time.
+     * @param timeEnd   the end time.
+     * @return true if the facility is free; false otherwise.
+     */
+    public static boolean isMemberFree(Member member, Timestamp timeStart, Timestamp timeEnd) {
+        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+        for (FacilityBooking fb : bookings) {
+            if (fb.getMemberId() == member.getMemberId() && areSameDay(fb.getTimeStart(), timeStart) && !fb.isDeletedFlag()) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart()) ||
                         timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd()) ||
                         timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
