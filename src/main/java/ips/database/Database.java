@@ -14,8 +14,9 @@ public class Database {
     private final static String QUERY_FACILITIES = "SELECT * FROM facility";
     private final static String QUERY_MEMBERS = "SELECT * FROM member";
     private final static String QUERY_FACILITYBOOKINGS = "SELECT * FROM facilitybooking";
-    private static final String QUERY_FEE = "SELECT * FROM fee";
-    private static final String QUERY_FEEITEM = "SELECT * FROM feeItem";
+    private final static  String QUERY_FEE = "SELECT * FROM fee";
+    private final static  String QUERY_FEEITEM = "SELECT * FROM feeItem";
+    private final static String QUERY_ACTIVITY = "SELECT * FROM activity";
 
     private static Database instance;
     private Connection conn;
@@ -25,6 +26,7 @@ public class Database {
     private List<Member> members;
     private List<Fee> fees;
     private List<FeeItem> feeItems;
+    private List<Activity> activities;
 
     public static Database getInstance() {
         if (instance == null) {
@@ -39,6 +41,7 @@ public class Database {
         members = new ArrayList<>();
         fees = new ArrayList<>();
         feeItems = new ArrayList<>();
+        activities = new ArrayList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
@@ -96,7 +99,11 @@ public class Database {
             feeItems.add(new FeeItem(rs.getInt("feeitem_amount"), rs.getInt("fee_id")));
         }
 
-
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_ACTIVITY);
+        while (rs.next()) {
+            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getInt(7), rs.getBoolean(8)));
+        }
     }
 
     public Connection getConnection() {
@@ -169,4 +176,7 @@ public class Database {
         throw new RuntimeException("Do not exists");
     }
 
+    public List<Activity> getActivities() {
+        return activities;
+    }
 }

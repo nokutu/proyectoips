@@ -31,11 +31,13 @@ public class AdministratorMain extends JPanel {
         JButton book = new JButton("Reservar para socio");
         book.addActionListener((e) -> new BookForMemberDialog(MainWindow.getInstance()).setVisible(true));
         add(book);
+
         add(getBtnBookActivity());
         add(getBtnPayDebts());
         add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
         add(getBtnAvailabilityOfFacilities());
+
         JButton createActivity = new JButton("Crear actividad");
         createActivity.addActionListener((e) -> new CreateActivityDialog(MainWindow.getInstance()).setVisible(true));
         add(createActivity);

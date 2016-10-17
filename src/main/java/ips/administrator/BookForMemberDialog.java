@@ -9,8 +9,14 @@ import ips.database.Member;
 import ips.gui.Form;
 
 import javax.swing.*;
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -31,6 +37,7 @@ public class BookForMemberDialog extends JDialog {
 
     private JButton confirm;
     private JButton cancel;
+    private JDateChooser dateChooser;
 
     public BookForMemberDialog(JFrame owner) {
         this(owner, null, null, null);
@@ -80,8 +87,14 @@ public class BookForMemberDialog extends JDialog {
 
     private void addForm(boolean addExtra) {
         if (addExtra) {
-            JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            dateChooser.setCalendar(Calendar.getInstance());
+            dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+            dateChooser.setDate(Utils.getCurrentDate());
+            dateChooser.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    System.out.println();
+                }
+            });
             form.addLine(new JLabel("Fecha:"), dateChooser);
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
@@ -174,10 +187,10 @@ public class BookForMemberDialog extends JDialog {
         String errors = "\n";
 
         if (fb != null) {
-            if (fb.getTimeStart().before(Utils.getCurrentDate())) {
+            if (fb.getTimeStart().before(Utils.getCurrentTime())) {
                 valid = false;
                 errors += "No puedes reservar para el pasado.\n";
-            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentDate(), 24 * 15))) {
+            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentTime(), 24 * 15))) {
                 valid = false;
                 errors += "Solo puedes reservar hasta 15 días en adelante.\n";
             }

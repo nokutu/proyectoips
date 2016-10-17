@@ -99,7 +99,7 @@ public class BookForCenterDialog extends JDialog {
 
         if (addDate) {
             dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            dateChooser.setCalendar(Calendar.getInstance());
+            dateChooser.setDate(Utils.getCurrentDate());
             form.addLine(new JLabel("Fecha:"), dateChooser);
         }
 
