@@ -104,7 +104,7 @@ public class AvailabilityPane extends JPanel {
 		try {
 			bookings = Availability.Select(instalacion);
 		} catch (SQLException e) {
-			System.out.println("Error en el método addrows de AvailabilityPane");
+			System.out.println("Error en el mÃ©todo addrows de AvailabilityPane");
 			e.printStackTrace();
 		}
 		centralWeekPanel.removeAll();

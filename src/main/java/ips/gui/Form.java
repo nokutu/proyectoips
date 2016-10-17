@@ -61,8 +61,16 @@ public class Form {
     }
 
     public void addLine(Component a, JComboBox<String> b) {
+        addLine(a, b, true);
+    }
+
+    public void addLine(Component a, JComboBox<String> b, boolean returnContent) {
         doAddLine(a, b);
+        if (returnContent) {
         values.add(() -> b.getModel().getSelectedItem().toString());
+        } else {
+            values.add(() -> String.valueOf(b.getSelectedIndex()));
+        }
     }
 
     public void addLine(Component a, JSpinner b) {

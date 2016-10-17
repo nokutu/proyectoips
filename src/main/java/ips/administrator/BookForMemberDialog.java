@@ -8,16 +8,14 @@ import ips.database.FacilityBooking;
 import ips.gui.Form;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by nokutu on 3/10/16.
@@ -91,7 +89,12 @@ public class BookForMemberDialog extends JDialog {
             JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
             form.addLine(new JLabel("End time:"), hourEndSpinner);
 
-            form.addLine(new JLabel("Facility ID:"), new JTextField(20));
+            JComboBox<String> facilities = new JComboBox<>();
+            List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
+            DefaultComboBoxModel model = new DefaultComboBoxModel<>();
+            names.forEach(model::addElement);
+            facilities.setModel(model);
+            form.addLine(new JLabel("Facility ID:"), facilities, false);
         }
 
         form.addLine(new JLabel("Member ID:"), new JTextField(20));
@@ -144,7 +147,7 @@ public class BookForMemberDialog extends JDialog {
                         new Timestamp(Long.parseLong(results.get(0))),
                         Integer.parseInt(results.get(2))).getTime()
                 );
-                facilityId = Integer.parseInt(results.get(3));
+                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
                 memberId = Integer.parseInt(results.get(4));
                 paymentMethod = results.get(5);
             } else {
@@ -181,12 +184,12 @@ public class BookForMemberDialog extends JDialog {
                     fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
                 // More than 2 hours
                 valid = false;
-                errors += "A member can only book a maximum of 2 hours. End time must be after begin time\n";
+                errors += "Un socio solo puedo reservar un máximo de 2 horas. El tiempo de finalización debe ser posterior al de inicio\n";
             }
             if (!Database.getInstance().getMembers().stream()
                     .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny().isPresent()) {
                 // Member not valid
-                errors += "Invalid member id\n";
+                errors += "Id de miembro no válida\n";
                 valid = false;
             }
             Optional<Facility> of = Database.getInstance().getFacilities().stream()
@@ -200,11 +203,11 @@ public class BookForMemberDialog extends JDialog {
                 if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
                     // Facility not free
                     valid = false;
-                    errors += "Facility is occupied in the selected hours\n";
+                    errors += "La instalación está ocupada en la horas seleccionadas\n";
                 }
             }
         } else {
-            errors += "Please, fill all the fields\n";
+            errors += "Por favor, rellena todos los campos\n";
             valid = false;
         }
 
