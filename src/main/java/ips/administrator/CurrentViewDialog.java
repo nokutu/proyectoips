@@ -11,6 +11,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class CurrentViewDialog extends JDialog {
         getContentPane().add(getScrollPane());
         getCurrentFacilities();
 
-        pack();
+        //pack();
         setLocationRelativeTo(owner);
     }
 
@@ -96,14 +99,22 @@ public class CurrentViewDialog extends JDialog {
     private JList getList() {
         if (list == null) {
             list = new JList();
-            list.addListSelectionListener(new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    book = books.get(list.getSelectedIndex());
-                    if (book.getEntrance() != null || book.getAbandon() == null) {
-                        lblUsed.setVisible(true);
-                    } else {
-                        lblUsed.setVisible(false);
-                    }
+            list.setModel(model);
+            list.addMouseListener(new MouseAdapter() 
+            {
+
+				public void mouseClicked(MouseEvent e) 
+				{
+					if(e.getClickCount()==2)
+					{
+						book = books.get(list.getSelectedIndex());
+						if (book.getEntrance() != null && book.getAbandon() == null) 
+						{
+							lblUsed.setVisible(true);
+						} else 
+						{
+							lblUsed.setVisible(false);
+						}
 
                     if (book.getEntrance() != null) {
                         btnStartUse.setEnabled(false);
@@ -116,9 +127,11 @@ public class CurrentViewDialog extends JDialog {
                     } else {
                         btnEndUse.setEnabled(true);
                     }
-                }
+					}
+				}
+
             });
-            list.setModel(model);
+            
         }
         return list;
     }

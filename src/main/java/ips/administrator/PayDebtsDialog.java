@@ -12,6 +12,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,17 +102,27 @@ public class PayDebtsDialog extends JDialog {
 
 
     private void confirm(ActionEvent actionEvent) {
+    	
         getDeudor();
-        if (deudor != null) {
-            int i = Database.getInstance().getFacilityBookings().indexOf(deudor);
-            if (i == -1) {
+        if (deudor != null) 
+        {
+            boolean i = Database.getInstance().getFacilityBookings().contains(deudor);
+            if (!i) 
+            {
                 String errors = "\n";
                 errors += "Member not found\n";
                 form.setError(errors);
-            } else {
-                Database.getInstance().getFacilityBookings().get(i).setPayed(true);
-                Recibo recibo = new Recibo(Database.getInstance().getFacilityBookings().get(i));
-                recibo.grabarRecibo();
+            } 
+            else 
+            {
+            	deudor.setPayed(true);
+   			  try {
+                       deudor.update();
+                   } catch (SQLException e1) {
+                       e1.printStackTrace();
+                   }
+   			  Recibo recibo=new Recibo(deudor);
+   			  recibo.grabarRecibo();
             }
 
 
@@ -123,6 +134,7 @@ public class PayDebtsDialog extends JDialog {
     }
 
     private void getDeudor() {
+    	
         List<String> results = form.getResults();
         Timestamp timeStart = new Timestamp(Utils.addHourToDay(
                 new Timestamp(Long.parseLong(results.get(0))),
@@ -143,6 +155,7 @@ public class PayDebtsDialog extends JDialog {
     }
 
     private void addForm() {
+    	
         JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
         dateChooser.setDate(Utils.getCurrentDate());
         form.addLine(new JLabel("Date:"), dateChooser);

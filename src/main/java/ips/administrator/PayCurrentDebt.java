@@ -121,13 +121,16 @@ public class PayCurrentDebt  extends JDialog{
 	    	  else
 	    	  {
         	  
-	    		  int i=Database.getInstance().getFacilityBookings().indexOf(book);
-	    		  if(i==-1)
-	    		  {
-	    			  Database.getInstance().getFacilityBookings().get(i).setPayed(true);
-	    			  Recibo recibo=new Recibo(Database.getInstance().getFacilityBookings().get(i));
+	    		  
+	    			  book.setPayed(true);
+	    			  try {
+	                        book.update();
+	                    } catch (SQLException e1) {
+	                        e1.printStackTrace();
+	                    }
+	    			  Recibo recibo=new Recibo(book);
 	    			  recibo.grabarRecibo();
-	    		  }
+	    		  
           
 	    		  dispose();
 	    	  }

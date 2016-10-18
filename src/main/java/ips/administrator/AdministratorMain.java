@@ -35,6 +35,7 @@ public class AdministratorMain extends JPanel {
         add(book);
         add(getBtnBookActivity());
         add(getBtnPayDebts());
+        add(getBtnCurrentDebt());
         add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
         add(getBtnAvailabilityOfFacilities());
