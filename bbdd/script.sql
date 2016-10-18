@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS fee;
 DROP TABLE IF EXISTS feeItem;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS activitybooking;
+DROP TABLE IF EXISTS activitymembers;
 
 CREATE TABLE facilityBooking (
 	facility_id INTEGER NOT NULL,
@@ -47,6 +48,7 @@ CREATE TABLE feeitem (
 CREATE TABLE activity (
     activity_id INTEGER NOT NULL PRIMARY KEY,
     activity_name VARCHAR(32) NOT NULL,
+    facility_id INTEGER NOT NULL,
     assistant_limit INTEGER,
     activity_time_start TIMESTAMP,
     activity_time_end TIMESTAMP,

@@ -143,9 +143,8 @@ public class PayDebtsDialog extends JDialog {
     }
 
     private void addForm() {
-
         JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-        dateChooser.setCalendar(Calendar.getInstance());
+        dateChooser.setDate(Utils.getCurrentDate());
         form.addLine(new JLabel("Date:"), dateChooser);
 
         JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));

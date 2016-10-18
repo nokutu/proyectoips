@@ -1,11 +1,11 @@
 package ips.gui;
 
 import com.toedter.calendar.JDateChooser;
-
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +69,17 @@ public class Form {
         addLine(a, b, true);
     }
 
+    /**
+     * Adds a {@link JComboBox} into the form.
+     *
+     * @param a the JLabel
+     * @param b the JComboBox
+     * @param returnContent true to return the content; false to return the index
+     */
     public void addLine(Component a, JComboBox<String> b, boolean returnContent) {
         doAddLine(a, b);
         if (returnContent) {
-        values.add(() -> b.getModel().getSelectedItem().toString());
+            values.add(() -> b.getModel().getSelectedItem().toString());
         } else {
             values.add(() -> String.valueOf(b.getSelectedIndex()));
         }
@@ -104,7 +111,11 @@ public class Form {
     }
 
     public List<String> getResults() {
-        return values.stream().map(Supplier::get).collect(Collectors.toList());
+        List<String> res = new ArrayList<>();
+        for (Supplier<String> s : values) {
+            res.add(s.get());
+        }
+        return res;
     }
 
     public void setError(String error) {

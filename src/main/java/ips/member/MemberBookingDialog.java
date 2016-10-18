@@ -63,7 +63,7 @@ public class MemberBookingDialog extends JDialog {
     private void addForm(boolean addExtra) {
         if (addExtra) {
             JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            dateChooser.setCalendar(Calendar.getInstance());
+            dateChooser.setDate(Utils.getCurrentDate());
             form.addLine(new JLabel("Fecha:"), dateChooser);
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
@@ -162,14 +162,14 @@ public class MemberBookingDialog extends JDialog {
         String errors = "\n";
 
         if (fb != null) {
-            if (fb.getTimeStart().before(Utils.getCurrentDate())) {
+            if (fb.getTimeStart().before(Utils.getCurrentTime())) {
                 valid = false;
                 errors += "No puedes reservar para el pasado.\n";
-            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentDate(), 24 * 15))) {
+            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentTime(), 24 * 15))) {
                 valid = false;
                 errors += "Solo puedes reservar hasta 15 días en adelante.\n";
             }
-            if (fb.getTimeStart().before(Utils.addHourToDay(Utils.getCurrentDate(), 1))) {
+            if (fb.getTimeStart().before(Utils.addHourToDay(Utils.getCurrentTime(), 1))) {
                 valid = false;
                 errors += "Tienes que reservar con una hora de antelación.\n";
             }

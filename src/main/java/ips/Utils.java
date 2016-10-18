@@ -83,7 +83,16 @@ public class Utils {
                 calA.get(Calendar.YEAR) == calB.get(Calendar.YEAR);
     }
 
-    public static Date getCurrentDate() {
+    public static Date getCurrentTime() {
         return new Date(System.currentTimeMillis());
+    }
+
+    public static Date getCurrentDate() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTime();
     }
 }
