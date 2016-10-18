@@ -91,17 +91,9 @@ public class FacilityBooking implements DatabaseItem {
         createStatement.setString(5, paymentMethod);
         createStatement.setBoolean(6, paid);
         createStatement.setBoolean(7, deletedFlag);
-        if (entrance != null) {
-            createStatement.setTimestamp(8, new Timestamp(entrance.getTime()));
-        } else {
-            createStatement.setTimestamp(8, null);
-        }
 
-        if (abandon != null) {
-            createStatement.setTimestamp(9, new Timestamp(abandon.getTime()));
-        } else {
-            createStatement.setTimestamp(9, null);
-        }
+        createStatement.setTimestamp(8, entrance);
+        createStatement.setTimestamp(9, abandon);
 
         createStatement.execute();
     }

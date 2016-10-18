@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -148,7 +149,10 @@ public class CreateActivityDialog extends JDialog {
                 return;
             }
             if (Integer.parseInt(results.get(6)) == 1) {
-                time = new Timestamp(Utils.addHourToDay(time, 24*7).getTime());
+                Calendar c = Calendar.getInstance();
+                c.setTime(time);
+                c.add(Calendar.WEEK_OF_YEAR, 1);
+                time = new Timestamp(c.getTime().getTime());
             } else if (Integer.parseInt(results.get(6)) == 2) {
                 Calendar c = Calendar.getInstance();
                 c.setTime(time);
@@ -178,7 +182,11 @@ public class CreateActivityDialog extends JDialog {
         String errors = "";
         if (fb != null) {
 
-            Facility facility = Database.getInstance().getFacilities().get(fb.getFacilityId());
+            Optional<Facility> optional = Database.getInstance().getFacilities().stream()
+                    .filter( f -> f.getFacilityId() == fb.getFacilityId()).findAny();
+            assert optional.isPresent();
+            Facility facility = optional.get();
+
             if (!Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {
                 valid = false;
                 Calendar c = Calendar.getInstance();
