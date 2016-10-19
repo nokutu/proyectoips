@@ -146,17 +146,57 @@ public class BookForCenterDialog extends JDialog {
 
         FacilityBooking fb = new FacilityBooking(facilityId, centerId, hourStart, hourEnd, null, false, false);
 
-        if (valid(fb)) {
-            Database.getInstance().getFacilityBookings().add(fb);
+        if (valid(fb)) 
+        {
+        	
+        	boolean creation=true;
+        	
+        	for(FacilityBooking f:Database.getInstance().getFacilityBookings() )
+        	{
+        		
+        		
+        		if(f.getTimeStart().equals(fb.getTimeStart())|| f.getTimeEnd().equals(fb.getTimeEnd()))
+        		{
+        			if(f.getMemberId()!=0)
+        			{
+        				if(JOptionPane.YES_OPTION==JOptionPane.showConfirmDialog(null,"Existen reservas de miembros en esta fecha, ¿desea borrarlas?"))
+        				{
+        					f.setDeletedFlag(true);
+        					
+        					try {
+        						f.update();
+        					} catch (SQLException e) {
+        						e.printStackTrace();
+        					}
+        						
+        				}
+        				else
+        				{
+        						creation=false;
+        				}
+        				
+        			}
+        			else
+        			{
+        				JOptionPane.showMessageDialog(null,"Ya existe una reserva de la instalacion hecha por el centro en esta fecha");
+        				creation=false;
+        			}
+        		}
+        	}
+           
+		if(creation)
+        {
+        		Database.getInstance().getFacilityBookings().add(fb); 
+        		try {
+        				fb.create();
+        		} catch (SQLException e) {
+        				e.printStackTrace();
+        		}
+        		dispose();
+        }	
+        
         }
-
-        try {
-            fb.create();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        dispose();
+        
 
     }
 
@@ -170,9 +210,10 @@ public class BookForCenterDialog extends JDialog {
         if (!facility.isPresent()) {
             valid = false;
         }
+        
 
         //invalided de los spinners 
-        if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() < 0) {
+        if (fb.getTimeEnd().before( fb.getTimeStart())||fb.getTimeStart().before(Utils.getCurrentDate())) {
             valid = false;
         }
 
