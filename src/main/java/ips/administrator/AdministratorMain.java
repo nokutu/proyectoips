@@ -70,7 +70,7 @@ public class AdministratorMain extends JPanel {
     
     private JButton getBtnPayDebts() {
         if (btnPayDebts == null) {
-        	btnPayDebts= new JButton("Pagar deuda en efectivo( no actual)");
+        	btnPayDebts= new JButton("Pagar deuda en efectivo (no actual)");
         	btnPayDebts.addActionListener(e -> {
                 PayDebtsDialog adminbook = new PayDebtsDialog(MainWindow.getInstance());
                 adminbook.setVisible(true);
@@ -81,7 +81,7 @@ public class AdministratorMain extends JPanel {
     
     private JButton getBtnCurrentDebt() {
         if (btnCurrentDebts == null) {
-        	btnCurrentDebts= new JButton("Pagar deuda en efectivo(actual)");
+        	btnCurrentDebts= new JButton("Pagar deuda en efectivo (actual)");
         	btnCurrentDebts.addActionListener(e -> {
                 PayCurrentDebt adminbook = new PayCurrentDebt(MainWindow.getInstance());
                 adminbook.setVisible(true);
