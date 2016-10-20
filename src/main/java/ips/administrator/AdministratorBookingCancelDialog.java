@@ -41,7 +41,7 @@ public class AdministratorBookingCancelDialog {
 				}
 			} else { // MEMBER BOOKING
 				if (isRequieredPayment()) { // cobrar el pago
-					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargar· el pago a la cuota del socio",
+					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargar√° el pago a la cuota del socio",
 							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 					FeeItem newFeeItem = new FeeItem(
 							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),

@@ -159,7 +159,7 @@ public class BookForCenterDialog extends JDialog {
         		{
         			if(f.getMemberId()!=0)
         			{
-        				if(JOptionPane.YES_OPTION==JOptionPane.showConfirmDialog(null,"Existen reservas de miembros en esta fecha, ¿desea borrarlas?"))
+        				if(JOptionPane.YES_OPTION==JOptionPane.showConfirmDialog(null,"Existen reservas de miembros en esta fecha, Â¿desea borrarlas?"))
         				{
         					f.setDeletedFlag(true);
         					
