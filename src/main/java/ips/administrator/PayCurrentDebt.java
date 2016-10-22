@@ -82,7 +82,7 @@ public class PayCurrentDebt  extends JDialog{
 	 
 	  private void createButtons() 
 	  {
-	        confirm = new JButton("Confirm");
+	        confirm = new JButton("Confirmar");
 	        confirm.addActionListener(this::confirm);
 	        cancel = new JButton("Cancel");
 	        cancel.addActionListener(this::cancel);
@@ -115,7 +115,7 @@ public class PayCurrentDebt  extends JDialog{
 	    	  if(fecha.after(book.getTimeEnd())||fecha.before(book.getTimeStart()))
 	    	  {
 	    		  String errors = "\n";
-	    		  errors += "This booking is not in use right now, is payed or the method of payment is not Cash\n";
+	    		  errors += "Esta reserva no coincide con la hora actual, esta pagada o su metodo de pago no es efectivo\n";
 	    		  form.setError(errors);
 	    	  }
 	    	  else
@@ -139,7 +139,7 @@ public class PayCurrentDebt  extends JDialog{
 	      else
 	      {
 	    	  String errors = "\n";
-    		  errors += "The selected booking does not exist \n";
+    		  errors += "La reserva elegida no existe \n";
     		  form.setError(errors);
 	      }
 	    
@@ -155,13 +155,9 @@ public class PayCurrentDebt  extends JDialog{
 	private void addForm() 
 	{
        
-            form.addLine(new JLabel("Facility ID:"), new JTextField(20));
-            form.addLine(new JLabel("Member ID:"), new JTextField(20));
+            form.addLine(new JLabel("ID instalacion:"), new JTextField(20));
+            form.addLine(new JLabel("ID miembro:"), new JTextField(20));
 	}
 	
-	private boolean valid()
-	{
-		return true;
-		
-	}
+	
 }

@@ -46,7 +46,7 @@ public class PayDebtsDialog extends JDialog {
 
         if (debts.isEmpty()) {
             String errors = "\n";
-            errors += "There are no debts to pay\n";
+            errors += "No hay deudas que pagar\n";
             form.setError(errors);
         } else {
             addForm();
@@ -58,9 +58,9 @@ public class PayDebtsDialog extends JDialog {
     }
 
     private void createButtons() {
-        cancel_debt = new JButton("Cancel Debt");
+        cancel_debt = new JButton("Cancelar deuda");
         cancel_debt.addActionListener(this::confirm);
-        back = new JButton("Back");
+        back = new JButton("Atras");
         back.addActionListener(this::cancel);
     }
 
@@ -110,7 +110,7 @@ public class PayDebtsDialog extends JDialog {
             if (!i) 
             {
                 String errors = "\n";
-                errors += "Member not found\n";
+                errors += "Miembro no encontrado\n";
                 form.setError(errors);
             } 
             else 
@@ -128,7 +128,7 @@ public class PayDebtsDialog extends JDialog {
 
             dispose();
         } else {
-            System.err.println("Select a member before");
+        	JOptionPane.showMessageDialog(null,"Escoja una reserva antes");
         }
 
     }
@@ -158,17 +158,17 @@ public class PayDebtsDialog extends JDialog {
     	
         JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
         dateChooser.setDate(Utils.getCurrentDate());
-        form.addLine(new JLabel("Date:"), dateChooser);
+        form.addLine(new JLabel("Fecha:"), dateChooser);
 
         JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("Start time:"), hourStartSpinner);
+        form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
 
         JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("End time:"), hourEndSpinner);
+        form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
-        form.addLine(new JLabel("Facility ID:"), new JTextField(20));
+        form.addLine(new JLabel("ID instalacion:"), new JTextField(20));
 
-        form.addLine(new JLabel("Member ID:"), new JTextField(20));
+        form.addLine(new JLabel("ID miembro:"), new JTextField(20));
 
     }
 

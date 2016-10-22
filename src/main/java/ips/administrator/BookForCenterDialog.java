@@ -114,7 +114,7 @@ public class BookForCenterDialog extends JDialog {
         form.addLine(new JLabel("Hora de fin: "), hourSp2);
 
 
-        form.addLine(new JLabel("Facility ID:"), new JTextField(20));
+        form.addLine(new JLabel("Instalacion:"), new JTextField(20));
     }
 
     private void cancel(ActionEvent actionEvent) {

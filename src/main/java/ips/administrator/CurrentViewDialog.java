@@ -1,5 +1,6 @@
 package ips.administrator;
 
+import ips.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 
@@ -37,6 +38,7 @@ public class CurrentViewDialog extends JDialog {
 
     public CurrentViewDialog(JFrame owner) {
         super(owner, true);
+        setResizable(false);
         getContentPane().setLayout(null);
         getContentPane().add(getBtnBack());
         getContentPane().add(getBtnStartUse());
@@ -45,13 +47,13 @@ public class CurrentViewDialog extends JDialog {
         getContentPane().add(getScrollPane());
         getCurrentFacilities();
 
-        //pack();
+        this.setBounds(500, 350, 500, 350);
         setLocationRelativeTo(owner);
     }
 
     private JButton getBtnBack() {
         if (btnBack == null) {
-            btnBack = new JButton("Back");
+            btnBack = new JButton("Atras");
             btnBack.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
@@ -70,7 +72,7 @@ public class CurrentViewDialog extends JDialog {
         Timestamp fecha = new Timestamp(date.getTime());
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         for (FacilityBooking f : bookings) {
-            if (fecha.after(f.getTimeStart()) || fecha.before(f.getTimeEnd())) {
+            if (f.getTimeStart().before(Utils.getCurrentTime())&& f.getTimeEnd().after(Utils.getCurrentTime())) {
                 found = true;
                 line = f.toString();
                 books.add(f);
@@ -81,7 +83,9 @@ public class CurrentViewDialog extends JDialog {
         }
 
         if (!found) {
-            lblUsed.setText("There are no facilities being used at the moment ");
+        	
+            lblUsed.setText("No hay reservas en la hora actual");
+            lblUsed.setVisible(true);
         }
 
     }
@@ -89,7 +93,7 @@ public class CurrentViewDialog extends JDialog {
     private JScrollPane getScrollPane() {
         if (scrollPane == null) {
             scrollPane = new JScrollPane();
-            scrollPane.setBorder(new TitledBorder(null, "Facilities in use", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
+            scrollPane.setBorder(new TitledBorder(null, "Instalaciones con reserva", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
             scrollPane.setBounds(80, 40, 280, 211);
             scrollPane.setViewportView(getList());
         }
@@ -138,7 +142,7 @@ public class CurrentViewDialog extends JDialog {
 
     private JButton getBtnStartUse() {
         if (btnStartUse == null) {
-            btnStartUse = new JButton("Start use");
+            btnStartUse = new JButton("Comenzar uso");
             btnStartUse.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 
@@ -161,7 +165,7 @@ public class CurrentViewDialog extends JDialog {
 
     private JButton getBtnEndUse() {
         if (btnEndUse == null) {
-            btnEndUse = new JButton("End Use");
+            btnEndUse = new JButton("Finalizar uso");
             btnEndUse.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     Date date = new Date();
@@ -183,10 +187,10 @@ public class CurrentViewDialog extends JDialog {
 
     private JLabel getLblUsed() {
         if (lblUsed == null) {
-            lblUsed = new JLabel("In Use");
+            lblUsed = new JLabel("En uso actualmente");
             lblUsed.setFont(new Font("Tahoma", Font.BOLD, 12));
             lblUsed.setForeground(Color.RED);
-            lblUsed.setBounds(186, 11, 54, 23);
+            lblUsed.setBounds(80, 11, 280, 23);
             lblUsed.setVisible(false);
         }
         return lblUsed;
