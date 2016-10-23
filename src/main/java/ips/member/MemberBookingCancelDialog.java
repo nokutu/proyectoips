@@ -37,7 +37,7 @@ public class MemberBookingCancelDialog {
 	public static void show(FacilityBooking booking){
 		MemberBookingCancelDialog.booking = booking;
 		if (isPossible()) {
-			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "Are you sure you want to delete this booking?",
+			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "¿Estas seguro que quieres cancelar esta reserva?",
 					"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
 			if (r == JOptionPane.OK_OPTION) {
 				booking.setDeletedFlag(true);// to have a bookings log, we dont
@@ -53,7 +53,7 @@ public class MemberBookingCancelDialog {
 			}
 		} else {
 			JOptionPane.showMessageDialog(MainWindow.getInstance(),
-					"This booking cannot be canceled because it is booked to less than one hour since now");
+					"Esta reserva no puede ser cancelada porque fue realizada hace menos de una hora");
 		}
 	}
 

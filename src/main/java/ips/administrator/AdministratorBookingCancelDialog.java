@@ -1,6 +1,7 @@
 package ips.administrator;
 
 import ips.MainWindow;
+import ips.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.database.FeeItem;
@@ -27,8 +28,8 @@ public class AdministratorBookingCancelDialog {
 	
 	public static void show(FacilityBooking booking){
 		AdministratorBookingCancelDialog.booking = booking;
-		int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "Are you sure you want to delete this booking?",
-				"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
+		int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "¿Estas seguro que quieres cancelar esta reserva?",
+				"Confirmacion de cancelacion", JOptionPane.OK_CANCEL_OPTION);
 		if (r == JOptionPane.OK_OPTION) {
 			if (booking.getMemberId() == 0) {// ADMIN BOOKING (we identify the
 												// admin bookings by the 0
@@ -41,18 +42,19 @@ public class AdministratorBookingCancelDialog {
 				}
 			} else { // MEMBER BOOKING
 				if (isRequieredPayment()) { // cobrar el pago
-					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargarÃ¡ el pago a la cuota del socio",
+					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargará el pago a la cuota del socio",
 							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+//TODO ver esto
+					
+					
 					FeeItem newFeeItem = new FeeItem(
 							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
-							booking.getMemberId());
-					Database.getInstance().getFeeItems().add(newFeeItem);
+							Database.getInstance().getFeeByMember(booking.getMemberId(), new Date().getMonth()));
+					
+					Utils.addFeeItem(newFeeItem,new java.sql.Date(new Date().getTime()),booking.getMemberId());
+					
 					booking.setPayed(true);
-					try {
-						newFeeItem.create(); // modify the database
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+					
 				}
 				booking.setDeletedFlag(true);
 				try {

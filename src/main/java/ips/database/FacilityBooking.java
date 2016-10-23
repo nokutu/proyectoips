@@ -114,11 +114,10 @@ public class FacilityBooking implements DatabaseItem {
 		updateStatement.setString(1, paymentMethod);
 		updateStatement.setBoolean(2, paid);
 		updateStatement.setBoolean(3, deletedFlag);
-		
-		
+
 		updateStatement.setInt(6, facilityId);
 		updateStatement.setTimestamp(7, timeStart);
-		
+
 		if (entrance != null) {
 			updateStatement.setTimestamp(4, new Timestamp(entrance.getTime()));
 		} else {
@@ -189,7 +188,10 @@ public class FacilityBooking implements DatabaseItem {
 	 * @return a string representation to show to the user
 	 */
 	public String toString() {
-		return "Facility " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName() + "by member "
-				+ Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n";
+		String s = "";
+		s += "Facility " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName();
+		String name = Database.getInstance().getMemberById(this.getMemberId()).getMemberName();
+		s += "by member " + name + " \n";
+		return s;
 	}
 }

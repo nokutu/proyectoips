@@ -24,6 +24,7 @@ CREATE TABLE facilityBooking (
 CREATE TABLE member (
 	member_id INTEGER NOT NULL PRIMARY KEY,
 	member_name VARCHAR(32) NOT NULL,
+	dado_alta BOOLEAN NOT NULL
 );
 
 CREATE TABLE facility (
@@ -33,16 +34,20 @@ CREATE TABLE facility (
 );
 
 CREATE TABLE fee (
-    fee_id INTEGER NOT NULL PRIMARY KEY,
     fee_month DATE NOT NULL,
-    fee_member_id INTEGER NOT NULL
+    fee_member_id INTEGER NOT NULL,
+	cuota_base INTEGER NOT NULL,
+	PRIMARY KEY (fee_month, fee_member_id)
+
 );
 
 CREATE TABLE feeitem (
-    feeitem_id INTEGER NOT NULL PRIMARY KEY,
+    feeitem_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     feeitem_concept VARCHAR(64),
-	fee_id INTEGER NOT NULL,
-    feeitem_amount INTEGER
+	fee_month DATE NOT NULL,
+    fee_member_id INTEGER NOT NULL,
+    feeitem_amount NUMBER,
+	CONSTRAINT fk_FEE_ITEM FOREIGN KEY(fee_month, fee_member_id) REFERENCES FEE(fee_month, fee_member_id)
 );
 
 CREATE TABLE activity (
@@ -70,10 +75,10 @@ CREATE TABLE activitymembers (
     PRIMARY KEY(activity_id, member_id),
 );
 
-INSERT INTO member VALUES (0, 'Administrator');
-INSERT INTO member VALUES (1, 'Gabriel');
-INSERT INTO member VALUES (2, 'Jorge');
-INSERT INTO member VALUES (3, 'Sergio');
+INSERT INTO member VALUES (0, 'Administrator',true);
+INSERT INTO member VALUES (1, 'Gabriel',true);
+INSERT INTO member VALUES (2, 'Jorge',true);
+INSERT INTO member VALUES (3, 'Sergio',true);
 
 INSERT INTO facility VALUES (1, 5,'Tennis 1');
 INSERT INTO facility VALUES (2, 3,'Tennis 2');

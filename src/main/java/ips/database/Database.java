@@ -1,8 +1,8 @@
 package ips.database;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -36,12 +36,12 @@ public class Database {
     }
 
     private Database() {
-        facilities = new ArrayList<>();
-        facilityBookings = new ArrayList<>();
-        members = new ArrayList<>();
-        fees = new ArrayList<>();
-        feeItems = new ArrayList<>();
-        activities = new ArrayList<>();
+        facilities = new LinkedList<>();
+        facilityBookings = new LinkedList<>();
+        members = new LinkedList<>();
+        fees = new LinkedList<>();
+        feeItems = new LinkedList<>();
+        activities = new LinkedList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
@@ -76,7 +76,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_MEMBERS);
         while (rs.next()) {
-            members.add(new Member(rs.getInt(1), rs.getString(2)));
+            members.add(new Member(rs.getInt(1), rs.getString(2), rs.getBoolean("dado_alta")));
         }
 
         s = conn.createStatement();
@@ -90,13 +90,13 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEE);
         while (rs.next()) {
-            fees.add(new Fee(rs.getInt("fee_id"), rs.getDate("fee_month"), rs.getInt("fee_member_id")));
+            fees.add(new Fee(rs.getInt("fee_member_id"), rs.getDate("fee_month"), rs.getDouble("cuota_base")));
         }
 
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEEITEM);
         while (rs.next()) {
-            feeItems.add(new FeeItem(rs.getInt("feeitem_amount"), rs.getInt("fee_id")));
+            feeItems.add(new FeeItem(rs.getInt("feeitem_amount"), getFeeByMember(rs.getInt("fee_member_id"), rs.getInt("month"))));
         }
 
         s = conn.createStatement();
@@ -138,13 +138,6 @@ public class Database {
         throw new RuntimeException("Do not exists");
     }
 
-    public Fee getFeeByFeeId(int id) {
-        for (Fee fee : fees) {
-            if (fee.getFeeId() == id)
-                return fee;
-        }
-        throw new RuntimeException("Do not exists");
-    }
 
     public Fee getFeeByMember(int memberId, int month) {
         for (Fee fee : fees) {
@@ -184,6 +177,7 @@ public class Database {
         }
         throw new RuntimeException("Do not exists");
     }
+	
 	
     public List<Activity> getActivities() {
         return activities;

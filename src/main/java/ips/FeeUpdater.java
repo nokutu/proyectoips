@@ -1,11 +1,14 @@
 package ips;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.database.Fee;
 import ips.database.FeeItem;
+import ips.database.Member;
 
 /**
  * <p>
@@ -21,33 +24,47 @@ import ips.database.FeeItem;
  * <p>
  * El contable incrementará la cuota mensual de un socio para el siguiente mes
  * con el importe de las reservas de instalaciones pendientes de liquidar
- * (porque el socio ha seleccionado el pago a través de su cuota mensual o no se
- * ha registrado el pago en efectivo en su momento). Las reservas que se pasan a
- * la cuota serán desde el 20 del mes anterior hasta el 19 del actual y se
- * acumulan a la cuota del mes siguiente.
+ * (porque el socio ha seleccionado el pago a través de su cuota mensual o no
+ * se ha registrado el pago en efectivo en su momento). Las reservas que se
+ * pasan a la cuota serán desde el 20 del mes anterior hasta el 19 del actual y
+ * se acumulan a la cuota del mes siguiente.
  * </p>
  * 
  * <p>
  * <em>En esta historia no se gestionarán las reservas de los clientes dados de
- * baja. Se dejará para más adelante de manera que se puedan obtener el listado
- * de los socios que se han dado de baja con pagos de reservas pendientes para
- * que se les avise vía telefónica y pasen a abonar el importe de manera
- * presencial.</em>
+ * baja. Se dejará para más adelante de manera que se puedan obtener el
+ * listado de los socios que se han dado de baja con pagos de reservas
+ * pendientes para que se les avise vía telefónica y pasen a abonar el importe
+ * de manera presencial.</em>
  * </p>
  * 
  * @author Sergio Florez
  *
  */
 public class FeeUpdater {
-
+	
+	/**
+	 * 
+	 * @return una lista con los clientes que se han dado de baja y hay que avisarles por telefono de que tienen pagos pendientes
+	 */
 	@SuppressWarnings("deprecation")
-	public static void update() {
+	public static List<Member> update() {
+		List<Member> sociosDeBajaConPagosPendientes = new LinkedList<Member>();
 		Date now = new Date();
-		int previousMonth = now.getMonth() == 0 ? 11 : now.getMonth() - 1; // el anterior a enero es diciembre
+		int previousMonth = now.getMonth() == 0 ? 11 : now.getMonth() - 1; // el
+																			// anterior
+																			// a
+																			// enero
+																			// es
+																			// diciembre
 
 		for (FacilityBooking pago : Database.getInstance().getFacilityBookings()) {
-			if (!pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")) { // si no borrada
-																									// ni pagada
+			pago.toString();
+			if (!pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")
+					|| !pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Cash")
+							&& pago.getTimeStart().before(now)) {
+				// si no borrada ni pagada o si ya ha pasado la hora pero el
+				// socio no ha pagado, se le cobra
 
 				if ((pago.getTimeEnd().getMonth() == now.getMonth() && pago.getTimeEnd().getDate() <= 19)
 						|| (pago.getTimeEnd().getMonth() == previousMonth && pago.getTimeEnd().getDate() >= 20)) {
@@ -57,10 +74,14 @@ public class FeeUpdater {
 					try {
 						Fee thatFee = Database.getInstance().getFeeByMonth(pago.getMemberId(), nextMonth);
 						// if exists a fee for that month
-						int cost = Database.getInstance().getFacilityById(pago.getFacilityId()).getPrice();
-						thatFee.getFeeItems().add(new FeeItem(cost, pago.getMemberId()));
+						double cost = Database.getInstance().getFacilityById(pago.getFacilityId()).getPrice();
+						
+						assert thatFee.getMemberId()==pago.getMemberId(); // TODO eliminar esto
+						
+						FeeItem newFeeItem =  new FeeItem(cost, thatFee);
+						thatFee.getFeeItems().add(newFeeItem);
 						try {
-							thatFee.update();
+							newFeeItem.update();
 						} catch (Exception e2) {
 							e2.printStackTrace();
 						}
@@ -77,10 +98,15 @@ public class FeeUpdater {
 						}
 					} finally {
 						pago.setPayed(true); // payed
+						Member socio = Database.getInstance().getMemberById(pago.getMemberId());
+						if(!socio.isDe_alta()){ // si esta de baja
+							sociosDeBajaConPagosPendientes.add(socio);
+							
+						}
 					}
-
 				} // end if month filter
 			} // end main if
 		} // end for
+		return sociosDeBajaConPagosPendientes;
 	}
 }

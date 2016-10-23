@@ -7,7 +7,7 @@ public class Facility implements DatabaseItem {
 
     private int facilityId;
     private String facilityName;
-    private int price;
+    private double price;
 
     public Facility(int facilityId, String facilityName, int price) {
         this.facilityId = facilityId;
@@ -29,7 +29,7 @@ public class Facility implements DatabaseItem {
         return facilityId;
     }
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 

@@ -5,30 +5,48 @@ package ips.database;
  */
 public class Member implements DatabaseItem {
 
-    private int memberId;
-    private String memberName;
+	public static double cuota_base = 15; // cuota base de todos los socios
+	
+	private int memberId;
+	private String memberName;
+	private boolean de_alta; // si se da de baja pasa a ser false
 
-    public Member(int memberId, String memberName) {
-        this.memberId = memberId;
-        this.memberName = memberName;
-    }
+	public Member(int memberId, String memberName) {
+		this.memberId = memberId;
+		this.memberName = memberName;
+		de_alta = true;
+	}
 
-    @Override
-    public void create() {
-        // TODO
-    }
+	public Member(int memberId, String memberName, boolean alta) {
+		this.memberId = memberId;
+		this.memberName = memberName;
+		de_alta = alta;
+	}
 
-    @Override
-    public void update() {
-        // TODO
-    }
+	@Override
+	public void create() {
+		// TODO
+	}
 
-    public int getMemberId() {
-        return memberId;
-    }
+	@Override
+	public void update() {
+		// TODO
+	}
+
+	public int getMemberId() {
+		return memberId;
+	}
 
 	public String getMemberName() {
 		return memberName;
+	}
+
+	public boolean isDe_alta() {
+		return de_alta;
+	}
+
+	public void setDe_alta(boolean de_alta) {
+		this.de_alta = de_alta;
 	}
 
 }
