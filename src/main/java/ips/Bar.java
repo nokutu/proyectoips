@@ -1,6 +1,6 @@
 package ips;
 
-import ips.administrator.AdministratorMain;
+import ips.administrator.AdministratorMainScreen;
 import ips.member.MemberMain;
 
 import javax.swing.ButtonGroup;
@@ -21,7 +21,6 @@ public class Bar extends JMenuBar {
 
     private JMenu options;
     private JRadioButtonMenuItem member;
-
     private JRadioButtonMenuItem administration;
 
     public static Bar getInstance() {
@@ -60,7 +59,7 @@ public class Bar extends JMenuBar {
 
     private void addAdministration(JMenu change, ButtonGroup g) {
         administration = new JRadioButtonMenuItem("Administración");
-        administration.addActionListener((e) -> MainWindow.getInstance().setContent(new AdministratorMain()));
+        administration.addActionListener((e) -> MainWindow.getInstance().setContent(new AdministratorMainScreen()));
         g.add(administration);
         change.add(administration);
     }

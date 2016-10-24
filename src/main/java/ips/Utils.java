@@ -101,7 +101,7 @@ public class Utils {
 
 	public static Date getCurrentDate() {
 		Calendar c = Calendar.getInstance();
-		c.set(Calendar.HOUR, 0);
+		c.set(Calendar.HOUR_OF_DAY, 0);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
@@ -109,7 +109,7 @@ public class Utils {
 	}
 
 	/**
-	 * añade un pago al fee del mes dado si aun no hay fee para este mes lo
+	 * AÃ±ade un pago al fee del mes dado si aun no hay fee para este mes lo
 	 * crea
 	 *
 	 * @param pago
@@ -120,7 +120,7 @@ public class Utils {
 		Fee thisFee=null;
 		try {
 			thisFee = Database.getInstance().getFeeByMember(member_id, month.getMonth());
-			// existe, entonces se añade sin mas
+			// existe, entonces se aÃ±ade sin mas
 			thisFee.getFeeItems().add(pago);
 
 		} catch (RuntimeException ex) {

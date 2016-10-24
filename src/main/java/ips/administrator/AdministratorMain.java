@@ -4,14 +4,11 @@ import ips.AvailabilityPane;
 import ips.FeeUpdater;
 import ips.MainWindow;
 import ips.database.Database;
-import ips.member.MemberBookingCancelDialog;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 /**
  * Main panel for administration
@@ -30,10 +27,6 @@ public class AdministratorMain extends JPanel {
     private JButton btnBorrarCuandoEl;
 
     public AdministratorMain() {
-        JButton book = new JButton("Reservar para socio");
-        book.addActionListener((e) -> new BookForMemberDialog(MainWindow.getInstance()).setVisible(true));
-        add(book);
-        add(getBtnBookActivity());
         add(getBtnPayDebts());
         add(getBtnCurrentDebt());
         add(getBtnCurrentBookings());
@@ -41,19 +34,8 @@ public class AdministratorMain extends JPanel {
         add(getBtnAvailabilityOfFacilities());
         add(getBtnBorrarCuandoEl());
         JButton createActivity = new JButton("Crear actividad");
-        createActivity.addActionListener((e) -> new CreateActivityDialog(MainWindow.getInstance()).setVisible(true));
+        createActivity.addActionListener((e) -> new PeriodicBooking(MainWindow.getInstance()).setVisible(true));
         add(createActivity);
-    }
-
-    private JButton getBtnBookActivity() {
-        if (btnBookActivity == null) {
-            btnBookActivity = new JButton("Reservar para el centro");
-            btnBookActivity.addActionListener(e -> {
-                BookForCenterDialog adminbook = new BookForCenterDialog(MainWindow.getInstance());
-                adminbook.setVisible(true);
-            });
-        }
-        return btnBookActivity;
     }
     
     private JButton getBtnCurrentBookings() 

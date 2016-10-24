@@ -7,20 +7,20 @@ import java.sql.Timestamp;
 /**
  * Created by nokutu on 17/10/2016.
  */
-public class Activity implements DatabaseItem {
+public class ActivityBooking implements DatabaseItem {
 
-    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?)";
-    private final static String UPDATE_QUERY = "";
-
-    private static PreparedStatement createStatement;
-    private static PreparedStatement updateStatement;
+    private final static String CREATE_QUERY = "INSERT INTO activitybooking VALUES (?, ?, ?)";
 
     private String activityName;
-    private int assistantLimit;
+    private int facilityId;
+    private Timestamp bookingTimeStart;
 
-    public Activity(String activityName, int assistantLimit) {
+    private PreparedStatement createStatement;
+
+    public ActivityBooking(String activityName, int facilityId, Timestamp bookingTimeStart) {
         this.activityName = activityName;
-        this.assistantLimit = assistantLimit;
+        this.facilityId = facilityId;
+        this.bookingTimeStart = bookingTimeStart;
     }
 
     @Override
@@ -30,16 +30,13 @@ public class Activity implements DatabaseItem {
         }
 
         createStatement.setString(1, activityName);
-        createStatement.setInt(2, assistantLimit);
+        createStatement.setInt(2, facilityId);
+        createStatement.setTimestamp(3, bookingTimeStart);
 
         createStatement.execute();
     }
 
-    public String getActivityName() {
-		return activityName;
-	}
-
-	@Override
+    @Override
     public void update() throws SQLException {
         // TODO
     }

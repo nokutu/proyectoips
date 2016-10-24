@@ -10,7 +10,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Form class. You can add row to it and then get the results. Everything is nicely formatted.
@@ -22,21 +21,32 @@ public class Form {
     private List<Supplier<String>> values;
 
     private JTextPane errorPanel;
+    private JTextPane messagePanel;
 
     private int line = 0;
+    private int nextInsetTop = 0;
 
     public Form() {
         panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
 
         gridPanel = new JPanel();
         gridPanel.setLayout(new GridBagLayout());
 
-        panel.add(gridPanel, BorderLayout.CENTER);
+        panel.add(gridPanel, c);
         values = new ArrayList<>();
 
+        c.weightx = 1;
+
+        c.gridy = 1;
         createErrorPanel();
-        panel.add(errorPanel, BorderLayout.SOUTH);
+        panel.add(errorPanel, c);
+
+        c.gridy = 2;
+        createMessagePanel();
+        panel.add(messagePanel, c);
     }
 
     private void createErrorPanel() {
@@ -48,6 +58,21 @@ public class Form {
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
         errorPanel.setFocusable(false);
+    }
+
+    private void createMessagePanel() {
+        messagePanel = new JTextPane();
+        messagePanel.setForeground(Color.green);
+        messagePanel.setBackground(UIManager.getColor("Panel.background"));
+        StyledDocument doc = messagePanel.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        messagePanel.setFocusable(false);
+    }
+
+    public void addSpace() {
+        nextInsetTop += 10;
     }
 
     public void addLine(Component a, JTextField b) {
@@ -72,8 +97,8 @@ public class Form {
     /**
      * Adds a {@link JComboBox} into the form.
      *
-     * @param a the JLabel
-     * @param b the JComboBox
+     * @param a             the JLabel
+     * @param b             the JComboBox
      * @param returnContent true to return the content; false to return the index
      */
     public void addLine(Component a, JComboBox<String> b, boolean returnContent) {
@@ -90,12 +115,39 @@ public class Form {
         values.add(() -> String.valueOf(b.getValue()));
     }
 
+    public void addLine(JCheckBox b) {
+        addLine(b, false);
+    }
+
+    public void addLine(JCheckBox b, boolean addToValues) {
+        doAddLine(b);
+        if (addToValues) {
+            values.add(() -> String.valueOf(b.isSelected()));
+        }
+    }
+
+    private void doAddLine(Component a) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = line;
+        c.insets = new Insets(2 + nextInsetTop, 10, 2, 10);
+        nextInsetTop = 0;
+        c.gridwidth = 2;
+
+        c.gridx = 0;
+        gridPanel.add(a, c);
+
+        line++;
+    }
+
     private void doAddLine(Component a, Component b) {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridy = line;
-        c.insets = new Insets(2, 10, 2, 10);
+        c.insets = new Insets(2 + nextInsetTop, 10, 2, 10);
+        nextInsetTop = 0;
 
         c.gridx = 0;
         gridPanel.add(a, c);
@@ -120,5 +172,11 @@ public class Form {
 
     public void setError(String error) {
         errorPanel.setText(error.trim());
+        messagePanel.setText("");
+    }
+
+    public void setMessage(String message) {
+        messagePanel.setText(message);
+        errorPanel.setText("");
     }
 }

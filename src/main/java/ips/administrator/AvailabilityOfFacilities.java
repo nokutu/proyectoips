@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import java.awt.BorderLayout;
 
 public class AvailabilityOfFacilities extends JPanel {
+
     public AvailabilityOfFacilities() {
         setLayout(new BorderLayout(0, 0));
 

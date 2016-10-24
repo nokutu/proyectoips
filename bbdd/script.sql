@@ -51,18 +51,13 @@ CREATE TABLE feeitem (
 );
 
 CREATE TABLE activity (
-    activity_id INTEGER NOT NULL PRIMARY KEY,
     activity_name VARCHAR(32) NOT NULL,
-    facility_id INTEGER NOT NULL,
     assistant_limit INTEGER,
-    activity_time_start TIMESTAMP,
-    activity_time_end TIMESTAMP,
-    activity_duration INTEGER,
-    activity_recursive BOOLEAN,
+    PRIMARY KEY(activity_name)
 );
 
 CREATE TABLE activitybooking (
-    activity_id INTEGER NOT NULL,
+    activity_id VARCHAR(32) NOT NULL,
     facility_id INTEGER NOT NULL,
     booking_time_start TIMESTAMP NOT NULL,
     PRIMARY KEY (activity_id, facility_id, booking_time_start)
@@ -72,6 +67,7 @@ CREATE TABLE activitymembers (
     activity_id INTEGER NOT NULL,
     member_id INTEGER NOT NULL,
     assistance BOOLEAN,
+    deleted BOOLEAN,
     PRIMARY KEY(activity_id, member_id),
 );
 
@@ -87,3 +83,5 @@ INSERT INTO facilitybooking VALUES (1, 1,
     PARSEDATETIME('17-10-2016 18:0:0', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('17-10-2016 19:0:0', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null);
+
+INSERT INTO activity VALUES ('Taller 1', 25);

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * Created by nokutu on 17/10/2016.
  */
-public class CreateActivityDialog extends JDialog {
+public class PeriodicBooking extends JDialog {
 
     private Form form;
 
@@ -33,7 +33,7 @@ public class CreateActivityDialog extends JDialog {
     private JButton cancel;
     private JDateChooser dateChooser;
 
-    public CreateActivityDialog(JFrame owner) {
+    public PeriodicBooking(JFrame owner) {
         super(owner, true);
         setResizable(false);
 
@@ -54,7 +54,7 @@ public class CreateActivityDialog extends JDialog {
     }
 
     private void fillForm() {
-        form.addLine(new JLabel("Nombre:"), new JTextField(20));
+        form.addLine(new JLabel("ID de socio:"), new JTextField(10));
 
         form.addLine(new JLabel("Limite asistentes:"), new JSpinner(new SpinnerNumberModel(1, 1, 100, 1)));
 
@@ -136,7 +136,7 @@ public class CreateActivityDialog extends JDialog {
 
         Facility facility = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(2)));
 
-        Activity a = new Activity(Activity.getValidID(), results.get(0), facility.getFacilityId(), Integer.parseInt(results.get(1)), startTime, endTime, duration, Integer.parseInt(results.get(6)) > 0);
+        Activity a = new Activity(results.get(0), Integer.parseInt(results.get(1)));
 
         Timestamp time = startTime;
         List<FacilityBooking> bookings = new ArrayList<>();

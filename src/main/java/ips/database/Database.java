@@ -17,6 +17,7 @@ public class Database {
     private final static  String QUERY_FEE = "SELECT * FROM fee";
     private final static  String QUERY_FEEITEM = "SELECT * FROM feeItem";
     private final static String QUERY_ACTIVITY = "SELECT * FROM activity";
+    private static final String QUERY_ACTIVITY_BOOKING = "SELECT * FROM activitybooking";
 
     private static Database instance;
     private Connection conn;
@@ -27,6 +28,7 @@ public class Database {
     private List<Fee> fees;
     private List<FeeItem> feeItems;
     private List<Activity> activities;
+    private List<ActivityBooking> activityBookings;
 
     public static Database getInstance() {
         if (instance == null) {
@@ -42,6 +44,7 @@ public class Database {
         fees = new LinkedList<>();
         feeItems = new LinkedList<>();
         activities = new LinkedList<>();
+        activityBookings = new LinkedList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
@@ -102,7 +105,13 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY);
         while (rs.next()) {
-            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getInt(7), rs.getBoolean(8)));
+            activities.add(new Activity(rs.getString(1), rs.getInt(2)));
+        }
+
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_ACTIVITY_BOOKING);
+        while (rs.next()) {
+            activityBookings.add(new ActivityBooking(rs.getString(1), rs.getInt(2), rs.getTimestamp(3)));
         }
     }
 
@@ -181,5 +190,9 @@ public class Database {
 	
     public List<Activity> getActivities() {
         return activities;
+    }
+
+    public List<ActivityBooking> getActivityBookings() {
+        return activityBookings;
     }
 }
