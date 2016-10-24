@@ -57,7 +57,11 @@ public class Activity implements DatabaseItem {
         createStatement.execute();
     }
 
-    @Override
+    public String getActivityName() {
+		return activityName;
+	}
+
+	@Override
     public void update() throws SQLException {
         // TODO
     }

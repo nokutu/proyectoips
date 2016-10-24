@@ -21,203 +21,193 @@ import java.util.Optional;
 
 public class BookForCenterDialog extends JDialog {
 
-    private static final long serialVersionUID = 8497586255693077533L;
+	private static final long serialVersionUID = 8497586255693077533L;
 
-    private Facility facility;
-    private Timestamp hourStart;
-    private Timestamp hourEnd;
-    private int centerId = 0;
+	private Facility facility;
+	private Timestamp hourStart;
+	private Timestamp hourEnd;
+	private int centerId = 0;
 
-    private JDateChooser dateChooser;
-    private JSpinner hourSp1;
-    private JSpinner hourSp2;
-    private Form form;
+	private JDateChooser dateChooser;
+	private JSpinner hourSp1;
+	private JSpinner hourSp2;
+	private Form form;
 
-    public BookForCenterDialog(JFrame owner, Facility facility, Timestamp hourStart,
-                               Timestamp hourEnd) {
-        super(owner, true);
-        setResizable(false);
+	public BookForCenterDialog(JFrame owner, Facility facility,
+			Timestamp hourStart, Timestamp hourEnd) {
+		super(owner, true);
+		setResizable(false);
 
-        this.facility = facility;
-        this.hourStart = hourStart;
-        this.hourEnd = hourEnd;
+		this.facility = facility;
+		this.hourStart = hourStart;
+		this.hourEnd = hourEnd;
 
-        construir(owner);
-    }
+		construir(owner);
+	}
 
-    public void construir(JFrame owner) {
-        JPanel content = new JPanel();
-        content.setLayout(new BorderLayout());
-        setContentPane(content);
+	public void construir(JFrame owner) {
+		JPanel content = new JPanel();
+		content.setLayout(new BorderLayout());
+		setContentPane(content);
 
-        //form creada
-        form = new Form();
-        content.add(form.getPanel(), BorderLayout.CENTER);
-        addForm(hourStart == null);
+		// form creada
+		form = new Form();
+		content.add(form.getPanel(), BorderLayout.CENTER);
+		addForm(hourStart == null);
 
-        //botones
+		// botones
 
-        JButton btnConfirm = new JButton("OK");
-        btnConfirm.addActionListener(this::confirm);
-        btnConfirm.setMnemonic('A');
+		JButton btnConfirm = new JButton("OK");
+		btnConfirm.addActionListener(this::confirm);
+		btnConfirm.setMnemonic('A');
 
-        JButton btnCancel = new JButton("Cancelar");
-        btnCancel.addActionListener(this::cancel);
-        btnCancel.setMnemonic('C');
+		JButton btnCancel = new JButton("Cancelar");
+		btnCancel.addActionListener(this::cancel);
+		btnCancel.setMnemonic('C');
 
+		GridBagConstraints c;
 
-        GridBagConstraints c;
+		JPanel bottom = new JPanel();
+		bottom.setLayout(new BorderLayout());
+		content.add(bottom, BorderLayout.SOUTH);
 
-        JPanel bottom = new JPanel();
-        bottom.setLayout(new BorderLayout());
-        content.add(bottom, BorderLayout.SOUTH);
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new GridBagLayout());
+		c = new GridBagConstraints();
+		c.insets = new Insets(20, 0, 10, 5);
+		bottom.add(buttons, BorderLayout.EAST);
 
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-        c.insets = new Insets(20, 0, 10, 5);
-        bottom.add(buttons, BorderLayout.EAST);
+		buttons.add(btnConfirm, c);
+		c.insets = new Insets(20, 5, 10, 10);
+		c.gridx = 1;
+		buttons.add(btnCancel, c);
 
+		pack();
+		setLocationRelativeTo(owner);
 
-        buttons.add(btnConfirm, c);
-        c.insets = new Insets(20, 5, 10, 10);
-        c.gridx = 1;
-        buttons.add(btnCancel, c);
+	}
 
+	public BookForCenterDialog(JFrame owner) {
+		this(owner, null, null, null);
+	}
 
-        pack();
-        setLocationRelativeTo(owner);
+	private void addForm(boolean addDate) {
 
-    }
+		if (addDate) {
+			dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+			dateChooser.setDate(Utils.getCurrentDate());
+			form.addLine(new JLabel("Fecha:"), dateChooser);
+		}
 
-    public BookForCenterDialog(JFrame owner) {
-        this(owner, null, null, null);
-    }
+		selectStartEndTime(form);
 
+	}
 
-    private void addForm(boolean addDate) {
+	private void selectStartEndTime(Form form) {
+		hourSp1 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+		form.addLine(new JLabel("Hora de inicio:"), hourSp1);
+		hourSp2 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+		form.addLine(new JLabel("Hora de fin: "), hourSp2);
 
-        if (addDate) {
-            dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            dateChooser.setDate(Utils.getCurrentDate());
-            form.addLine(new JLabel("Fecha:"), dateChooser);
-        }
+		form.addLine(new JLabel("Instalacion:"), new JTextField(20));
+	}
 
-        selectStartEndTime(form);
+	private void cancel(ActionEvent actionEvent) {
+		dispose();
+	}
 
-    }
+	public void confirm(ActionEvent arg0) {
 
-    private void selectStartEndTime(Form form) {
-        hourSp1 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("Hora de inicio:"), hourSp1);
-        hourSp2 = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("Hora de fin: "), hourSp2);
+		Timestamp hourStart;
+		Timestamp hourEnd;
+		int facilityId = -1;
+		List<String> results = form.getResults();
 
+		if (this.hourStart == null) {
+			hourStart = new Timestamp(Utils.addHourToDay(
+					new Timestamp(Long.parseLong(results.get(0))),
+					Integer.parseInt(results.get(1))).getTime());
+			hourEnd = new Timestamp(Utils.addHourToDay(
+					new Timestamp(Long.parseLong(results.get(0))),
+					Integer.parseInt(results.get(2))).getTime());
+			facilityId = Integer.parseInt(results.get(3));
+		} else {
+			facilityId = facility.getFacilityId();
+			hourStart = this.hourStart;
+			hourEnd = this.hourEnd;
+		}
 
-        form.addLine(new JLabel("Instalacion:"), new JTextField(20));
-    }
+		FacilityBooking fb = new FacilityBooking(facilityId, centerId,
+				hourStart, hourEnd, null, false, false);
 
-    private void cancel(ActionEvent actionEvent) {
-        dispose();
-    }
+		if (valid(fb)) {
 
-    public void confirm(ActionEvent arg0) {
+			boolean creation = true;
+			// Inicia la comprobacion de la reserva
+			for (FacilityBooking f : Database.getInstance()
+					.getFacilityBookings()) {
 
-        Timestamp hourStart;
-        Timestamp hourEnd;
-        int facilityId = -1;
-        List<String> results = form.getResults();
+				if (f.getTimeStart().equals(fb.getTimeStart())
+						|| f.getTimeEnd().equals(fb.getTimeEnd())) {
+					if (f.getMemberId() != 0) {
+						if (JOptionPane.YES_OPTION == JOptionPane
+								.showConfirmDialog(null,
+										"Existen reservas de miembros en esta fecha, ¿desea borrarlas?")) {
+							f.setDeletedFlag(true);
 
+							try {
+								f.update();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 
-        if (this.hourStart == null) {
-            hourStart = new Timestamp(
-                    Utils.addHourToDay(new Timestamp(Long.parseLong(results.get(0))),
-                            Integer.parseInt(results.get(1))).getTime());
-            hourEnd = new Timestamp(Utils.addHourToDay(
-                    new Timestamp(Long.parseLong(results.get(0))),
-                    Integer.parseInt(results.get(2))).getTime());
-            facilityId = Integer.parseInt(results.get(3));
-        } else {
-            facilityId = facility.getFacilityId();
-            hourStart = this.hourStart;
-            hourEnd = this.hourEnd;
-        }
+						} else {
+							creation = false;
+						}
 
+					} else {
+						JOptionPane
+								.showMessageDialog(null,
+										"Ya existe una reserva de la instalacion hecha por el centro en esta fecha");
+						creation = false;
+					}
+				}
+			}
 
-        FacilityBooking fb = new FacilityBooking(facilityId, centerId, hourStart, hourEnd, null, false, false);
+			if (creation) {
+				Database.getInstance().getFacilityBookings().add(fb);
+				try {
+					fb.create();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				dispose();
+			}
 
-        if (valid(fb)) 
-        {
-        	
-        	boolean creation=true;
-        	
-        	for(FacilityBooking f:Database.getInstance().getFacilityBookings() )
-        	{
-        		
-        		
-        		if(f.getTimeStart().equals(fb.getTimeStart())|| f.getTimeEnd().equals(fb.getTimeEnd()))
-        		{
-        			if(f.getMemberId()!=0)
-        			{
-        				if(JOptionPane.YES_OPTION==JOptionPane.showConfirmDialog(null,"Existen reservas de miembros en esta fecha, ¿desea borrarlas?"))
-        				{
-        					f.setDeletedFlag(true);
-        					
-        					try {
-        						f.update();
-        					} catch (SQLException e) {
-        						e.printStackTrace();
-        					}
-        						
-        				}
-        				else
-        				{
-        						creation=false;
-        				}
-        				
-        			}
-        			else
-        			{
-        				JOptionPane.showMessageDialog(null,"Ya existe una reserva de la instalacion hecha por el centro en esta fecha");
-        				creation=false;
-        			}
-        		}
-        	}
-           
-		if(creation)
-        {
-        		Database.getInstance().getFacilityBookings().add(fb); 
-        		try {
-        				fb.create();
-        		} catch (SQLException e) {
-        				e.printStackTrace();
-        		}
-        		dispose();
-        }	
-        
-        }
-        
+		}
 
-    }
+	}
 
-    private boolean valid(FacilityBooking fb) {
-        boolean valid = true;
+	private boolean valid(FacilityBooking fb) {
+		boolean valid = true;
 
+		Optional<Facility> facility = Database.getInstance().getFacilities()
+				.stream()
+				.filter((f) -> f.getFacilityId() == fb.getFacilityId())
+				.findAny();
 
-        Optional<Facility> facility = Database.getInstance().getFacilities().stream().filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+		// la facility debe existir
+		if (!facility.isPresent()) {
+			valid = false;
+		}
 
-        //la facility debe existir
-        if (!facility.isPresent()) {
-            valid = false;
-        }
-        
+		// invalided de los spinners
+		if (fb.getTimeEnd().before(fb.getTimeStart())
+				|| fb.getTimeStart().before(Utils.getCurrentDate())) {
+			valid = false;
+		}
 
-        //invalided de los spinners 
-        if (fb.getTimeEnd().before( fb.getTimeStart())||fb.getTimeStart().before(Utils.getCurrentDate())) {
-            valid = false;
-        }
-
-        return valid;
-    }
+		return valid;
+	}
 
 }
