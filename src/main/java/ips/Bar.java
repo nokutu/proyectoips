@@ -3,6 +3,7 @@ package ips;
 import ips.administrator.AdministratorMainScreen;
 import ips.member.MemberMain;
 
+import ips.member.MemberMainScreen;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -52,7 +53,7 @@ public class Bar extends JMenuBar {
 
     private void addMember(JMenu change, ButtonGroup g) {
         member = new JRadioButtonMenuItem("Socio");
-        member.addActionListener((e) -> MainWindow.getInstance().setContent(new MemberMain()));
+        member.addActionListener((e) -> MainWindow.getInstance().setContent(new MemberMainScreen()));
         g.add(member);
         change.add(member);
     }
