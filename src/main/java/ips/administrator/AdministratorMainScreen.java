@@ -24,10 +24,6 @@ public class AdministratorMainScreen extends JPanel {
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
 
         upperPanel.add(new JButton("Ver actividades"));
-        JButton periodicBooking = new JButton("Reservar periódicamente");
-
-        periodicBooking.addActionListener(l -> new PeriodicBooking(MainWindow.getInstance()).setVisible(true));
-        upperPanel.add(periodicBooking);
 
         setRightPanel(new AdministratorBookPanel());
     }

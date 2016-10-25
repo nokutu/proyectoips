@@ -71,7 +71,6 @@ CREATE TABLE activitymembers (
     PRIMARY KEY(activity_id, member_id),
 );
 
-INSERT INTO member VALUES (0, 'Administrator',true);
 INSERT INTO member VALUES (1, 'Gabriel',true);
 INSERT INTO member VALUES (2, 'Jorge',true);
 INSERT INTO member VALUES (3, 'Sergio',true);

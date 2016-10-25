@@ -4,9 +4,9 @@ import com.toedter.calendar.JDateChooser;
 import ips.Utils;
 import ips.database.*;
 import ips.gui.Form;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,6 +15,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,12 +71,7 @@ public class AdministratorBookPanel extends JPanel {
         if (addExtra) {
             dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
             dateChooser.setDate(Utils.getCurrentDate());
-            dateChooser.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    System.out.println();
-                }
-            });
+
             form.addLine(new JLabel("Fecha:"), dateChooser);
 
             JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
@@ -144,19 +141,51 @@ public class AdministratorBookPanel extends JPanel {
 
 
     private void confirm(ActionEvent actionEvent) {
-        FacilityBooking fb = createBooking();
+        List<FacilityBooking> bookings = new ArrayList<>();
 
-        if (Integer.parseInt(form.getResults().get(4)) == 0) {
-            // No repetir
-        } else {
-            // Repetir
+        Timestamp time = new Timestamp(
+                Utils.addHourToDay(
+                        new Timestamp(Long.parseLong(form.getResults().get(0))),
+                        Integer.parseInt(form.getResults().get(1))).getTime()
+        );
+        Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(5)));
+
+        long increase = 0;
+        while (time.before(repetitionEnd)) {
+            bookings.add(createBooking(increase));
+
+            if (Integer.parseInt(form.getResults().get(4)) == 1) {
+                // Semanalmente
+                Calendar c = Calendar.getInstance();
+                c.setTime(time);
+                c.add(Calendar.WEEK_OF_YEAR, 1);
+                increase += c.getTime().getTime() - time.getTime();
+                time = new Timestamp(c.getTime().getTime());
+            } else if (Integer.parseInt(form.getResults().get(4)) == 2) {
+                // Mensualmente
+                Calendar c = Calendar.getInstance();
+                c.setTime(time);
+                c.add(Calendar.MONTH, 1);
+                increase += c.getTime().getTime() - time.getTime();
+                time = new Timestamp(c.getTime().getTime());
+            } else {
+                // No repetir
+                break;
+            }
         }
 
-        if (fb != null) {
-            if ((fb.getMemberId() != 0 && checkValidMember(fb)) || (
-                    fb.getMemberId() == 0 && checkValidCenter(fb))) {
-                try {
+        boolean valid = true;
+        for (FacilityBooking fb : bookings) {
+            if ((fb.getMemberId() != 0 && !checkValidMember(fb)) || (
+                    fb.getMemberId() == 0 && !checkValidCenter(fb))) {
+                valid = false;
+                break;
+            }
+        }
 
+        if (valid) {
+            for (FacilityBooking fb : bookings) {
+                try {
                     if (Boolean.parseBoolean(form.getResults().get(8))) {
                         ActivityBooking ab = new ActivityBooking(form.getResults().get(9), fb.getFacilityId(), fb.getTimeStart());
                         Database.getInstance().getActivityBookings().add(ab);
@@ -175,6 +204,10 @@ public class AdministratorBookPanel extends JPanel {
     }
 
     private FacilityBooking createBooking() {
+        return createBooking(0);
+    }
+
+    private FacilityBooking createBooking(long addTime) {
         int facilityId = -1;
         int memberId = -1;
         Timestamp timeStart;
@@ -193,6 +226,9 @@ public class AdministratorBookPanel extends JPanel {
                         new Timestamp(Long.parseLong(results.get(0))),
                         Integer.parseInt(results.get(2))).getTime()
                 );
+                timeStart = new Timestamp(timeStart.getTime() + addTime);
+                timeEnd = new Timestamp(timeEnd.getTime() + addTime);
+
                 facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
                 memberId = Integer.parseInt(results.get(6));
                 paymentMethod = results.get(7);

@@ -121,13 +121,13 @@ public class MemberBookPanel extends JPanel {
                         new Timestamp(Long.parseLong(results.get(0))),
                         Integer.parseInt(results.get(2))).getTime());
                 facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
-                memberId = MemberMain.userID;
+                memberId = MemberMainScreen.userID;
                 paymentMethod = results.get(4);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;
                 timeEnd = this.timeEnd;
-                memberId = MemberMain.userID;
+                memberId = MemberMainScreen.userID;
                 paymentMethod = results.get(0);
             }
 

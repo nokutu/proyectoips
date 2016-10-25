@@ -37,7 +37,7 @@ public class MemberBookingCancelDialog {
 	public static void show(FacilityBooking booking){
 		MemberBookingCancelDialog.booking = booking;
 		if (isPossible()) {
-			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "�Estas seguro que quieres cancelar esta reserva?",
+			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "¿Estás seguro de que quieres cancelar esta reserva?",
 					"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
 			if (r == JOptionPane.OK_OPTION) {
 				booking.setDeletedFlag(true);// to have a bookings log, we dont

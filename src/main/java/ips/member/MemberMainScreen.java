@@ -1,20 +1,21 @@
 package ips.member;
 
-import ips.MainWindow;
-import ips.administrator.AdministratorBookPanel;
-import ips.administrator.PeriodicBooking;
 import ips.database.Database;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 
 /**
  * Created by nokutu on 24/10/2016.
  */
 public class MemberMainScreen extends JPanel {
+
+    public static int userID;
 
     private final JTextField userIDTextField;
     private JPanel rightPanel;
@@ -37,7 +38,22 @@ public class MemberMainScreen extends JPanel {
         userIDPanel.add(new JLabel("ID de socio:"));
         userIDTextField = new JTextField(10);
         userIDPanel.add(userIDTextField);
+        userIDTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateUser(userIDTextField.getText());
+            }
 
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateUser(userIDTextField.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateUser(userIDTextField.getText());
+            }
+        });
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
 
         upperPanel.add(new JButton("Ver actividades"));
@@ -53,7 +69,15 @@ public class MemberMainScreen extends JPanel {
         rightPanel = panel;
     }
 
-    public boolean checkUser(String id) {
+    private void updateUser(String id) {
+        if (checkUser(id)) {
+            userID = Integer.parseInt(id);
+        } else {
+            userID = 0;
+        }
+    }
+
+    private boolean checkUser(String id) {
         try {
             return Database.getInstance().getMembers().stream().filter(m -> m.getMemberId() == Integer.parseInt(id)).findAny().isPresent();
         } catch (NumberFormatException e) {
