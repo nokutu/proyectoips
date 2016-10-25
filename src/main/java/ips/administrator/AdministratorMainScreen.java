@@ -1,6 +1,5 @@
 package ips.administrator;
 
-import ips.MainWindow;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -23,11 +22,9 @@ public class AdministratorMainScreen extends JPanel {
 
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
 
-        upperPanel.add(new JButton("Ver actividades"));
-        JButton periodicBooking = new JButton("Reservar periódicamente");
-
-        periodicBooking.addActionListener(l -> new PeriodicBooking(MainWindow.getInstance()).setVisible(true));
-        upperPanel.add(periodicBooking);
+        JButton activitiesButton = new JButton("Ver actividades");
+        activitiesButton.addActionListener(l -> new AdministratorActivitiesDialog().setVisible(true));
+        upperPanel.add(activitiesButton);
 
         setRightPanel(new AdministratorBookPanel());
     }

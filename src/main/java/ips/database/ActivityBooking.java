@@ -40,4 +40,12 @@ public class ActivityBooking implements DatabaseItem {
     public void update() throws SQLException {
         // TODO
     }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public Timestamp getBookingTimeStart() {
+        return bookingTimeStart;
+    }
 }

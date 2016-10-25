@@ -28,7 +28,7 @@ public class AdministratorBookingCancelDialog {
 	
 	public static void show(FacilityBooking booking){
 		AdministratorBookingCancelDialog.booking = booking;
-		int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "¿Estas seguro que quieres cancelar esta reserva?",
+		int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "Â¿Estas seguro que quieres cancelar esta reserva?",
 				"Confirmacion de cancelacion", JOptionPane.OK_CANCEL_OPTION);
 		if (r == JOptionPane.OK_OPTION) {
 			if (booking.getMemberId() == 0) {// ADMIN BOOKING (we identify the
@@ -42,7 +42,7 @@ public class AdministratorBookingCancelDialog {
 				}
 			} else { // MEMBER BOOKING
 				if (isRequieredPayment()) { // cobrar el pago
-					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargará el pago a la cuota del socio",
+					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargarÃ¡ el pago a la cuota del socio",
 							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 //TODO ver esto
 					

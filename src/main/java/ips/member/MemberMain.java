@@ -51,7 +51,7 @@ public class MemberMain extends JPanel {
                 userValid = false;
             }
             if (userValid) {
-                new MemberBookingDialog(MainWindow.getInstance()).setVisible(true);
+                new MemberBookPanel().setVisible(true);
             }
         });
         center.add(bookForMember);

@@ -7,13 +7,15 @@ import ips.database.Facility;
 import ips.database.FacilityBooking;
 import ips.database.Member;
 import ips.gui.Form;
-
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.border.BevelBorder;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,43 +23,44 @@ import java.util.stream.Collectors;
 /**
  * The member makes a booking for himself.
  */
-public class MemberBookingDialog extends JDialog {
+public class MemberBookPanel extends JPanel {
 
     private Facility facility;
     private Timestamp timeStart;
     private Timestamp timeEnd;
 
     private JButton confirm;
-    private JButton cancel;
 
     private Form form;
 
-    public MemberBookingDialog(JFrame owner) {
-        this(owner, null, null, null);
+    public MemberBookPanel() {
+        this(null, null, null);
     }
 
-    public MemberBookingDialog(JFrame owner, Facility facility, Timestamp timeStart, Timestamp timeEnd) {
-        super(owner, true);
-        setResizable(false);
-
+    public MemberBookPanel(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
         this.facility = facility;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
 
-        JPanel content = new JPanel();
-        content.setLayout(new BorderLayout());
-        setContentPane(content);
+        setLayout(new GridBagLayout());
 
-        createButtons();
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(20, 0, 10, 5);
+        c.gridx = 0;
+        c.gridy = 0;
 
         form = new Form();
+        setBorder(new BevelBorder(BevelBorder.LOWERED));
+        add(form.getPanel(), c);
+
         addForm(timeStart == null);
 
-        content.add(form.getPanel());
-        addButtons(content);
-
-        pack();
-        setLocationRelativeTo(owner);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 5);
+        c.gridy = 1;
+        confirm = new JButton("Reservar");
+        confirm.addActionListener(this::confirm);
+        add(confirm, c);
     }
 
     private void addForm(boolean addExtra) {
@@ -87,36 +90,17 @@ public class MemberBookingDialog extends JDialog {
         form.addLine(new JLabel("Método de pago:"), paymentCombo);
     }
 
-    private void addButtons(JPanel content) {
-        GridBagConstraints c;
-
-        JPanel bottom = new JPanel();
-        bottom.setLayout(new BorderLayout());
-        content.add(bottom, BorderLayout.SOUTH);
-
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-        c.insets = new Insets(20, 0, 10, 5);
-        bottom.add(buttons, BorderLayout.EAST);
-        buttons.add(confirm, c);
-        c.insets = new Insets(20, 5, 10, 10);
-        c.gridx = 1;
-        buttons.add(cancel, c);
-    }
-
     private void confirm(ActionEvent actionEvent) {
         FacilityBooking fb = createBooking();
 
-        if (checkValid(fb)) {
+        if (checkValid(fb) & fb != null) {
             Database.getInstance().getFacilityBookings().add(fb);
             try {
                 fb.create();
+                form.setMessage("Reserva realizada");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-            dispose();
         }
     }
 
@@ -137,13 +121,13 @@ public class MemberBookingDialog extends JDialog {
                         new Timestamp(Long.parseLong(results.get(0))),
                         Integer.parseInt(results.get(2))).getTime());
                 facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
-                memberId = MemberMain.userID;
+                memberId = MemberMainScreen.userID;
                 paymentMethod = results.get(4);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;
                 timeEnd = this.timeEnd;
-                memberId = MemberMain.userID;
+                memberId = MemberMainScreen.userID;
                 paymentMethod = results.get(0);
             }
 
@@ -151,10 +135,6 @@ public class MemberBookingDialog extends JDialog {
         } catch (NumberFormatException e) {
             return null;
         }
-    }
-
-    private void cancel(ActionEvent actionEvent) {
-        dispose();
     }
 
     private boolean checkValid(FacilityBooking fb) {
@@ -177,7 +157,7 @@ public class MemberBookingDialog extends JDialog {
                     fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
                 // More than 2 hours
                 valid = false;
-                errors += "Un socio solo puedo reservar un máximo de 2 horas. El tiempo de finalización debe ser posterior al de inicio.\n";
+                errors += "Un socio solo puedo reservar un máximo de 2 horas.\nEl tiempo de finalización debe ser posterior al de inicio.\n";
             }
 
             Optional<Member> member = Database.getInstance().getMembers().stream()
@@ -186,8 +166,8 @@ public class MemberBookingDialog extends JDialog {
                 // Member not valid
                 errors += "Id de miembro no válida.\n";
                 valid = false;
-            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())){
-                errors += "Ya tienes una reserva en esta franja de tiempo.";
+            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+                errors += "Ya tienes una reserva en esta franja de tiempo.\n";
                 valid = false;
             }
 
@@ -211,12 +191,5 @@ public class MemberBookingDialog extends JDialog {
         }
 
         return valid;
-    }
-
-    private void createButtons() {
-        confirm = new JButton("Confirm");
-        confirm.addActionListener(this::confirm);
-        cancel = new JButton("Cancel");
-        cancel.addActionListener(this::cancel);
     }
 }
