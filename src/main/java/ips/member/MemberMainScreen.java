@@ -1,13 +1,13 @@
 package ips.member;
 
 import ips.database.Database;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import java.awt.BorderLayout;
 
 /**
@@ -33,7 +33,7 @@ public class MemberMainScreen extends JPanel {
         northPanel.add(upperPanel, BorderLayout.CENTER);
 
         JPanel userIDPanel = new JPanel();
-        northPanel.add(userIDPanel, BorderLayout.SOUTH);
+        northPanel.add(userIDPanel, BorderLayout.NORTH);
 
         userIDPanel.add(new JLabel("ID de socio:"));
         userIDTextField = new JTextField(10);
@@ -56,7 +56,13 @@ public class MemberMainScreen extends JPanel {
         });
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
 
-        upperPanel.add(new JButton("Ver actividades"));
+        JButton activitiesButton = new JButton("Ver actividades");
+        activitiesButton.addActionListener(l -> {
+            if (userID != 0) {
+                new MemberActivitiesDialog().setVisible(true);
+            }
+        });
+        upperPanel.add(activitiesButton);
 
         setRightPanel(new MemberBookPanel());
     }

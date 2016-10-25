@@ -4,15 +4,13 @@ import com.toedter.calendar.JDateChooser;
 import ips.Utils;
 import ips.database.*;
 import ips.gui.Form;
-
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -92,15 +90,7 @@ public class AdministratorBookPanel extends JPanel {
         endDateChooser.setDate(Utils.getCurrentDate());
         endDateChooser.setEnabled(false);
 
-        form.addSpace();
 
-        JComboBox<String> recursive = new JComboBox<>();
-        DefaultComboBoxModel<String> recursiveModel = new DefaultComboBoxModel<>(new String[]{"No repetir", "Semanalmente", "Mensualmente"});
-        recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.getSelectedIndex() > 0));
-        recursive.setModel(recursiveModel);
-        form.addLine(new JLabel("Repetir:"), recursive, false);
-
-        form.addLine(new JLabel("Fecha fin repetición:"), endDateChooser);
 
         form.addSpace();
 
@@ -111,11 +101,15 @@ public class AdministratorBookPanel extends JPanel {
         JCheckBox assignToActivity = new JCheckBox("Asignar a actividad");
         JComboBox<String> activities = new JComboBox<>();
 
+        JComboBox<String> recursive = new JComboBox<>();
+
         bookForCenter.addActionListener(l -> {
             idTextField.setEnabled(!bookForCenter.isSelected());
             paymentCombo.setEnabled(!bookForCenter.isSelected());
             assignToActivity.setEnabled(bookForCenter.isSelected());
             activities.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
+            recursive.setEnabled(bookForCenter.isSelected());
+            endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.getSelectedIndex() != 0);
             idTextField.setText(String.valueOf(0));
         });
         form.addLine(bookForCenter);
@@ -124,6 +118,16 @@ public class AdministratorBookPanel extends JPanel {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
         paymentCombo.setModel(model);
         form.addLine(new JLabel("Método de pago:"), paymentCombo);
+
+        form.addSpace();
+
+        recursive.setEnabled(false);
+        DefaultComboBoxModel<String> recursiveModel = new DefaultComboBoxModel<>(new String[]{"No repetir", "Semanalmente", "Mensualmente"});
+        recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.getSelectedIndex() > 0));
+        recursive.setModel(recursiveModel);
+        form.addLine(new JLabel("Repetir:"), recursive, false);
+
+        form.addLine(new JLabel("Fecha fin repetición:"), endDateChooser);
 
         assignToActivity.setEnabled(false);
         activities.setEnabled(false);
@@ -148,10 +152,10 @@ public class AdministratorBookPanel extends JPanel {
                         new Timestamp(Long.parseLong(form.getResults().get(0))),
                         Integer.parseInt(form.getResults().get(1))).getTime()
         );
-        Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(5)));
+        Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(6)));
 
         long increase = 0;
-        while (time.before(repetitionEnd)) {
+        while (time.before(repetitionEnd) || increase == 0) {
             bookings.add(createBooking(increase));
 
             if (Integer.parseInt(form.getResults().get(4)) == 1) {
@@ -184,8 +188,8 @@ public class AdministratorBookPanel extends JPanel {
         }
 
         if (valid) {
-            for (FacilityBooking fb : bookings) {
-                try {
+            try {
+                for (FacilityBooking fb : bookings) {
                     if (Boolean.parseBoolean(form.getResults().get(8))) {
                         ActivityBooking ab = new ActivityBooking(form.getResults().get(9), fb.getFacilityId(), fb.getTimeStart());
                         Database.getInstance().getActivityBookings().add(ab);
@@ -194,11 +198,10 @@ public class AdministratorBookPanel extends JPanel {
 
                     Database.getInstance().getFacilityBookings().add(fb);
                     fb.create();
-
-                    form.setMessage("Reserva creada correctamente");
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
+                form.setMessage("Reserva creada correctamente");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -230,8 +233,8 @@ public class AdministratorBookPanel extends JPanel {
                 timeEnd = new Timestamp(timeEnd.getTime() + addTime);
 
                 facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
-                memberId = Integer.parseInt(results.get(6));
-                paymentMethod = results.get(7);
+                memberId = Integer.parseInt(results.get(4));
+                paymentMethod = results.get(5);
             } else {
                 facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;

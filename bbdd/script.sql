@@ -17,7 +17,9 @@ CREATE TABLE facilityBooking (
     facilitybooking_deleted BOOLEAN,
 	entrance TIMESTAMP,
 	abandon TIMESTAMP,
+	state VARCHAR(16)
     CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
+    CONSTRAINT chk_state CHECK (state IN ('Valid', 'Annulled', 'Canceled')),
     PRIMARY KEY (facility_id, time_start)
 );
 
@@ -79,8 +81,25 @@ INSERT INTO facility VALUES (1, 5,'Tennis 1');
 INSERT INTO facility VALUES (2, 3,'Tennis 2');
 
 INSERT INTO facilitybooking VALUES (1, 1,
-    PARSEDATETIME('17-10-2016 18:0:0', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('17-10-2016 19:0:0', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('12-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('12-11-2016 19:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    'Cash', false, false, null, null);
+INSERT INTO facilitybooking VALUES (2, 1,
+    PARSEDATETIME('10-11-2016 15:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('12-11-2016 16:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    'Cash', false, false, null, null);
+INSERT INTO facilitybooking VALUES (1, 2,
+    PARSEDATETIME('13-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('13-11-2016 12:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    'Cash', false, false, null, null);
+INSERT INTO facilitybooking VALUES (0, 2,
+    PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null);
 
 INSERT INTO activity VALUES ('Taller 1', 25);
+INSERT INTO activity VALUES ('Taller 2', 50);
+INSERT INTO activity VALUES ('Taller 3', 75);
+INSERT INTO activity VALUES ('Yoga 1', 10);
+
+INSERT INTO activitybooking VALUES("Taller 1", 2, PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'))
