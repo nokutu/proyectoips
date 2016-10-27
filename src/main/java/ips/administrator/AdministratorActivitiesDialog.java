@@ -1,6 +1,7 @@
 package ips.administrator;
 
 import ips.MainWindow;
+import ips.database.ActivityMember;
 import ips.database.Database;
 import ips.database.Member;
 
@@ -9,6 +10,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +29,7 @@ public class AdministratorActivitiesDialog extends JDialog {
         createLeftPanel();
         createBottomPanel();
         // TODO añadir el panel central
+        createCenterPanel();
 
         setMinimumSize(new Dimension(320, 180));
         pack();
@@ -77,6 +80,22 @@ public class AdministratorActivitiesDialog extends JDialog {
 
         sessions.addActionListener(l -> {
             // TODO update central list
+        	DefaultListModel<String> model=new DefaultListModel();
+        	membersInSession=new ArrayList<>();
+        	for(ActivityMember am :Database.getInstance().getActivityMembers())
+        	{
+        		if(am.getActivityName().equals(activities.getSelectedItem()))
+        		{
+        			Member member= Database.getInstance().getMemberById(am.getMemberId());
+        			if(am.isAssistance())
+        			{
+        				//la lista contiene a los miembros asistentes
+        				membersInSession.add(member);
+        			}
+        			model.addElement(member.getMemberName());
+        		}
+        	}
+        	memberList.setModel(model);
         });
 
         leftPanel.add(sessions, c);
@@ -99,6 +118,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
     private void createCenterPanel() {
         memberList = new JList<>();
+        DefaultListModel<String> model=new DefaultListModel();
 
         // TODO
 

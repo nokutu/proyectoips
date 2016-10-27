@@ -64,7 +64,19 @@ public class ActivityMember implements DatabaseItem {
         return memberId;
     }
 
-    public void setDeleted(boolean deleted) {
+    public String getActivityName() {
+		return activityName;
+	}
+    
+	public boolean isAssistance() {
+		return assistance;
+	}
+
+	public void setAssistance(boolean assistance) {
+		this.assistance = assistance;
+	}
+
+	public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 }
