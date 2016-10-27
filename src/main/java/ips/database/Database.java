@@ -14,10 +14,11 @@ public class Database {
     private final static String QUERY_FACILITIES = "SELECT * FROM facility";
     private final static String QUERY_MEMBERS = "SELECT * FROM member";
     private final static String QUERY_FACILITYBOOKINGS = "SELECT * FROM facilitybooking";
-    private final static  String QUERY_FEE = "SELECT * FROM fee";
-    private final static  String QUERY_FEEITEM = "SELECT * FROM feeItem";
+    private final static String QUERY_FEE = "SELECT * FROM fee";
+    private final static String QUERY_FEEITEM = "SELECT * FROM feeItem";
     private final static String QUERY_ACTIVITY = "SELECT * FROM activity";
-    private static final String QUERY_ACTIVITY_BOOKING = "SELECT * FROM activitybooking";
+    private final static String QUERY_ACTIVITY_BOOKING = "SELECT * FROM activitybooking";
+    private final static String QUERY_ACTIVITY_MEMBER = "SELECT * FROM activitymember";
 
     private static Database instance;
     private Connection conn;
@@ -29,6 +30,7 @@ public class Database {
     private List<FeeItem> feeItems;
     private List<Activity> activities;
     private List<ActivityBooking> activityBookings;
+    private List<ActivityMember> activityMembers;
 
     public static Database getInstance() {
         if (instance == null) {
@@ -45,6 +47,7 @@ public class Database {
         feeItems = new LinkedList<>();
         activities = new LinkedList<>();
         activityBookings = new LinkedList<>();
+        activityMembers = new LinkedList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
@@ -79,7 +82,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_MEMBERS);
         while (rs.next()) {
-            members.add(new Member(rs.getInt(1), rs.getString(2), rs.getBoolean("dado_alta")));
+            members.add(new Member(rs.getInt(1), rs.getString(2), rs.getBoolean(3)));
         }
 
         s = conn.createStatement();
@@ -93,7 +96,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEE);
         while (rs.next()) {
-            fees.add(new Fee(rs.getInt("fee_member_id"), rs.getDate("fee_month"), rs.getDouble("cuota_base")));
+            fees.add(new Fee(rs.getInt("fee_member_id"), rs.getDate("fee_month"), rs.getDouble("fee_base")));
         }
 
         s = conn.createStatement();
@@ -112,6 +115,12 @@ public class Database {
         rs = s.executeQuery(QUERY_ACTIVITY_BOOKING);
         while (rs.next()) {
             activityBookings.add(new ActivityBooking(rs.getString(1), rs.getInt(2), rs.getTimestamp(3)));
+        }
+
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_ACTIVITY_MEMBER);
+        while (rs.next()) {
+            activityMembers.add(new ActivityMember(rs.getString(1), rs.getTimestamp(2), rs.getInt(3), rs.getBoolean(4), rs.getBoolean(5)));
         }
     }
 
@@ -179,20 +188,24 @@ public class Database {
     }
 
 
-	public FacilityBooking getBookingById(int id, int hora) {
-		for (FacilityBooking b : facilityBookings) {
-            if (b.getFacilityId() == id && b.getTimeStart().getHours()==hora)
+    public FacilityBooking getBookingById(int id, int hora) {
+        for (FacilityBooking b : facilityBookings) {
+            if (b.getFacilityId() == id && b.getTimeStart().getHours() == hora)
                 return b;
         }
         throw new RuntimeException("Do not exists");
     }
-	
-	
+
+
     public List<Activity> getActivities() {
         return activities;
     }
 
     public List<ActivityBooking> getActivityBookings() {
         return activityBookings;
+    }
+
+    public List<ActivityMember> getActivityMembers() {
+        return activityMembers;
     }
 }

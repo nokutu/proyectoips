@@ -5,22 +5,20 @@ package ips.database;
  */
 public class Member implements DatabaseItem {
 
-	public static double cuota_base = 15; // cuota base de todos los socios
+	public static double fee_base = 15; // cuota base de todos los socios
 	
 	private int memberId;
 	private String memberName;
-	private boolean de_alta; // si se da de baja pasa a ser false
+	private boolean subscribed; // si se da de baja pasa a ser false
 
 	public Member(int memberId, String memberName) {
-		this.memberId = memberId;
-		this.memberName = memberName;
-		de_alta = true;
+		this(memberId, memberName, true);
 	}
 
 	public Member(int memberId, String memberName, boolean alta) {
 		this.memberId = memberId;
 		this.memberName = memberName;
-		de_alta = alta;
+		subscribed = alta;
 	}
 
 	@Override
@@ -41,12 +39,12 @@ public class Member implements DatabaseItem {
 		return memberName;
 	}
 
-	public boolean isDe_alta() {
-		return de_alta;
+	public boolean isSubscribed() {
+		return subscribed;
 	}
 
-	public void setDe_alta(boolean de_alta) {
-		this.de_alta = de_alta;
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
 	}
 
 }

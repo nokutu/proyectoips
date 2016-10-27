@@ -15,7 +15,7 @@ public class ActivityBooking implements DatabaseItem {
     private int facilityId;
     private Timestamp bookingTimeStart;
 
-    private PreparedStatement createStatement;
+    private static PreparedStatement createStatement;
 
     public ActivityBooking(String activityName, int facilityId, Timestamp bookingTimeStart) {
         this.activityName = activityName;

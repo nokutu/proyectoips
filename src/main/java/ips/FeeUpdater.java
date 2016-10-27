@@ -99,7 +99,7 @@ public class FeeUpdater {
 					} finally {
 						pago.setPayed(true); // payed
 						Member socio = Database.getInstance().getMemberById(pago.getMemberId());
-						if(!socio.isDe_alta()){ // si esta de baja
+						if(!socio.isSubscribed()){ // si esta de baja
 							sociosDeBajaConPagosPendientes.add(socio);
 							
 						}

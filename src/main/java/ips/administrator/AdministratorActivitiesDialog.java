@@ -2,18 +2,22 @@ package ips.administrator;
 
 import ips.MainWindow;
 import ips.database.Database;
+import ips.database.Member;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
 import java.awt.*;
-import java.text.DateFormat;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Created by nokutu on 25/10/2016.
  */
 public class AdministratorActivitiesDialog extends JDialog {
+
+    private JList<String> memberList;
+    private List<Member> membersInSession;
 
     public AdministratorActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -71,6 +75,10 @@ public class AdministratorActivitiesDialog extends JDialog {
         });
         activities.setSelectedIndex(0);
 
+        sessions.addActionListener(l -> {
+            // TODO update central list
+        });
+
         leftPanel.add(sessions, c);
     }
 
@@ -93,6 +101,27 @@ public class AdministratorActivitiesDialog extends JDialog {
         c.gridy = 1;
 
         JButton removeMember = new JButton("Eliminar socio");
+        removeMember.addActionListener(l -> {
+            Member m = membersInSession.get(memberList.getSelectedIndex());
+            Database.getInstance().getActivityMembers().stream()
+                    .filter(am -> am.getMemberId() == m.getMemberId())
+                    .forEach(am -> {
+                        try {
+                            am.setDeleted(true);
+                            am.update();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        });
         rightPanel.add(removeMember, c);
+    }
+
+    private void createCenterPanel() {
+        memberList = new JList<>();
+
+        // TODO
+
+        add(memberList, BorderLayout.CENTER);
     }
 }

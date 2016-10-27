@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS fee;
 DROP TABLE IF EXISTS feeItem;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS activitybooking;
-DROP TABLE IF EXISTS activitymembers;
+DROP TABLE IF EXISTS activitymember;
 
 CREATE TABLE facilityBooking (
 	facility_id INTEGER NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE facilityBooking (
 CREATE TABLE member (
 	member_id INTEGER NOT NULL PRIMARY KEY,
 	member_name VARCHAR(32) NOT NULL,
-	dado_alta BOOLEAN NOT NULL
+	subscribed BOOLEAN NOT NULL
 );
 
 CREATE TABLE facility (
@@ -38,7 +38,7 @@ CREATE TABLE facility (
 CREATE TABLE fee (
     fee_month DATE NOT NULL,
     fee_member_id INTEGER NOT NULL,
-	cuota_base INTEGER NOT NULL,
+	fee_base INTEGER NOT NULL,
 	PRIMARY KEY (fee_month, fee_member_id)
 
 );
@@ -59,18 +59,19 @@ CREATE TABLE activity (
 );
 
 CREATE TABLE activitybooking (
-    activity_id VARCHAR(32) NOT NULL,
+    activity_name VARCHAR(32) NOT NULL,
     facility_id INTEGER NOT NULL,
     booking_time_start TIMESTAMP NOT NULL,
     PRIMARY KEY (activity_id, facility_id, booking_time_start)
 );
 
-CREATE TABLE activitymembers (
-    activity_id INTEGER NOT NULL,
+CREATE TABLE activitymember (
+    activity_name VARCHAR(32) NOT NULL,
+    booking_time_start TIMESTAMP NOT NULL,
     member_id INTEGER NOT NULL,
     assistance BOOLEAN,
     deleted BOOLEAN,
-    PRIMARY KEY(activity_id, member_id),
+    PRIMARY KEY(activity_id, booking_time_start, member_id),
 );
 
 INSERT INTO member VALUES (1, 'Gabriel',true);
