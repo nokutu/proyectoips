@@ -17,7 +17,7 @@ CREATE TABLE facilityBooking (
     facilitybooking_deleted BOOLEAN,
 	entrance TIMESTAMP,
 	abandon TIMESTAMP,
-	state VARCHAR(16)
+	state VARCHAR(16),
     CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
     CONSTRAINT chk_state CHECK (state IN ('Valid', 'Annulled', 'Canceled')),
     PRIMARY KEY (facility_id, time_start)
@@ -62,7 +62,7 @@ CREATE TABLE activitybooking (
     activity_name VARCHAR(32) NOT NULL,
     facility_id INTEGER NOT NULL,
     booking_time_start TIMESTAMP NOT NULL,
-    PRIMARY KEY (activity_id, facility_id, booking_time_start)
+    PRIMARY KEY (activity_name, facility_id, booking_time_start)
 );
 
 CREATE TABLE activitymember (
@@ -71,7 +71,7 @@ CREATE TABLE activitymember (
     member_id INTEGER NOT NULL,
     assistance BOOLEAN,
     deleted BOOLEAN,
-    PRIMARY KEY(activity_id, booking_time_start, member_id),
+    PRIMARY KEY(activity_name, booking_time_start, member_id),
 );
 
 INSERT INTO member VALUES (1, 'Gabriel',true);
@@ -84,23 +84,23 @@ INSERT INTO facility VALUES (2, 3,'Tennis 2');
 INSERT INTO facilitybooking VALUES (1, 1,
     PARSEDATETIME('12-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('12-11-2016 19:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    'Cash', false, false, null, null);
+    'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (2, 1,
     PARSEDATETIME('10-11-2016 15:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('12-11-2016 16:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    'Cash', false, false, null, null);
+    'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (1, 2,
     PARSEDATETIME('13-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('13-11-2016 12:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    'Cash', false, false, null, null);
+    'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (0, 2,
     PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    'Cash', false, false, null, null);
+    'Cash', false, false, null, null, 'Valid');
 
 INSERT INTO activity VALUES ('Taller 1', 25);
 INSERT INTO activity VALUES ('Taller 2', 50);
 INSERT INTO activity VALUES ('Taller 3', 75);
 INSERT INTO activity VALUES ('Yoga 1', 10);
 
-INSERT INTO activitybooking VALUES("Taller 1", 2, PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'))
+INSERT INTO activitybooking VALUES('Taller 1', 2, PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'))
