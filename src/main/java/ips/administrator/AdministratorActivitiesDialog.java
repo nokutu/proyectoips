@@ -96,6 +96,7 @@ public class AdministratorActivitiesDialog extends JDialog {
         		}
         	}
         	memberList.setModel(model);
+        	memberList.setCellRenderer(new CheckboxCellRenderer());
         });
 
         leftPanel.add(sessions, c);
@@ -119,9 +120,37 @@ public class AdministratorActivitiesDialog extends JDialog {
     private void createCenterPanel() {
         memberList = new JList<>();
         DefaultListModel<String> model=new DefaultListModel();
-
-        // TODO
+        memberList.setModel(model);
+        memberList.setCellRenderer(new CheckboxCellRenderer());
 
         add(memberList, BorderLayout.CENTER);
+    }
+    protected class CheckboxCellRenderer implements ListCellRenderer 
+    {
+
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			
+			 JCheckBox checkbox = new JCheckBox((String)value);
+			 boolean found=false;
+			 for(Member m : membersInSession)
+			 {
+				 
+				 if(m.getMemberName().equals((String)value))
+				 {
+					 found = true;
+					 checkbox.setBackground(Color.green);
+				 }			
+			
+			 }
+			 
+			 if(!found)
+			 {
+				 checkbox.setBackground(Color.red);
+			 }
+			return checkbox;
+		}
+    	
     }
 }
