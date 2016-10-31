@@ -122,7 +122,12 @@ public class AdministratorActivitiesDialog extends JDialog {
         DefaultListModel<String> model=new DefaultListModel();
         memberList.setModel(model);
         memberList.setCellRenderer(new CheckboxCellRenderer());
+        JLabel colorlabel=new JLabel();
+        colorlabel.setText("Asistio/va a asistir: verde \n"
+        		+ "No asistio: rojo \n");
 
+        
+        add(colorlabel,BorderLayout.NORTH);
         add(memberList, BorderLayout.CENTER);
     }
     protected class CheckboxCellRenderer implements ListCellRenderer 
