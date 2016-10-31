@@ -4,6 +4,7 @@ import ips.database.*;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,26 @@ public class Utils {
         return true;
     }
 
+    /**
+     * @return la reserva(s) ya existente(s) en el lapso de tiempo 
+     * @see Utils#isFacilityFree
+     */
+    public synchronized static List<FacilityBooking> getBookingsAt(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
+        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+        List<FacilityBooking> result = new ArrayList<>();
+        for (FacilityBooking fb : bookings) {
+            if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)
+                    && !fb.isDeletedFlag()) {
+                if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
+                        || timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd())
+                        || timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
+                    result.add(fb);
+                }
+            }
+        }
+        return result;
+    }
+    
     /**
      * Checks if a given member has any other reservation during the given time
      * range.

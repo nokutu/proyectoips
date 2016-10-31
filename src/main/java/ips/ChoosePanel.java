@@ -18,7 +18,7 @@ public class ChoosePanel extends JPanel {
 
     public ChoosePanel() {
         setLayout(new GridBagLayout());
-        administration = new JButton("Administración");
+        administration = new JButton("Administraci\u00F3n");
         member = new JButton("Socio");
 
         administration.addActionListener((e) -> Bar.getInstance().setMode(Bar.MODE_ADMINISTRATION));

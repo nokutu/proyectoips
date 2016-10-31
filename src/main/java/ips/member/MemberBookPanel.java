@@ -80,7 +80,7 @@ public class MemberBookPanel extends JPanel {
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
             names.forEach(model::addElement);
             facilities.setModel(model);
-            form.addLine(new JLabel("Instalación:"), facilities, false
+            form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false
             );
         }
 
@@ -151,13 +151,13 @@ public class MemberBookPanel extends JPanel {
             }
             if (fb.getTimeStart().before(Utils.addHourToDay(Utils.getCurrentTime(), 1))) {
                 valid = false;
-                errors += "Tienes que reservar con una hora de antelación.\n";
+                errors += "Tienes que reservar con una hora de antelaci\u00F3n.\n";
             }
             if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
                     fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
                 // More than 2 hours
                 valid = false;
-                errors += "Un socio solo puedo reservar un máximo de 2 horas.\nEl tiempo de finalización debe ser posterior al de inicio.\n";
+                errors += "Un socio solo puedo reservar un máximo de 2 horas.\nEl tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
             }
 
             Optional<Member> member = Database.getInstance().getMembers().stream()
@@ -178,7 +178,7 @@ public class MemberBookPanel extends JPanel {
             if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
                 // Facility not free
                 valid = false;
-                errors += "La instalación está ocupada en la horas seleccionadas.\n";
+                errors += "La instalaci\u00F3n está ocupada en la horas seleccionadas.\n";
             }
         } else {
             errors += "Por favor, rellena todos los campos.\n";

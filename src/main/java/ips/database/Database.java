@@ -188,6 +188,11 @@ public class Database {
     }
 
 
+    /**
+     * 
+     * @param id facility_id
+     * @param hora 
+     */
     public FacilityBooking getBookingById(int id, int hora) {
         for (FacilityBooking b : facilityBookings) {
             if (b.getFacilityId() == id && b.getTimeStart().getHours() == hora)

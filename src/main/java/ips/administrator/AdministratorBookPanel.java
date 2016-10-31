@@ -24,310 +24,306 @@ import java.util.stream.Collectors;
  */
 public class AdministratorBookPanel extends JPanel {
 
-    private final Form form;
+	private final Form form;
 
-    private Facility facility;
-    private Timestamp timeStart;
-    private Timestamp timeEnd;
+	private Facility facility;
+	private Timestamp timeStart;
+	private Timestamp timeEnd;
 
-    private JButton confirm;
-    private JDateChooser dateChooser;
+	private JButton confirm;
+	private JDateChooser dateChooser;
 
-    public AdministratorBookPanel() {
-        this(null, null, null);
-    }
+	public AdministratorBookPanel() {
+		this(null, null, null);
+	}
 
-    public AdministratorBookPanel(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
-        super();
+	public AdministratorBookPanel(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
+		super();
 
-        this.facility = facility;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
+		this.facility = facility;
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
 
-        setLayout(new GridBagLayout());
+		setLayout(new GridBagLayout());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(20, 0, 10, 5);
-        c.gridx = 0;
-        c.gridy = 0;
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(20, 0, 10, 5);
+		c.gridx = 0;
+		c.gridy = 0;
 
-        form = new Form();
-        setBorder(new BevelBorder(BevelBorder.LOWERED));
-        add(form.getPanel(), c);
+		form = new Form();
+		setBorder(new BevelBorder(BevelBorder.LOWERED));
+		add(form.getPanel(), c);
 
-        addForm(timeStart == null);
+		addForm(timeStart == null);
 
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 0, 5);
-        c.gridy = 1;
-        confirm = new JButton("Reservar");
-        confirm.addActionListener(this::confirm);
-        add(confirm, c);
-    }
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0, 0, 0, 5);
+		c.gridy = 1;
+		confirm = new JButton("Reservar");
+		confirm.addActionListener(this::confirm);
+		add(confirm, c);
+	}
 
-    private void addForm(boolean addExtra) {
-        if (addExtra) {
-            dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            dateChooser.setDate(Utils.getCurrentDate());
+	private void addForm(boolean addExtra) {
+		if (addExtra) {
+			dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+			dateChooser.setDate(Utils.getCurrentDate());
 
-            form.addLine(new JLabel("Fecha:"), dateChooser);
+			form.addLine(new JLabel("Fecha:"), dateChooser);
 
-            JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+			JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+			JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
 
-            form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
-            form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
+			form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
+			form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
-            JComboBox<String> facilities = new JComboBox<>();
-            List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-            names.forEach(model::addElement);
-            facilities.setModel(model);
-            form.addLine(new JLabel("Instalación:"), facilities, false);
-        }
+			JComboBox<String> facilities = new JComboBox<>();
+			List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName)
+					.collect(Collectors.toList());
+			DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+			names.forEach(model::addElement);
+			facilities.setModel(model);
+			form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false);
+		}
 
-        JDateChooser endDateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-        endDateChooser.setDate(Utils.getCurrentDate());
-        endDateChooser.setEnabled(false);
+		JDateChooser endDateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+		endDateChooser.setDate(Utils.getCurrentDate());
+		endDateChooser.setEnabled(false);
 
+		form.addSpace();
 
+		JCheckBox bookForCenter = new JCheckBox("Reservar para el centro");
+		JTextField idTextField = new JTextField(10);
+		JComboBox<String> paymentCombo = new JComboBox<>();
 
-        form.addSpace();
+		JCheckBox assignToActivity = new JCheckBox("Asignar a actividad");
+		JComboBox<String> activities = new JComboBox<>();
 
-        JCheckBox bookForCenter = new JCheckBox("Reservar para el centro");
-        JTextField idTextField = new JTextField(10);
-        JComboBox<String> paymentCombo = new JComboBox<>();
+		JComboBox<String> recursive = new JComboBox<>();
 
-        JCheckBox assignToActivity = new JCheckBox("Asignar a actividad");
-        JComboBox<String> activities = new JComboBox<>();
+		bookForCenter.addActionListener(l -> {
+			idTextField.setEnabled(!bookForCenter.isSelected());
+			paymentCombo.setEnabled(!bookForCenter.isSelected());
+			assignToActivity.setEnabled(bookForCenter.isSelected());
+			activities.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
+			recursive.setEnabled(bookForCenter.isSelected());
+			endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.getSelectedIndex() != 0);
+			idTextField.setText(String.valueOf(0));
+		});
+		form.addLine(bookForCenter);
+		form.addLine(new JLabel("ID de socio:"), idTextField);
 
-        JComboBox<String> recursive = new JComboBox<>();
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[] { "Cash", "Fee" });
+		paymentCombo.setModel(model);
+		form.addLine(new JLabel("M\u00E9todo de pago:"), paymentCombo);
 
-        bookForCenter.addActionListener(l -> {
-            idTextField.setEnabled(!bookForCenter.isSelected());
-            paymentCombo.setEnabled(!bookForCenter.isSelected());
-            assignToActivity.setEnabled(bookForCenter.isSelected());
-            activities.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
-            recursive.setEnabled(bookForCenter.isSelected());
-            endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.getSelectedIndex() != 0);
-            idTextField.setText(String.valueOf(0));
-        });
-        form.addLine(bookForCenter);
-        form.addLine(new JLabel("ID de socio:"), idTextField);
+		form.addSpace();
 
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
-        paymentCombo.setModel(model);
-        form.addLine(new JLabel("Método de pago:"), paymentCombo);
+		recursive.setEnabled(false);
+		DefaultComboBoxModel<String> recursiveModel = new DefaultComboBoxModel<>(
+				new String[] { "No repetir", "Semanalmente", "Mensualmente" });
+		recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.getSelectedIndex() > 0));
+		recursive.setModel(recursiveModel);
+		form.addLine(new JLabel("Repetir:"), recursive, false);
 
-        form.addSpace();
+		form.addLine(new JLabel("Fecha fin repetici\u00F3n:"), endDateChooser);
 
-        recursive.setEnabled(false);
-        DefaultComboBoxModel<String> recursiveModel = new DefaultComboBoxModel<>(new String[]{"No repetir", "Semanalmente", "Mensualmente"});
-        recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.getSelectedIndex() > 0));
-        recursive.setModel(recursiveModel);
-        form.addLine(new JLabel("Repetir:"), recursive, false);
+		assignToActivity.setEnabled(false);
+		activities.setEnabled(false);
+		assignToActivity.addActionListener(l -> activities.setEnabled(assignToActivity.isSelected()));
 
-        form.addLine(new JLabel("Fecha fin repetición:"), endDateChooser);
+		DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
+		Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activities.setModel(activitiesModel);
 
-        assignToActivity.setEnabled(false);
-        activities.setEnabled(false);
-        assignToActivity.addActionListener(l -> activities.setEnabled(assignToActivity.isSelected()));
+		form.addSpace();
 
-        DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-        Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
-        activities.setModel(activitiesModel);
+		form.addLine(assignToActivity, true);
+		form.addLine(new JLabel("Actividad:"), activities);
+	}
 
-        form.addSpace();
+	private void confirm(ActionEvent actionEvent) {
+		List<FacilityBooking> bookings = new ArrayList<>();
 
-        form.addLine(assignToActivity, true);
-        form.addLine(new JLabel("Actividad:"), activities);
-    }
+		Timestamp time = new Timestamp(Utils.addHourToDay(new Timestamp(Long.parseLong(form.getResults().get(0))),
+				Integer.parseInt(form.getResults().get(1))).getTime());
+		Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(6)));
 
+		long increase = 0;
+		while (time.before(repetitionEnd) || increase == 0) {
+			bookings.add(createBooking(increase));
 
-    private void confirm(ActionEvent actionEvent) {
-        List<FacilityBooking> bookings = new ArrayList<>();
+			if (Integer.parseInt(form.getResults().get(4)) == 1) {
+				// Semanalmente
+				Calendar c = Calendar.getInstance();
+				c.setTime(time);
+				c.add(Calendar.WEEK_OF_YEAR, 1);
+				increase += c.getTime().getTime() - time.getTime();
+				time = new Timestamp(c.getTime().getTime());
+			} else if (Integer.parseInt(form.getResults().get(4)) == 2) {
+				// Mensualmente
+				Calendar c = Calendar.getInstance();
+				c.setTime(time);
+				c.add(Calendar.MONTH, 1);
+				increase += c.getTime().getTime() - time.getTime();
+				time = new Timestamp(c.getTime().getTime());
+			} else {
+				// No repetir
+				break;
+			}
+		}
 
-        Timestamp time = new Timestamp(
-                Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(form.getResults().get(0))),
-                        Integer.parseInt(form.getResults().get(1))).getTime()
-        );
-        Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(6)));
+		boolean valid = true;
+		for (FacilityBooking fb : bookings) {
+			if ((fb.getMemberId() != 0 && !checkValidMember(fb)) || (fb.getMemberId() == 0 && !checkValidCenter(fb))) {
+				valid = false;
+				break;
+			}
+		}
 
-        long increase = 0;
-        while (time.before(repetitionEnd) || increase == 0) {
-            bookings.add(createBooking(increase));
+		if (valid) {
+			try {
+				for (FacilityBooking fb : bookings) {
+					if (Boolean.parseBoolean(form.getResults().get(8))) {
+						ActivityBooking ab = new ActivityBooking(form.getResults().get(9), fb.getFacilityId(),
+								fb.getTimeStart());
+						Database.getInstance().getActivityBookings().add(ab);
+						ab.create();
+					}
 
-            if (Integer.parseInt(form.getResults().get(4)) == 1) {
-                // Semanalmente
-                Calendar c = Calendar.getInstance();
-                c.setTime(time);
-                c.add(Calendar.WEEK_OF_YEAR, 1);
-                increase += c.getTime().getTime() - time.getTime();
-                time = new Timestamp(c.getTime().getTime());
-            } else if (Integer.parseInt(form.getResults().get(4)) == 2) {
-                // Mensualmente
-                Calendar c = Calendar.getInstance();
-                c.setTime(time);
-                c.add(Calendar.MONTH, 1);
-                increase += c.getTime().getTime() - time.getTime();
-                time = new Timestamp(c.getTime().getTime());
-            } else {
-                // No repetir
-                break;
-            }
-        }
+					Database.getInstance().getFacilityBookings().add(fb);
+					fb.create();
+				}
+				form.setMessage("Reserva creada correctamente");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-        boolean valid = true;
-        for (FacilityBooking fb : bookings) {
-            if ((fb.getMemberId() != 0 && !checkValidMember(fb)) || (
-                    fb.getMemberId() == 0 && !checkValidCenter(fb))) {
-                valid = false;
-                break;
-            }
-        }
+	private FacilityBooking createBooking() {
+		return createBooking(0);
+	}
 
-        if (valid) {
-            try {
-                for (FacilityBooking fb : bookings) {
-                    if (Boolean.parseBoolean(form.getResults().get(8))) {
-                        ActivityBooking ab = new ActivityBooking(form.getResults().get(9), fb.getFacilityId(), fb.getTimeStart());
-                        Database.getInstance().getActivityBookings().add(ab);
-                        ab.create();
-                    }
+	private FacilityBooking createBooking(long addTime) {
+		int facilityId = -1;
+		int memberId = -1;
+		Timestamp timeStart;
+		Timestamp timeEnd;
+		String paymentMethod;
 
-                    Database.getInstance().getFacilityBookings().add(fb);
-                    fb.create();
-                }
-                form.setMessage("Reserva creada correctamente");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+		try {
+			List<String> results = form.getResults();
+			if (this.timeStart == null) {
+				timeStart = new Timestamp(Utils
+						.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)))
+						.getTime());
+				timeEnd = new Timestamp(Utils
+						.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)))
+						.getTime());
+				timeStart = new Timestamp(timeStart.getTime() + addTime);
+				timeEnd = new Timestamp(timeEnd.getTime() + addTime);
 
-    private FacilityBooking createBooking() {
-        return createBooking(0);
-    }
+				facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3)))
+						.getFacilityId();
+				memberId = Integer.parseInt(results.get(4));
+				paymentMethod = results.get(5);
+			} else {
+				facilityId = facility.getFacilityId();
+				timeStart = this.timeStart;
+				timeEnd = this.timeEnd;
+				memberId = Integer.parseInt(results.get(0));
+				paymentMethod = results.get(1);
+			}
 
-    private FacilityBooking createBooking(long addTime) {
-        int facilityId = -1;
-        int memberId = -1;
-        Timestamp timeStart;
-        Timestamp timeEnd;
-        String paymentMethod;
+			return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+		} catch (NumberFormatException e) {
+			form.setError("Por favor, rellena todos los campos.\n");
+			setSize(getWidth(), getPreferredSize().height);
+			return null;
+		}
+	}
 
-        try {
-            List<String> results = form.getResults();
-            if (this.timeStart == null) {
-                timeStart = new Timestamp(
-                        Utils.addHourToDay(
-                                new Timestamp(Long.parseLong(results.get(0))),
-                                Integer.parseInt(results.get(1))).getTime()
-                );
-                timeEnd = new Timestamp(Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(2))).getTime()
-                );
-                timeStart = new Timestamp(timeStart.getTime() + addTime);
-                timeEnd = new Timestamp(timeEnd.getTime() + addTime);
+	private boolean checkValidMember(FacilityBooking fb) {
+		boolean valid = true;
+		String errors = "";
 
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
-                memberId = Integer.parseInt(results.get(4));
-                paymentMethod = results.get(5);
-            } else {
-                facilityId = facility.getFacilityId();
-                timeStart = this.timeStart;
-                timeEnd = this.timeEnd;
-                memberId = Integer.parseInt(results.get(0));
-                paymentMethod = results.get(1);
-            }
+		if (fb != null) {
+			if (fb.getTimeStart().before(Utils.getCurrentTime())) {
+				valid = false;
+				errors += "No puedes reservar para el pasado.\n";
+			} else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentTime(), 24 * 15))) {
+				valid = false;
+				errors += "Solo puedes reservar hasta 15 d\u00EDs en adelante.\n";
+			}
+			if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000
+					|| fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
+				// More than 2 hours
+				valid = false;
+				errors += "Un socio solo puedo reservar un m\u00E1ximo de 2 horas. El tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
+			}
+			Optional<Member> member = Database.getInstance().getMembers().stream()
+					.filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
+			if (!member.isPresent()) {
+				// Member not valid
+				errors += "n\u00FAmero de socio no v\u00E1lida.\n";
+				valid = false;
+			} else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+				errors += "El socio ya tiene una reserva en esta franja de tiempo.\n";
+				valid = false;
+			}
+			Optional<Facility> of = Database.getInstance().getFacilities().stream()
+					.filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+			assert of.isPresent();
 
-            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
-        } catch (NumberFormatException e) {
-            form.setError("Por favor, rellena todos los campos.\n");
-            setSize(getWidth(), getPreferredSize().height);
-            return null;
-        }
-    }
+			if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+				// Facility not free
+				valid = false;
+				errors += "La instalaci\u00F3n est\u00E1 ocupada en las horas seleccionadas.\n";
+			}
+		} else {
+			errors += "Por favor, rellena todos los campos.\n";
+			valid = false;
+		}
 
-    private boolean checkValidMember(FacilityBooking fb) {
-        boolean valid = true;
-        String errors = "";
+		if (!valid) {
+			form.setError(errors);
+			setSize(getWidth(), getPreferredSize().height);
+		}
 
-        if (fb != null) {
-            if (fb.getTimeStart().before(Utils.getCurrentTime())) {
-                valid = false;
-                errors += "No puedes reservar para el pasado.\n";
-            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentTime(), 24 * 15))) {
-                valid = false;
-                errors += "Solo puedes reservar hasta 15 días en adelante.\n";
-            }
-            if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
-                    fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
-                // More than 2 hours
-                valid = false;
-                errors += "Un socio solo puedo reservar un máximo de 2 horas. El tiempo de finalización debe ser posterior al de inicio.\n";
-            }
-            Optional<Member> member = Database.getInstance().getMembers().stream()
-                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
-            if (!member.isPresent()) {
-                // Member not valid
-                errors += "Id de miembro no válida.\n";
-                valid = false;
-            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-                errors += "El socio ya tiene una reserva en esta franja de tiempo.\n";
-                valid = false;
-            }
-            Optional<Facility> of = Database.getInstance().getFacilities().stream()
-                    .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
-            assert of.isPresent();
+		return valid;
+	}
 
-            if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-                // Facility not free
-                valid = false;
-                errors += "La instalación está ocupada en la horas seleccionadas.\n";
-            }
-        } else {
-            errors += "Por favor, rellena todos los campos.\n";
-            valid = false;
-        }
+	private boolean checkValidCenter(FacilityBooking fb) {
+		boolean valid = true;
+		String errors = "";
 
-        if (!valid) {
-            form.setError(errors);
-            setSize(getWidth(), getPreferredSize().height);
-        }
+		Optional<Facility> facility = Database.getInstance().getFacilities().stream()
+				.filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
 
-        return valid;
-    }
+		// la facility debe existir
+		if (!facility.isPresent()) {
+			throw new IllegalStateException("La instalaci\u00F3n tiene que existir");
+		}
 
-    private boolean checkValidCenter(FacilityBooking fb) {
-        boolean valid = true;
-        String errors = "";
+		// invalided de los spinners
+		if (fb.getTimeEnd().before(fb.getTimeStart()) || fb.getTimeStart().before(Utils.getCurrentDate())) {
+			errors += "El tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
+			valid = false;
+		}
 
-        Optional<Facility> facility = Database.getInstance().getFacilities()
-                .stream()
-                .filter((f) -> f.getFacilityId() == fb.getFacilityId())
-                .findAny();
+		if (!Utils.isFacilityFree(facility.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+			List<FacilityBooking> reserva = Utils.getBookingsAt(facility.get(), fb.getTimeStart(), fb.getTimeEnd());
+			OverrideBookingDialog ob;
+			(ob = new OverrideBookingDialog(reserva)).setVisible(true);
+			valid = ob.getValid();
+			if (!valid)
+				errors += "La instalaci\u00F3n est\u00E1 ocupada en la horas seleccionadas.\n";
 
-        // la facility debe existir
-        if (!facility.isPresent()) {
-            throw new IllegalStateException("La instalación tiene que existir");
-        }
+		}
+		form.setError(errors);
 
-        // invalided de los spinners
-        if (fb.getTimeEnd().before(fb.getTimeStart())
-                || fb.getTimeStart().before(Utils.getCurrentDate())) {
-            errors += "El tiempo de finalización debe ser posterior al de inicio.\n";
-            valid = false;
-        }
-
-        if (!Utils.isFacilityFree(facility.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-            errors += "La instalación está ocupada en la horas seleccionadas.\n";
-            valid = false;
-        }
-        form.setError(errors);
-
-        return valid;
-    }
+		return valid;
+	}
 }

@@ -53,7 +53,7 @@ public class MemberActivitiesDialog extends JDialog {
         c.gridx = 0;
         c.gridy++;
 
-        leftPanel.add(new JLabel("Sesión:"), c);
+        leftPanel.add(new JLabel("Sesi\u00F3n:"), c);
 
         c.gridx++;
 

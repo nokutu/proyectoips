@@ -1,5 +1,6 @@
 package ips;
 
+import ips.administrator.AdministratorMain;
 import ips.administrator.AdministratorMainScreen;
 import ips.member.MemberMain;
 
@@ -18,6 +19,9 @@ public class Bar extends JMenuBar {
     private static final long serialVersionUID = 8555548018850300676L;
     public final static int MODE_ADMINISTRATION = 1;
     public final static int MODE_MEMBER = 2;
+    
+	private static final boolean DEBUG = false; // a true muestra el panel clasico del SPRINT 1, para pruebas solo
+	
     private static Bar instance;
 
     private JMenu options;
@@ -59,8 +63,13 @@ public class Bar extends JMenuBar {
     }
 
     private void addAdministration(JMenu change, ButtonGroup g) {
-        administration = new JRadioButtonMenuItem("Administración");
-        administration.addActionListener((e) -> MainWindow.getInstance().setContent(new AdministratorMainScreen()));
+        administration = new JRadioButtonMenuItem("Administraci\u00F3n");
+        administration.addActionListener((e) -> {
+        	if(DEBUG)
+            	MainWindow.getInstance().setContent(new AdministratorMain());
+        	else
+        		MainWindow.getInstance().setContent(new AdministratorMainScreen());
+    });
         g.add(administration);
         change.add(administration);
     }
