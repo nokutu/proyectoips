@@ -70,4 +70,8 @@ public class ActivityBooking implements DatabaseItem {
         }
         return lazyActivity;
     }
+
+    public int getFacilityBookingId() {
+        return facilityBookingId;
+    }
 }

@@ -1,10 +1,7 @@
 package ips.administrator;
 
 import ips.MainWindow;
-import ips.database.Activity;
-import ips.database.ActivityMember;
-import ips.database.Database;
-import ips.database.Member;
+import ips.database.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
@@ -14,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by nokutu on 25/10/2016.
@@ -21,11 +19,16 @@ import java.util.Optional;
 public class AdministratorActivitiesDialog extends JDialog {
 
     private CheckBoxList memberList = new CheckBoxList();
-    private List<Member> membersInSession;
-    private JLabel assistanceLabel = new JLabel("");
 
+    private List<ActivityBooking> sessionsList;
+    private List<Member> membersInSession;
+    private List<ActivityMember> activityMembersInSession;
+    private List<JCheckBox> activityMembersInSessionChk;
+
+    private JLabel assistanceLabel = new JLabel("");
     private JComboBox<String> activities;
     private JButton addMember = new JButton("Apuntar a socio");
+    private JComboBox<String> sessions;
 
     public AdministratorActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -36,10 +39,37 @@ public class AdministratorActivitiesDialog extends JDialog {
         createBottomPanel();
         // TODO añadir el panel central
         createCenterPanel();
+        createRightPanel();
 
         setMinimumSize(new Dimension(320, 180));
         pack();
         setLocationRelativeTo(MainWindow.getInstance());
+    }
+
+    private void createRightPanel() {
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.CENTER;
+
+        JButton remove = new JButton("Borrar seleccionados");
+        remove.addActionListener(l -> {
+            for (int i = 0; i < membersInSession.size(); i++) {
+                if (activityMembersInSessionChk.get(i).isSelected()) {
+                    try {
+                        activityMembersInSession.get(i).setDeleted(true);
+                        activityMembersInSession.get(i).update();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            refreshCentralPanelList();
+        });
+        rightPanel.add(remove, c);
+
+        add(rightPanel, BorderLayout.EAST);
     }
 
     private void createLeftPanel() {
@@ -73,12 +103,14 @@ public class AdministratorActivitiesDialog extends JDialog {
 
         c.gridx++;
 
-        JComboBox<String> sessions = new JComboBox<>();
+        sessions = new JComboBox<>();
         activities.addActionListener(l -> {
             memberList.removeAll();
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
-            Database.getInstance().getActivityBookings().stream()
+            sessionsList = Database.getInstance().getActivityBookings().stream()
                     .filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
+                    .collect(Collectors.toList());
+            sessionsList.stream()
                     .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
@@ -91,37 +123,7 @@ public class AdministratorActivitiesDialog extends JDialog {
         activities.setSelectedIndex(0);
 
         sessions.addActionListener(l -> {
-            memberList.removeAll();
-            membersInSession = new ArrayList<>();
-            for (ActivityMember am : Database.getInstance().getActivityMembers()) {
-                if (am.getActivityId() ==  getSelectedActivity().getActivityId()) {
-                    Member member = Database.getInstance().getMemberById(am.getMemberId());
-                    if (am.isAssistance()) {
-                        //la lista contiene a los miembros asistentes
-                        membersInSession.add(member);
-                    }
-
-                    JCheckBox chk = new JCheckBox(member.getMemberName());
-                    chk.setSelected(am.isAssistance());
-                    chk.addActionListener(lis -> {
-                        try {
-                            am.setAssistance(chk.isSelected());
-                            am.update();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        refreshAssistanceCount();
-                    });
-                    memberList.addLine(chk);
-                }
-                refreshAssistanceCount();
-            }
-
-            // Force the panel to refresh
-            SwingUtilities.invokeLater(() -> {
-                memberList.setVisible(false);
-                memberList.setVisible(true);
-            });
+            refreshCentralPanelList();
         });
         if (sessions.getModel().getSize() > 0) {
             sessions.setSelectedIndex(0);
@@ -130,13 +132,41 @@ public class AdministratorActivitiesDialog extends JDialog {
         leftPanel.add(sessions, c);
     }
 
+    private void refreshCentralPanelList() {
+        memberList.removeAll();
+        membersInSession = new ArrayList<>();
+        activityMembersInSession = new ArrayList<>();
+        activityMembersInSessionChk = new ArrayList<>();
+        for (ActivityMember am : Database.getInstance().getActivityMembers()) {
+            if (am.getActivityId() == getSelectedActivity().getActivityId() &&
+                    am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId() &&
+                    !am.isDeleted()) {
+                activityMembersInSession.add(am);
+
+                Member member = Database.getInstance().getMemberById(am.getMemberId());
+                membersInSession.add(member);
+
+                JCheckBox chk = new JCheckBox(member.getMemberName());
+                activityMembersInSessionChk.add(chk);
+                memberList.addLine(chk);
+            }
+            refreshAssistanceCount();
+        }
+
+        // Force the panel to refresh
+        SwingUtilities.invokeLater(() -> {
+            memberList.setVisible(false);
+            memberList.setVisible(true);
+        });
+    }
+
     private void createBottomPanel() {
         JPanel bottomPanel = new JPanel();
         add(bottomPanel, BorderLayout.SOUTH);
 
         bottomPanel.add(new JLabel("Socios apuntados:"));
         bottomPanel.add(assistanceLabel);
-        
+
         bottomPanel.add(addMember);
     }
 
@@ -145,7 +175,7 @@ public class AdministratorActivitiesDialog extends JDialog {
         centerPanel.setLayout(new BorderLayout());
 
         JLabel colorlabel = new JLabel();
-        colorlabel.setText("Marcado: asiste. Desmarcado: no asiste");
+        colorlabel.setText("Lista de miembros apuntados:");
 
         centerPanel.add(colorlabel, BorderLayout.NORTH);
         centerPanel.add(memberList, BorderLayout.CENTER);
@@ -155,16 +185,26 @@ public class AdministratorActivitiesDialog extends JDialog {
 
     private void refreshAssistanceCount() {
         Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
-                .filter(am -> am.getActivityId() == getSelectedActivity().getActivityId())
+                .filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() &&
+                        !am.isDeleted() &&
+                        am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
                 .map(am -> am.isAssistance() ? 1 : 0)
                 .reduce(Integer::sum);
         Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
                 .filter(a -> a.getActivityName().equals(activities.getSelectedItem()))
                 .findAny();
-        if (assistantsOptional.isPresent() && activityOptional.isPresent()) {
-            assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
-            addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
+        if (activityOptional.isPresent()) {
+            if (assistantsOptional.isPresent()) {
+                // n assistants
+                assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
+                addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
+            } else {
+                // 0 assistants
+                assistanceLabel.setText("0/" + activityOptional.get().getAssistantLimit());
+                addMember.setEnabled(true);
+            }
         } else {
+            // no activity selected
             assistanceLabel.setText("");
             addMember.setEnabled(false);
         }

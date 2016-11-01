@@ -101,9 +101,13 @@ INSERT INTO facilitybooking VALUES (3, 1, 2,
     PARSEDATETIME('13-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('13-11-2016 12:00:00', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
-INSERT INTO facilitybooking VALUES (4, 0, 2,
+INSERT INTO facilitybooking VALUES (4, 1, 0,
     PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
     PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    'Cash', false, false, null, null, 'Valid');
+INSERT INTO facilitybooking VALUES (5, 1, 0,
+    PARSEDATETIME('15-11-2016 19:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('15-11-2016 20:00:00', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 
 INSERT INTO monitor VALUES(1);
@@ -113,7 +117,10 @@ INSERT INTO activity VALUES (2, 'Taller 2', 50, 1);
 INSERT INTO activity VALUES (3, 'Taller 3', 75, 1);
 INSERT INTO activity VALUES (4, 'Yoga 1', 10, 1);
 
-INSERT INTO activitybooking VALUES(1, 4,);
+INSERT INTO activitybooking VALUES(1, 4);
+INSERT INTO activitybooking VALUES(1, 5);
 
-INSERT INTO activitymember VALUES (1, 4, 1, false, false);
-INSERT INTO activitymember VALUES (1, 4, 2, false, false);
+INSERT INTO activitymember VALUES (1, 4, 1, true, false);
+INSERT INTO activitymember VALUES (1, 4, 2, true, false);
+
+INSERT INTO activitymember VALUES (1, 5, 2, true, false);

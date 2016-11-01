@@ -46,5 +46,4 @@ public class Member implements DatabaseItem {
 	public void setSubscribed(boolean subscribed) {
 		this.subscribed = subscribed;
 	}
-
 }

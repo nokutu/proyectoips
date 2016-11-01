@@ -81,6 +81,10 @@ public class ActivityMember implements DatabaseItem {
         this.deleted = deleted;
     }
 
+    public int getFacilityBookingId() {
+        return facilityBookingId;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }
