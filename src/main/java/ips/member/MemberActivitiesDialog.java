@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 import java.awt.*;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,6 +103,26 @@ public class MemberActivitiesDialog extends JDialog {
         c.insets = new Insets(2, 5, 2, 10);
 
         JButton remove = new JButton("Borrarse");
+       // remove.setEnabled(false);
+        remove.addActionListener(l -> {
+        	
+        	ActivityMember am = activityMembers.get(activitiesList.getSelectedIndex());
+        	if(!am.isDeleted())
+        	{
+            am.setDeleted(true);
+            try {
+				am.update();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+            refreshActivitiesList();
+            
+        	}
+        	else
+        	{
+        		JOptionPane.showMessageDialog(this,"Ya has sido desapuntado de esta actividad");
+        	}
+        });
         rightPanel.add(remove, c);
     }
 
