@@ -125,7 +125,7 @@ public class FacilityBooking implements DatabaseItem {
 			createStatement.setTimestamp(10, null);
 		}
 
-		createStatement.setString(1, state);
+		createStatement.setString(11, state);
 
 		createStatement.execute();
 	}

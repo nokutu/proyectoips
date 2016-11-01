@@ -295,7 +295,13 @@ public class AdministratorBookPanel extends JPanel {
 
 			if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
 				// Facility not free
-				valid = false;
+				List<FacilityBooking> reserva = Utils.getBookingsAt(of.get(), fb.getTimeStart(), fb.getTimeEnd());
+				OverrideBookingDialog ob;
+				(ob = new OverrideBookingDialog(reserva)).setVisible(true);
+				valid = ob.getValid();
+				if (!valid)
+					errors += "La instalaci\u00F3n est\u00E1 ocupada en la horas seleccionadas.\n";
+				//valid = false;
 				errors += "La instalaci\u00F3n est\u00E1 ocupada en las horas seleccionadas.\n";
 			}
 		} else {
@@ -336,7 +342,6 @@ public class AdministratorBookPanel extends JPanel {
 			valid = ob.getValid();
 			if (!valid)
 				errors += "La instalaci\u00F3n est\u00E1 ocupada en la horas seleccionadas.\n";
-
 		}
 		form.setError(errors);
 
