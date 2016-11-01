@@ -3,6 +3,7 @@ package ips.member;
 import ips.database.Database;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -60,6 +61,9 @@ public class MemberMainScreen extends JPanel {
         activitiesButton.addActionListener(l -> {
             if (userID != 0) {
                 new MemberActivitiesDialog().setVisible(true);
+            }
+            else{
+            	JOptionPane.showMessageDialog(this, "Numero de socio no valido");
             }
         });
         upperPanel.add(activitiesButton);
