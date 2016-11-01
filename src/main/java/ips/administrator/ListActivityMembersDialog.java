@@ -100,7 +100,7 @@ public class ListActivityMembersDialog extends JDialog{
 			{
 				if(activity.getActivityName().equals(ab.getActivityName()))
 				{
-					String line="Fecha: "+ab.getBookingTimeStart().getDay()+"/"+ ab.getBookingTimeStart().getMonth()+"/"+ab.getBookingTimeStart().getYear() +"Hora:"+ab.getBookingTimeStart().getHours();
+					String line="Fecha: "+ab.getFacilityBooking().getTimeStart().getDay()+"/"+ ab.getFacilityBooking().getTimeStart().getMonth()+"/"+ab.getFacilityBooking().getTimeStart().getYear() +"Hora:"+ab.getFacilityBooking().getTimeStart().getHours();
 					model.addElement(line);
 				}
 			}
@@ -125,7 +125,7 @@ public class ListActivityMembersDialog extends JDialog{
 			{
 				if(activity.getActivityName().equals(ab.getActivityName()))
 				{
-					String line="Fecha: "+ab.getBookingTimeStart().getDay()+"/"+ ab.getBookingTimeStart().getMonth()+"/"+ab.getBookingTimeStart().getYear() +"Hora:"+ab.getBookingTimeStart().getHours();
+					String line="Fecha: "+ab.getFacilityBooking().getTimeStart().getDay()+"/"+ ab.getFacilityBooking().getTimeStart().getMonth()+"/"+ab.getFacilityBooking().getTimeStart().getYear() +"Hora:"+ab.getFacilityBooking().getTimeStart().getHours();
 					model.addElement(line);
 				}
 			}
