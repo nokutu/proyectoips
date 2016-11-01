@@ -31,12 +31,15 @@ public class ChoosePanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
         add(cont, c);
-
         cont.setLayout(new GridBagLayout());
         cont.add(administration, c);
-        c.gridy = 1;
+
         c.insets = new Insets(20, 0, 0, 0);
+
+        c.gridy = 1;
         cont.add(member, c);
+
+        c.gridy = 2;
         cont.add(monitor, c);
     }
 }

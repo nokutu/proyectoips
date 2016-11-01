@@ -155,7 +155,7 @@ public class AdministratorBookPanel extends JPanel {
 		form.addSpace();
 
 		form.addLine(assignToActivity, true);
-		form.addLine(new JLabel("Actividad:"), activities);
+		form.addLine(new JLabel("Actividad:"), activities, false);
 	}
 
 	private void confirm(ActionEvent actionEvent) {
@@ -201,7 +201,9 @@ public class AdministratorBookPanel extends JPanel {
 			try {
 				for (FacilityBooking fb : bookings) {
 					if (Boolean.parseBoolean(form.getResults().get(ASSIGN_TO_ACTIVITY))) {
-						ActivityBooking ab = new ActivityBooking(form.getResults().get(ACTIVITY_ID), fb.getFacilityBookingId());
+						ActivityBooking ab = new ActivityBooking(
+								Database.getInstance().getActivities().get(Integer.parseInt(form.getResults().get(ACTIVITY_ID))).getActivityId(),
+								fb.getFacilityBookingId());
 						Database.getInstance().getActivityBookings().add(ab);
 						ab.create();
 					}

@@ -2,7 +2,6 @@ package ips.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 /**
  * Created by jorge on 27/10/2016.
@@ -12,19 +11,19 @@ public class ActivityMember implements DatabaseItem {
     private final static String CREATE_QUERY = "INSERT INTO activitymember VALUES (?, ?, ?, ?, ?)";
     private final static String UPDATE_QUERY =
             "UPDATE activitymember SET assistance=?, deleted=? " +
-                    "WHERE activity_name=? AND member_id=?";
+                    "WHERE activity_ID=? AND member_id=?";
 
     private static PreparedStatement createStatement;
     private static PreparedStatement updateStatement;
 
-    private String activityName;
+    private int activityId;
     private int facilityBookingId;
     private int memberId;
     private boolean assistance;
     private boolean deleted;
 
-    public ActivityMember(String activityName, int facilityBookingId, int memberId, boolean assistance, boolean deleted) {
-        this.activityName = activityName;
+    public ActivityMember(int activityId, int facilityBookingId, int memberId, boolean assistance, boolean deleted) {
+        this.activityId = activityId;
         this.facilityBookingId = facilityBookingId;
         this.memberId = memberId;
         this.assistance = assistance;
@@ -37,7 +36,7 @@ public class ActivityMember implements DatabaseItem {
             createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
         }
 
-        createStatement.setString(1, activityName);
+        createStatement.setInt(1, activityId);
         createStatement.setInt(2, facilityBookingId);
         createStatement.setInt(3, memberId);
         createStatement.setBoolean(4, assistance);
@@ -54,7 +53,7 @@ public class ActivityMember implements DatabaseItem {
 
         updateStatement.setBoolean(1, assistance);
         updateStatement.setBoolean(2, deleted);
-        updateStatement.setString(3, activityName);
+        updateStatement.setInt(3, activityId);
         updateStatement.setInt(4, memberId);
 
         updateStatement.execute();
@@ -64,8 +63,8 @@ public class ActivityMember implements DatabaseItem {
         return memberId;
     }
 
-    public String getActivityName() {
-		return activityName;
+    public int getActivityId() {
+		return activityId;
 	}
     
 	public boolean isAssistance() {

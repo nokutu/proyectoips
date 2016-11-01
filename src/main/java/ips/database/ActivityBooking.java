@@ -12,16 +12,17 @@ public class ActivityBooking implements DatabaseItem {
 
     private final static String CREATE_QUERY = "INSERT INTO activitybooking VALUES (?, ?)";
 
-    private String activityName;
+    private int activityId;
     private int facilityBookingId;
 
     private static PreparedStatement createStatement;
     private Date bookingTimeStart;
 
     private FacilityBooking lazyFacilityBooking;
+    private Activity lazyActivity;
 
-    public ActivityBooking(String activityName, int facilityBookingId) {
-        this.activityName = activityName;
+    public ActivityBooking(int activityId, int facilityBookingId) {
+        this.activityId = activityId;
         this.facilityBookingId = facilityBookingId;
     }
 
@@ -31,7 +32,7 @@ public class ActivityBooking implements DatabaseItem {
             createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
         }
 
-        createStatement.setString(1, activityName);
+        createStatement.setInt(1, activityId);
         createStatement.setInt(2, facilityBookingId);
 
         createStatement.execute();
@@ -42,8 +43,8 @@ public class ActivityBooking implements DatabaseItem {
         // TODO
     }
 
-    public String getActivityName() {
-        return activityName;
+    public int getActivityId() {
+        return activityId;
     }
 
     public FacilityBooking getFacilityBooking() {
@@ -56,5 +57,17 @@ public class ActivityBooking implements DatabaseItem {
             }
         }
         return lazyFacilityBooking;
+    }
+
+    public Activity getActivity() {
+        if (lazyActivity == null) {
+            Optional<Activity> ofb = Database.getInstance().getActivities().parallelStream().filter(a -> a.getActivityId() == facilityBookingId).findAny();
+            if (ofb.isPresent()) {
+                lazyActivity = ofb.get();
+            } else {
+                throw new IllegalStateException("No Activity found for selected ActivityBooking");
+            }
+        }
+        return lazyActivity;
     }
 }

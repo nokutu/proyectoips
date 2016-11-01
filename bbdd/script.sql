@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS feeItem;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS activitybooking;
 DROP TABLE IF EXISTS activitymember;
+DROP TABLE IF EXISTS monitor;
 
 CREATE TABLE facilityBooking (
     facilitybooking_id INTEGER NOT NULL,
@@ -54,24 +55,31 @@ CREATE TABLE feeitem (
 );
 
 CREATE TABLE activity (
+    activity_id INTEGER NOT NULL,
     activity_name VARCHAR(32) NOT NULL,
     assistant_limit INTEGER,
-    PRIMARY KEY(activity_name)
+    monitor_id INTEGER,
+    PRIMARY KEY(activity_id)
 );
 
 CREATE TABLE activitybooking (
-    activity_name VARCHAR(32) NOT NULL,
+    activity_id INTEGER NOT NULL,
     facilitybooking_id INTEGER NOT NULL,
-    PRIMARY KEY (activity_name, facilitybooking_id)
+    PRIMARY KEY (activity_id, facilitybooking_id)
 );
 
 CREATE TABLE activitymember (
-    activity_name VARCHAR(32) NOT NULL,
+    activity_id INTEGER NOT NULL,
     facilitybooking_id INTEGER NOT NULL,
     member_id INTEGER NOT NULL,
     assistance BOOLEAN,
     deleted BOOLEAN,
-    PRIMARY KEY(activity_name, facilitybooking_id, member_id),
+    PRIMARY KEY(activity_id, facilitybooking_id, member_id),
+);
+
+CREATE TABLE monitor (
+    monitor_id INTEGER NOT NULL,
+    PRIMARY KEY(monitor_id)
 );
 
 INSERT INTO member VALUES (1, 'Gabriel',true);
@@ -98,13 +106,14 @@ INSERT INTO facilitybooking VALUES (4, 0, 2,
     PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 
-INSERT INTO activity VALUES ('Taller 1', 25);
-INSERT INTO activity VALUES ('Taller 2', 50);
-INSERT INTO activity VALUES ('Taller 3', 75);
-INSERT INTO activity VALUES ('Yoga 1', 10);
+INSERT INTO monitor VALUES(1);
 
-INSERT INTO activitybooking VALUES('Taller 1', 4,);
+INSERT INTO activity VALUES (1, 'Taller 1', 25, 1);
+INSERT INTO activity VALUES (2, 'Taller 2', 50, 1);
+INSERT INTO activity VALUES (3, 'Taller 3', 75, 1);
+INSERT INTO activity VALUES (4, 'Yoga 1', 10, 1);
 
+INSERT INTO activitybooking VALUES(1, 4,);
 
-INSERT INTO activitymember VALUES ('Taller 1', 4, 1, false, false);
-INSERT INTO activitymember VALUES ('Taller 1', 4, 2, false, false);
+INSERT INTO activitymember VALUES (1, 4, 1, false, false);
+INSERT INTO activitymember VALUES (1, 4, 2, false, false);

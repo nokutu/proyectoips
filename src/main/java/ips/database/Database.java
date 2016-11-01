@@ -108,19 +108,19 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY);
         while (rs.next()) {
-            activities.add(new Activity(rs.getString(1), rs.getInt(2)));
+            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
         }
 
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY_BOOKING);
         while (rs.next()) {
-            activityBookings.add(new ActivityBooking(rs.getString(1), rs.getInt(2)));
+            activityBookings.add(new ActivityBooking(rs.getInt(1), rs.getInt(2)));
         }
 
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY_MEMBER);
         while (rs.next()) {
-            activityMembers.add(new ActivityMember(rs.getString(1), rs.getInt(2), rs.getInt(3), rs.getBoolean(4), rs.getBoolean(5)));
+            activityMembers.add(new ActivityMember(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getBoolean(4), rs.getBoolean(5)));
         }
     }
 

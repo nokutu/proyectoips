@@ -75,12 +75,17 @@ public class AdministratorActivitiesDialog extends JDialog {
 
         JComboBox<String> sessions = new JComboBox<>();
         activities.addActionListener(l -> {
+            memberList.removeAll();
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
             Database.getInstance().getActivityBookings().stream()
-                    .filter(ab -> ab.getActivityName().equals(Database.getInstance().getActivities().get(activities.getSelectedIndex()).getActivityName()))
+                    .filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
                     .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
+
+            if (sessions.getModel().getSize() > 0) {
+                sessions.setSelectedIndex(0);
+            }
             refreshAssistanceCount();
         });
         activities.setSelectedIndex(0);
@@ -89,7 +94,7 @@ public class AdministratorActivitiesDialog extends JDialog {
             memberList.removeAll();
             membersInSession = new ArrayList<>();
             for (ActivityMember am : Database.getInstance().getActivityMembers()) {
-                if (am.getActivityName().equals(activities.getSelectedItem())) {
+                if (am.getActivityId() ==  getSelectedActivity().getActivityId()) {
                     Member member = Database.getInstance().getMemberById(am.getMemberId());
                     if (am.isAssistance()) {
                         //la lista contiene a los miembros asistentes
@@ -150,7 +155,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
     private void refreshAssistanceCount() {
         Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
-                .filter(am -> am.getActivityName().equals(activities.getSelectedItem()))
+                .filter(am -> am.getActivityId() == getSelectedActivity().getActivityId())
                 .map(am -> am.isAssistance() ? 1 : 0)
                 .reduce(Integer::sum);
         Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
@@ -163,6 +168,10 @@ public class AdministratorActivitiesDialog extends JDialog {
             assistanceLabel.setText("");
             addMember.setEnabled(false);
         }
+    }
+
+    private Activity getSelectedActivity() {
+        return Database.getInstance().getActivities().get(activities.getSelectedIndex());
     }
 
     private class CheckBoxList extends JPanel {

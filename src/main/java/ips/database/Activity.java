@@ -9,18 +9,22 @@ import java.sql.Timestamp;
  */
 public class Activity implements DatabaseItem {
 
-    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?)";
+    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?, ?, ?)";
     private final static String UPDATE_QUERY = "";
 
     private static PreparedStatement createStatement;
     private static PreparedStatement updateStatement;
 
+    private int activityId;
     private String activityName;
     private int assistantLimit;
+    private int monitorId;
 
-    public Activity(String activityName, int assistantLimit) {
+    public Activity(int activityId, String activityName, int assistantLimit, int monitorId) {
+        this.activityId = activityId;
         this.activityName = activityName;
         this.assistantLimit = assistantLimit;
+        this.monitorId = monitorId;
     }
 
     @Override
@@ -29,8 +33,10 @@ public class Activity implements DatabaseItem {
             createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
         }
 
-        createStatement.setString(1, activityName);
-        createStatement.setInt(2, assistantLimit);
+        createStatement.setInt(1, activityId);
+        createStatement.setString(2, activityName);
+        createStatement.setInt(3, assistantLimit);
+        createStatement.setInt(4, monitorId);
 
         createStatement.execute();
     }
@@ -38,6 +44,10 @@ public class Activity implements DatabaseItem {
     public String getActivityName() {
 		return activityName;
 	}
+
+    public int getActivityId() {
+        return activityId;
+    }
 
     public int getAssistantLimit() {
         return assistantLimit;

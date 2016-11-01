@@ -1,17 +1,22 @@
 package ips.member;
 
 import ips.MainWindow;
+import ips.database.ActivityBooking;
 import ips.database.Database;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by nokutu on 25/10/2016.
  */
 public class MemberActivitiesDialog extends JDialog {
+
+    private List<ActivityBooking> activityBookings;
 
     public MemberActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -60,10 +65,10 @@ public class MemberActivitiesDialog extends JDialog {
         JComboBox<String> sessions = new JComboBox<>();
         activities.addActionListener(l -> {
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
-            Database.getInstance().getActivityBookings().stream()
-                    .filter(ab -> ab.getActivityName().equals(Database.getInstance().getActivities().get(activities.getSelectedIndex()).getActivityName()))
-                    .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
-                    .forEach(sessionsModel::addElement);
+            activityBookings = Database.getInstance().getActivityBookings().stream()
+                    .filter(ab -> ab.getActivityId() == Database.getInstance().getActivities().get(activities.getSelectedIndex()).getActivityId())
+                    .collect(Collectors.toList());
+            activityBookings.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart())).forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
         });
         activities.setSelectedIndex(0);
