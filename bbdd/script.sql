@@ -107,3 +107,4 @@ INSERT INTO activitybooking VALUES('Taller 1', 4,);
 
 
 INSERT INTO activitymember VALUES ('Taller 1', 4, 1, false, false);
+INSERT INTO activitymember VALUES ('Taller 1', 4, 2, false, false);

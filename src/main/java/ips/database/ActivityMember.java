@@ -11,7 +11,7 @@ public class ActivityMember implements DatabaseItem {
 
     private final static String CREATE_QUERY = "INSERT INTO activitymember VALUES (?, ?, ?, ?, ?)";
     private final static String UPDATE_QUERY =
-            "UPDATE SET assistance=?, deleted=? " +
+            "UPDATE activitymember SET assistance=?, deleted=? " +
                     "WHERE activity_name=? AND member_id=?";
 
     private static PreparedStatement createStatement;

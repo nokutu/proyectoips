@@ -1,25 +1,31 @@
 package ips.administrator;
 
 import ips.MainWindow;
+import ips.database.Activity;
 import ips.database.ActivityMember;
 import ips.database.Database;
 import ips.database.Member;
-
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by nokutu on 25/10/2016.
  */
 public class AdministratorActivitiesDialog extends JDialog {
 
-    private JList<String> memberList;
+    private CheckBoxList memberList = new CheckBoxList();
     private List<Member> membersInSession;
+    private JLabel assistanceLabel = new JLabel("");
+
+    private JComboBox<String> activities;
+    private JButton addMember = new JButton("Apuntar a socio");
 
     public AdministratorActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -54,7 +60,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
         c.gridx++;
 
-        JComboBox<String> activities = new JComboBox<>();
+        activities = new JComboBox<>();
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
         Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
         activities.setModel(activitiesModel);
@@ -75,29 +81,46 @@ public class AdministratorActivitiesDialog extends JDialog {
                     .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
+            refreshAssistanceCount();
         });
         activities.setSelectedIndex(0);
 
         sessions.addActionListener(l -> {
-            // TODO update central list
-        	DefaultListModel<String> model=new DefaultListModel();
-        	membersInSession=new ArrayList<>();
-        	for(ActivityMember am :Database.getInstance().getActivityMembers())
-        	{
-        		if(am.getActivityName().equals(activities.getSelectedItem()))
-        		{
-        			Member member= Database.getInstance().getMemberById(am.getMemberId());
-        			if(am.isAssistance())
-        			{
-        				//la lista contiene a los miembros asistentes
-        				membersInSession.add(member);
-        			}
-        			model.addElement(member.getMemberName());
-        		}
-        	}
-        	memberList.setModel(model);
-        	memberList.setCellRenderer(new CheckboxCellRenderer());
+            memberList.removeAll();
+            membersInSession = new ArrayList<>();
+            for (ActivityMember am : Database.getInstance().getActivityMembers()) {
+                if (am.getActivityName().equals(activities.getSelectedItem())) {
+                    Member member = Database.getInstance().getMemberById(am.getMemberId());
+                    if (am.isAssistance()) {
+                        //la lista contiene a los miembros asistentes
+                        membersInSession.add(member);
+                    }
+
+                    JCheckBox chk = new JCheckBox(member.getMemberName());
+                    chk.setSelected(am.isAssistance());
+                    chk.addActionListener(lis -> {
+                        try {
+                            am.setAssistance(chk.isSelected());
+                            am.update();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        refreshAssistanceCount();
+                    });
+                    memberList.addLine(chk);
+                }
+                refreshAssistanceCount();
+            }
+
+            // Force the panel to refresh
+            SwingUtilities.invokeLater(() -> {
+                memberList.setVisible(false);
+                memberList.setVisible(true);
+            });
         });
+        if (sessions.getModel().getSize() > 0) {
+            sessions.setSelectedIndex(0);
+        }
 
         leftPanel.add(sessions, c);
     }
@@ -107,55 +130,71 @@ public class AdministratorActivitiesDialog extends JDialog {
         add(bottomPanel, BorderLayout.SOUTH);
 
         bottomPanel.add(new JLabel("Socios apuntados:"));
-        JLabel asistanceLabel = new JLabel("0/25");
-        bottomPanel.add(asistanceLabel);
-
-
-        JButton addMember = new JButton("Apuntar a socio");
+        bottomPanel.add(assistanceLabel);
+        
         bottomPanel.add(addMember);
-
-
     }
 
     private void createCenterPanel() {
-        memberList = new JList<>();
-        DefaultListModel<String> model=new DefaultListModel();
-        memberList.setModel(model);
-        memberList.setCellRenderer(new CheckboxCellRenderer());
-        JLabel colorlabel=new JLabel();
-        colorlabel.setText("Asistio/va a asistir: verde \n"
-        		+ "No asistio: rojo \n");
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
 
-        
-        add(colorlabel,BorderLayout.NORTH);
-        add(memberList, BorderLayout.CENTER);
+        JLabel colorlabel = new JLabel();
+        colorlabel.setText("Marcado: asiste. Desmarcado: no asiste");
+
+        centerPanel.add(colorlabel, BorderLayout.NORTH);
+        centerPanel.add(memberList, BorderLayout.CENTER);
+
+        add(centerPanel, BorderLayout.CENTER);
     }
-    protected class CheckboxCellRenderer implements ListCellRenderer 
-    {
 
-		@Override
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-				boolean cellHasFocus) {
-			
-			 JCheckBox checkbox = new JCheckBox((String)value);
-			 boolean found=false;
-			 for(Member m : membersInSession)
-			 {
-				 
-				 if(m.getMemberName().equals((String)value))
-				 {
-					 found = true;
-					 checkbox.setBackground(Color.green);
-				 }			
-			
-			 }
-			 
-			 if(!found)
-			 {
-				 checkbox.setBackground(Color.red);
-			 }
-			return checkbox;
-		}
-    	
+    private void refreshAssistanceCount() {
+        Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
+                .filter(am -> am.getActivityName().equals(activities.getSelectedItem()))
+                .map(am -> am.isAssistance() ? 1 : 0)
+                .reduce(Integer::sum);
+        Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
+                .filter(a -> a.getActivityName().equals(activities.getSelectedItem()))
+                .findAny();
+        if (assistantsOptional.isPresent() && activityOptional.isPresent()) {
+            assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
+            addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
+        } else {
+            assistanceLabel.setText("");
+            addMember.setEnabled(false);
+        }
+    }
+
+    private class CheckBoxList extends JPanel {
+
+        private GridBagConstraints c;
+
+        private JLabel endLabel = new JLabel();
+
+        public CheckBoxList() {
+            setLayout(new GridBagLayout());
+            c = new GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            c.weightx = 1;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            setBackground(Color.white);
+
+            c.weighty = 1;
+            add(endLabel, c);
+            c.weighty = 0;
+        }
+
+        public void addLine(JCheckBox ch) {
+            remove(endLabel);
+
+            ch.setBackground(Color.white);
+            add(ch, c);
+            c.gridy++;
+
+            c.weighty = 1;
+            add(endLabel, c);
+            c.weighty = 0;
+        }
     }
 }
