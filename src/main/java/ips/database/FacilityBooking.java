@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class FacilityBooking implements DatabaseItem {
 
 	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facility_id=? AND time_start=?";
+	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facilitybooking_id=?";
 
 	private final static String PAYMENT_CASH = "cash";
 	private final static String PAYMENT_FEE = "fee";
@@ -105,26 +105,27 @@ public class FacilityBooking implements DatabaseItem {
 			createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
 		}
 
-		createStatement.setInt(1, facilityId);
-		createStatement.setInt(2, memberId);
-		createStatement.setTimestamp(3, new Timestamp(timeStart.getTime()));
-		createStatement.setTimestamp(4, new Timestamp(timeEnd.getTime()));
-		createStatement.setString(5, paymentMethod);
-		createStatement.setBoolean(6, paid);
-		createStatement.setBoolean(7, deletedFlag);
+		createStatement.setInt(1, facilityBookingId);
+		createStatement.setInt(2, facilityId);
+		createStatement.setInt(3, memberId);
+		createStatement.setTimestamp(4, new Timestamp(timeStart.getTime()));
+		createStatement.setTimestamp(5, new Timestamp(timeEnd.getTime()));
+		createStatement.setString(6, paymentMethod);
+		createStatement.setBoolean(7, paid);
+		createStatement.setBoolean(8, deletedFlag);
 		if (entrance != null) {
-			createStatement.setTimestamp(8, new Timestamp(entrance.getTime()));
-		} else {
-			createStatement.setTimestamp(8, null);
-		}
-
-		if (abandon != null) {
-			createStatement.setTimestamp(9, new Timestamp(abandon.getTime()));
+			createStatement.setTimestamp(9, new Timestamp(entrance.getTime()));
 		} else {
 			createStatement.setTimestamp(9, null);
 		}
 
-		createStatement.setString(10, state);
+		if (abandon != null) {
+			createStatement.setTimestamp(10, new Timestamp(abandon.getTime()));
+		} else {
+			createStatement.setTimestamp(10, null);
+		}
+
+		createStatement.setString(1, state);
 
 		createStatement.execute();
 	}
@@ -137,11 +138,7 @@ public class FacilityBooking implements DatabaseItem {
 		updateStatement.setString(1, paymentMethod);
 		updateStatement.setBoolean(2, paid);
 		updateStatement.setBoolean(3, deletedFlag);
-
-		updateStatement.setInt(7, facilityId);
-		updateStatement.setTimestamp(8, timeStart);
-		updateStatement.setString(6, state);
-
+		
 		if (entrance != null) {
 			updateStatement.setTimestamp(4, new Timestamp(entrance.getTime()));
 		} else {
@@ -152,6 +149,11 @@ public class FacilityBooking implements DatabaseItem {
 		} else {
 			updateStatement.setTimestamp(5, null);
 		}
+
+		updateStatement.setString(6, state);
+
+		updateStatement.setInt(7, facilityBookingId);
+
 
 		updateStatement.execute();
 	}
