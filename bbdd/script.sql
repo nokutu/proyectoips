@@ -103,4 +103,8 @@ INSERT INTO activity VALUES ('Taller 2', 50);
 INSERT INTO activity VALUES ('Taller 3', 75);
 INSERT INTO activity VALUES ('Yoga 1', 10);
 
-INSERT INTO activitybooking VALUES('Taller 1', 4,)
+INSERT INTO activitybooking VALUES('Taller 1', 4,);
+
+
+INSERT INTO activitymember VALUES ('Taller 1', 4, 1, false, false);
+INSERT INTO activitymember VALUES ('Taller 1', 4, 2, false, false);

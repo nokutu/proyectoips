@@ -11,7 +11,7 @@ public class ActivityMember implements DatabaseItem {
 
     private final static String CREATE_QUERY = "INSERT INTO activitymember VALUES (?, ?, ?, ?, ?)";
     private final static String UPDATE_QUERY =
-            "UPDATE SET assistance=?, deleted=? " +
+            "UPDATE activitymember SET assistance=?, deleted=? " +
                     "WHERE activity_name=? AND member_id=?";
 
     private static PreparedStatement createStatement;
@@ -64,7 +64,19 @@ public class ActivityMember implements DatabaseItem {
         return memberId;
     }
 
-    public void setDeleted(boolean deleted) {
+    public String getActivityName() {
+		return activityName;
+	}
+    
+	public boolean isAssistance() {
+		return assistance;
+	}
+
+	public void setAssistance(boolean assistance) {
+		this.assistance = assistance;
+	}
+
+	public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 }

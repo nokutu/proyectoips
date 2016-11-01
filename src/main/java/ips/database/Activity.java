@@ -39,7 +39,11 @@ public class Activity implements DatabaseItem {
 		return activityName;
 	}
 
-	@Override
+    public int getAssistantLimit() {
+        return assistantLimit;
+    }
+
+    @Override
     public void update() throws SQLException {
         // TODO
     }
