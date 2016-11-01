@@ -2,7 +2,6 @@ package ips;
 
 import ips.administrator.AdministratorMain;
 import ips.administrator.AdministratorMainScreen;
-import ips.member.MemberMain;
 
 import ips.member.MemberMainScreen;
 import javax.swing.ButtonGroup;

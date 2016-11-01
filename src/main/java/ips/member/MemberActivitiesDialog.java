@@ -2,6 +2,7 @@ package ips.member;
 
 import ips.MainWindow;
 import ips.database.ActivityBooking;
+import ips.database.ActivityMember;
 import ips.database.Database;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class MemberActivitiesDialog extends JDialog {
 
     private List<ActivityBooking> activityBookings;
+    private JList<String> activitiesList;
+    private List<ActivityMember> activityMembers;
 
     public MemberActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -25,7 +28,7 @@ public class MemberActivitiesDialog extends JDialog {
 
         createLeftPanel();
         createRightPanel();
-        // TODO añadir el panel central
+        createCenterPanel();
 
         setMinimumSize(new Dimension(320, 180));
         pack();
@@ -74,6 +77,14 @@ public class MemberActivitiesDialog extends JDialog {
         activities.setSelectedIndex(0);
 
         leftPanel.add(sessions, c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridwidth = 2;
+        c.gridy++;
+        c.gridx = 0;
+
+        JButton join = new JButton("Apuntarse");
+        leftPanel.add(join, c);
     }
 
     private void createRightPanel() {
@@ -90,14 +101,20 @@ public class MemberActivitiesDialog extends JDialog {
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(2, 5, 2, 10);
 
-        JButton join = new JButton("Apuntarse");
-        rightPanel.add(join, c);
-
-        c.gridy++;
-
         JButton remove = new JButton("Borrarse");
         rightPanel.add(remove, c);
-       
+    }
 
+    private void createCenterPanel() {
+        activitiesList = new JList<>();
+        add(activitiesList, BorderLayout.CENTER);
+        refreshActivitiesList();
+    }
+
+    private void refreshActivitiesList() {
+        DefaultListModel<String> m = new DefaultListModel<>();
+        activityMembers = Database.getInstance().getActivityMembers().stream().filter(am -> !am.isDeleted() && am.getMemberId() == MemberMainScreen.userID).collect(Collectors.toList());
+        activityMembers.forEach(am -> m.addElement(am.getActivity().getActivityName()));
+        activitiesList.setModel(m);
     }
 }

@@ -2,6 +2,7 @@ package ips.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Created by jorge on 27/10/2016.
@@ -21,6 +22,7 @@ public class ActivityMember implements DatabaseItem {
     private int memberId;
     private boolean assistance;
     private boolean deleted;
+    private Activity lazyActivity;
 
     public ActivityMember(int activityId, int facilityBookingId, int memberId, boolean assistance, boolean deleted) {
         this.activityId = activityId;
@@ -77,5 +79,21 @@ public class ActivityMember implements DatabaseItem {
 
 	public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public Activity getActivity() {
+        if (lazyActivity == null) {
+            Optional<Activity> ofb = Database.getInstance().getActivities().parallelStream().filter(a -> a.getActivityId() == facilityBookingId).findAny();
+            if (ofb.isPresent()) {
+                lazyActivity = ofb.get();
+            } else {
+                throw new IllegalStateException("No Activity found for selected ActivityBooking");
+            }
+        }
+        return lazyActivity;
     }
 }
