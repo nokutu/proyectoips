@@ -9,15 +9,18 @@ import java.sql.Timestamp;
  */
 public class FacilityBooking implements DatabaseItem {
 
-	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facility_id=? AND time_start=?";
 
 	private final static String PAYMENT_CASH = "cash";
 	private final static String PAYMENT_FEE = "fee";
 
+	private static int MAX_ID = 0;
+
 	private static PreparedStatement createStatement;
 	private static PreparedStatement updateStatement;
 
+	private int facilityBookingId;
 	private int facilityId;
 	private int memberId;
 	private Timestamp timeStart;
@@ -40,6 +43,12 @@ public class FacilityBooking implements DatabaseItem {
 
 	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
 			boolean paid, boolean deletedFlag, Timestamp entrance, Timestamp abandon, String state) {
+		this(MAX_ID + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, deletedFlag, entrance, abandon, state);
+	}
+
+	public FacilityBooking(int facilityBookingId, int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
+						   boolean paid, boolean deletedFlag, Timestamp entrance, Timestamp abandon, String state) {
+		this.facilityBookingId = facilityBookingId;
 		this.setTimeStart(timeStart);
 		this.setTimeEnd(timeEnd);
 		this.setFacilityId(facilityId);
@@ -50,6 +59,12 @@ public class FacilityBooking implements DatabaseItem {
 		this.entrance = entrance;
 		this.abandon = abandon;
 		this.state = state;
+
+		MAX_ID = Math.max(MAX_ID, facilityBookingId + 1);
+	}
+
+	public int getFacilityBookingId() {
+		return facilityBookingId;
 	}
 
 	public Timestamp getEntrance() {

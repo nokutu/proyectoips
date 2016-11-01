@@ -25,6 +25,12 @@ import java.util.stream.Collectors;
  */
 public class MemberBookPanel extends JPanel {
 
+    private static final int DATE = 0;
+    private static final int TIME_START = 1;
+    private static final int TIME_END = 2;
+    private static final int FACILITy = 3;
+    private static final int PAYMENT_METHOD = 4;
+
     private Facility facility;
     private Timestamp timeStart;
     private Timestamp timeEnd;
@@ -105,30 +111,32 @@ public class MemberBookPanel extends JPanel {
     }
 
     private FacilityBooking createBooking() {
-        int facilityId;
-        int memberId;
-        Timestamp timeStart;
-        Timestamp timeEnd;
-        String paymentMethod;
+        int facilityId = 0;
+        int memberId = 0;
+        Timestamp timeStart = null;
+        Timestamp timeEnd = null;
+        String paymentMethod = null;
 
         try {
             List<String> results = form.getResults();
             if (this.timeStart == null) {
                 timeStart = new Timestamp(Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(1))).getTime());
+                        new Timestamp(Long.parseLong(results.get(DATE))),
+                        Integer.parseInt(results.get(TIME_START))).getTime());
                 timeEnd = new Timestamp(Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(results.get(0))),
-                        Integer.parseInt(results.get(2))).getTime());
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3))).getFacilityId();
+                        new Timestamp(Long.parseLong(results.get(DATE))),
+                        Integer.parseInt(results.get(TIME_END))).getTime());
+                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
                 memberId = MemberMainScreen.userID;
-                paymentMethod = results.get(4);
+                paymentMethod = results.get(PAYMENT_METHOD);
             } else {
-                facilityId = facility.getFacilityId();
+                // Should only be reached if tony finishes his part
+
+                /*facilityId = facility.getFacilityId();
                 timeStart = this.timeStart;
                 timeEnd = this.timeEnd;
                 memberId = MemberMainScreen.userID;
-                paymentMethod = results.get(0);
+                paymentMethod = results.get(0);*/
             }
 
             return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);

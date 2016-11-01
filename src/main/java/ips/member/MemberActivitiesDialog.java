@@ -62,7 +62,7 @@ public class MemberActivitiesDialog extends JDialog {
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
             Database.getInstance().getActivityBookings().stream()
                     .filter(ab -> ab.getActivityName().equals(Database.getInstance().getActivities().get(activities.getSelectedIndex()).getActivityName()))
-                    .map(ab -> new SimpleDateFormat().format(ab.getBookingTimeStart()))
+                    .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
         });

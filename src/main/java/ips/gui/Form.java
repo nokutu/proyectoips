@@ -119,9 +119,9 @@ public class Form {
         addLine(b, false);
     }
 
-    public void addLine(JCheckBox b, boolean addToValues) {
+    public void addLine(JCheckBox b, boolean addToResults) {
         doAddLine(b);
-        if (addToValues) {
+        if (addToResults) {
             values.add(() -> String.valueOf(b.isSelected()));
         }
     }

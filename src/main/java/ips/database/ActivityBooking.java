@@ -2,25 +2,27 @@ package ips.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created by nokutu on 17/10/2016.
  */
 public class ActivityBooking implements DatabaseItem {
 
-    private final static String CREATE_QUERY = "INSERT INTO activitybooking VALUES (?, ?, ?)";
+    private final static String CREATE_QUERY = "INSERT INTO activitybooking VALUES (?, ?)";
 
     private String activityName;
-    private int facilityId;
-    private Timestamp bookingTimeStart;
+    private int facilityBookingId;
 
     private static PreparedStatement createStatement;
+    private Date bookingTimeStart;
 
-    public ActivityBooking(String activityName, int facilityId, Timestamp bookingTimeStart) {
+    private FacilityBooking lazyFacilityBooking;
+
+    public ActivityBooking(String activityName, int facilityBookingId) {
         this.activityName = activityName;
-        this.facilityId = facilityId;
-        this.bookingTimeStart = bookingTimeStart;
+        this.facilityBookingId = facilityBookingId;
     }
 
     @Override
@@ -30,8 +32,7 @@ public class ActivityBooking implements DatabaseItem {
         }
 
         createStatement.setString(1, activityName);
-        createStatement.setInt(2, facilityId);
-        createStatement.setTimestamp(3, bookingTimeStart);
+        createStatement.setInt(2, facilityBookingId);
 
         createStatement.execute();
     }
@@ -45,7 +46,15 @@ public class ActivityBooking implements DatabaseItem {
         return activityName;
     }
 
-    public Timestamp getBookingTimeStart() {
-        return bookingTimeStart;
+    public FacilityBooking getFacilityBooking() {
+        if (lazyFacilityBooking == null) {
+            Optional<FacilityBooking> ofb = Database.getInstance().getFacilityBookings().parallelStream().filter(fb -> fb.getFacilityBookingId() == facilityBookingId).findAny();
+            if (ofb.isPresent()) {
+                lazyFacilityBooking = ofb.get();
+            } else {
+                throw new IllegalStateException("No FacilityBooking found for selected ActivityBooking");
+            }
+        }
+        return lazyFacilityBooking;
     }
 }

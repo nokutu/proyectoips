@@ -12,20 +12,20 @@ public class ActivityMember implements DatabaseItem {
     private final static String CREATE_QUERY = "INSERT INTO activitymember VALUES (?, ?, ?, ?, ?)";
     private final static String UPDATE_QUERY =
             "UPDATE SET assistance=?, deleted=? " +
-                    "WHERE activity_name=? AND booking_time_start=? AND member_id=?";
+                    "WHERE activity_name=? AND member_id=?";
 
     private static PreparedStatement createStatement;
     private static PreparedStatement updateStatement;
 
     private String activityName;
-    private Timestamp bookingTimeStart;
+    private int facilityBookingId;
     private int memberId;
     private boolean assistance;
     private boolean deleted;
 
-    public ActivityMember(String activityName, Timestamp bookingTimeStart, int memberId, boolean assistance, boolean deleted) {
+    public ActivityMember(String activityName, int facilityBookingId, int memberId, boolean assistance, boolean deleted) {
         this.activityName = activityName;
-        this.bookingTimeStart = bookingTimeStart;
+        this.facilityBookingId = facilityBookingId;
         this.memberId = memberId;
         this.assistance = assistance;
         this.deleted = deleted;
@@ -38,7 +38,7 @@ public class ActivityMember implements DatabaseItem {
         }
 
         createStatement.setString(1, activityName);
-        createStatement.setTimestamp(2, bookingTimeStart);
+        createStatement.setInt(2, facilityBookingId);
         createStatement.setInt(3, memberId);
         createStatement.setBoolean(4, assistance);
         createStatement.setBoolean(5, deleted);
@@ -55,8 +55,7 @@ public class ActivityMember implements DatabaseItem {
         updateStatement.setBoolean(1, assistance);
         updateStatement.setBoolean(2, deleted);
         updateStatement.setString(3, activityName);
-        updateStatement.setTimestamp(4, bookingTimeStart);
-        updateStatement.setInt(5, memberId);
+        updateStatement.setInt(4, memberId);
 
         updateStatement.execute();
     }

@@ -25,7 +25,7 @@ public class AdministratorActivitiesDialog extends JDialog {
         setLayout(new BorderLayout());
 
         createLeftPanel();
-        createRightPanel();
+        createBottomPanel();
         // TODO añadir el panel central
 
         setMinimumSize(new Dimension(320, 180));
@@ -69,7 +69,7 @@ public class AdministratorActivitiesDialog extends JDialog {
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
             Database.getInstance().getActivityBookings().stream()
                     .filter(ab -> ab.getActivityName().equals(Database.getInstance().getActivities().get(activities.getSelectedIndex()).getActivityName()))
-                    .map(ab -> new SimpleDateFormat().format(ab.getBookingTimeStart()))
+                    .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);
         });
@@ -82,39 +82,19 @@ public class AdministratorActivitiesDialog extends JDialog {
         leftPanel.add(sessions, c);
     }
 
-    private void createRightPanel() {
-        JPanel rightPanel = new JPanel();
-        rightPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        add(rightPanel, BorderLayout.EAST);
+    private void createBottomPanel() {
+        JPanel bottomPanel = new JPanel();
+        add(bottomPanel, BorderLayout.SOUTH);
 
-        rightPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(2, 5, 2, 10);
+        bottomPanel.add(new JLabel("Socios apuntados:"));
+        JLabel asistanceLabel = new JLabel("0/25");
+        bottomPanel.add(asistanceLabel);
+
 
         JButton addMember = new JButton("Apuntar a socio");
-        rightPanel.add(addMember, c);
+        bottomPanel.add(addMember);
 
-        c.gridy = 1;
 
-        JButton removeMember = new JButton("Eliminar socio");
-        removeMember.addActionListener(l -> {
-            Member m = membersInSession.get(memberList.getSelectedIndex());
-            Database.getInstance().getActivityMembers().stream()
-                    .filter(am -> am.getMemberId() == m.getMemberId())
-                    .forEach(am -> {
-                        try {
-                            am.setDeleted(true);
-                            am.update();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    });
-        });
-        rightPanel.add(removeMember, c);
     }
 
     private void createCenterPanel() {

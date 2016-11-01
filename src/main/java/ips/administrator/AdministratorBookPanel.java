@@ -24,6 +24,21 @@ import java.util.stream.Collectors;
  */
 public class AdministratorBookPanel extends JPanel {
 
+	private static final int DATE = 0;
+	private static final int TIME_START = 1;
+	private static final int TIME_END = 2;
+	private static final int FACILITY_ID = 3;
+	private static final int MEMBER_ID = 4;
+	private static final int PAYMENT_METHOD = 5;
+	private static final int REPEAT = 6;
+	private static final int REPETITION_END_DATE = 7;
+	private static final int ASSIGN_TO_ACTIVITY = 8;
+	private static final int ACTIVITY_ID = 9;
+
+	private static final int NO_REPEAT = 0;
+	private static final int REPEAT_WEEKLY = 1;
+	private static final int REPEAT_MONTHLY = 2;
+
 	private final Form form;
 
 	private Facility facility;
@@ -146,22 +161,22 @@ public class AdministratorBookPanel extends JPanel {
 	private void confirm(ActionEvent actionEvent) {
 		List<FacilityBooking> bookings = new ArrayList<>();
 
-		Timestamp time = new Timestamp(Utils.addHourToDay(new Timestamp(Long.parseLong(form.getResults().get(0))),
-				Integer.parseInt(form.getResults().get(1))).getTime());
-		Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(6)));
+		Timestamp time = new Timestamp(Utils.addHourToDay(new Timestamp(Long.parseLong(form.getResults().get(DATE))),
+				Integer.parseInt(form.getResults().get(TIME_START))).getTime());
+		Timestamp repetitionEnd = new Timestamp(Long.parseLong(form.getResults().get(REPETITION_END_DATE)));
 
 		long increase = 0;
 		while (time.before(repetitionEnd) || increase == 0) {
 			bookings.add(createBooking(increase));
 
-			if (Integer.parseInt(form.getResults().get(4)) == 1) {
+			if (Integer.parseInt(form.getResults().get(REPEAT)) == REPEAT_WEEKLY) {
 				// Semanalmente
 				Calendar c = Calendar.getInstance();
 				c.setTime(time);
 				c.add(Calendar.WEEK_OF_YEAR, 1);
 				increase += c.getTime().getTime() - time.getTime();
 				time = new Timestamp(c.getTime().getTime());
-			} else if (Integer.parseInt(form.getResults().get(4)) == 2) {
+			} else if (Integer.parseInt(form.getResults().get(REPEAT)) == REPEAT_MONTHLY) {
 				// Mensualmente
 				Calendar c = Calendar.getInstance();
 				c.setTime(time);
@@ -185,9 +200,8 @@ public class AdministratorBookPanel extends JPanel {
 		if (valid) {
 			try {
 				for (FacilityBooking fb : bookings) {
-					if (Boolean.parseBoolean(form.getResults().get(8))) {
-						ActivityBooking ab = new ActivityBooking(form.getResults().get(9), fb.getFacilityId(),
-								fb.getTimeStart());
+					if (Boolean.parseBoolean(form.getResults().get(ASSIGN_TO_ACTIVITY))) {
+						ActivityBooking ab = new ActivityBooking(form.getResults().get(ACTIVITY_ID), fb.getFacilityBookingId());
 						Database.getInstance().getActivityBookings().add(ab);
 						ab.create();
 					}
@@ -209,32 +223,34 @@ public class AdministratorBookPanel extends JPanel {
 	private FacilityBooking createBooking(long addTime) {
 		int facilityId = -1;
 		int memberId = -1;
-		Timestamp timeStart;
-		Timestamp timeEnd;
-		String paymentMethod;
+		Timestamp timeStart = null;
+		Timestamp timeEnd = null;
+		String paymentMethod = null;
 
 		try {
 			List<String> results = form.getResults();
 			if (this.timeStart == null) {
 				timeStart = new Timestamp(Utils
-						.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(1)))
+						.addHourToDay(new Timestamp(Long.parseLong(results.get(DATE))), Integer.parseInt(results.get(TIME_START)))
 						.getTime());
 				timeEnd = new Timestamp(Utils
-						.addHourToDay(new Timestamp(Long.parseLong(results.get(0))), Integer.parseInt(results.get(2)))
+						.addHourToDay(new Timestamp(Long.parseLong(results.get(DATE))), Integer.parseInt(results.get(TIME_END)))
 						.getTime());
 				timeStart = new Timestamp(timeStart.getTime() + addTime);
 				timeEnd = new Timestamp(timeEnd.getTime() + addTime);
 
-				facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(3)))
+				facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITY_ID)))
 						.getFacilityId();
-				memberId = Integer.parseInt(results.get(4));
-				paymentMethod = results.get(5);
+				memberId = Integer.parseInt(results.get(MEMBER_ID));
+				paymentMethod = results.get(PAYMENT_METHOD);
 			} else {
-				facilityId = facility.getFacilityId();
+				// This will happen if tony finished his part
+
+				/*facilityId = facility.getFacilityId();
 				timeStart = this.timeStart;
 				timeEnd = this.timeEnd;
 				memberId = Integer.parseInt(results.get(0));
-				paymentMethod = results.get(1);
+				paymentMethod = results.get(1);*/
 			}
 
 			return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
