@@ -92,6 +92,7 @@ public class MemberActivitiesDialog extends JDialog {
 
         JButton remove = new JButton("Borrarse");
         rightPanel.add(remove, c);
+       
 
     }
 }

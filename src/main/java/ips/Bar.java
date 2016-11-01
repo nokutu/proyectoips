@@ -19,8 +19,9 @@ public class Bar extends JMenuBar {
     private static final long serialVersionUID = 8555548018850300676L;
     public final static int MODE_ADMINISTRATION = 1;
     public final static int MODE_MEMBER = 2;
-    
+    public static final int MODE_MONITOR = 3;
 	private static final boolean DEBUG = false; // a true muestra el panel clasico del SPRINT 1, para pruebas solo
+	
 	
     private static Bar instance;
 

@@ -15,14 +15,17 @@ public class ChoosePanel extends JPanel {
     private static final long serialVersionUID = -8043605828508774926L;
     private JButton administration;
     private JButton member;
+    private JButton monitor;
 
     public ChoosePanel() {
         setLayout(new GridBagLayout());
         administration = new JButton("Administraci\u00F3n");
         member = new JButton("Socio");
-
+        monitor = new JButton("Monitor");
+      
         administration.addActionListener((e) -> Bar.getInstance().setMode(Bar.MODE_ADMINISTRATION));
         member.addActionListener((e) -> Bar.getInstance().setMode(Bar.MODE_MEMBER));
+        monitor.addActionListener((e) -> Bar.getInstance().setMode(Bar.MODE_MONITOR));
 
         JPanel cont = new JPanel();
         GridBagConstraints c = new GridBagConstraints();
@@ -34,5 +37,6 @@ public class ChoosePanel extends JPanel {
         c.gridy = 1;
         c.insets = new Insets(20, 0, 0, 0);
         cont.add(member, c);
+        cont.add(monitor, c);
     }
 }
