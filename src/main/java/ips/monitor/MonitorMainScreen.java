@@ -69,10 +69,10 @@ public class MonitorMainScreen extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.CENTER;
 
-		JButton remove = new JButton("Marcar asistencia");
+		/*JButton remove = new JButton("Marcar asistencia");
 		remove.addActionListener(l -> {
 			for (int i = 0; i < membersInSession.size(); i++) {
-				if (activityMembersInSessionChk.get(i).isSelected()&&activityMembersInSessionChk.get(i).isEnabled())
+				if (activityMembersInSessionChk.get(i).isSelected() && activityMembersInSessionChk.get(i).isEnabled())
 				{
 					try {
 						activityMembersInSession.get(i).setAssistance(true);
@@ -84,7 +84,7 @@ public class MonitorMainScreen extends JPanel {
 			}
 			refreshCentralPanelList();
 		});
-		rightPanel.add(remove, c);
+		rightPanel.add(remove, c);*/
 
 		add(rightPanel, BorderLayout.EAST);
 	}
@@ -187,6 +187,27 @@ public class MonitorMainScreen extends JPanel {
 				{
 					chk.setEnabled(false);
 				}
+				chk.addActionListener(l->{
+					if (chk.isSelected() && chk.isEnabled())
+					{
+					try 
+					{
+						am.setAssistance(true);
+						am.update();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					}
+					if (!chk.isSelected() && chk.isEnabled())
+					{
+						try 
+						{
+							am.setAssistance(false);
+							am.update();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+				}});
 				activityMembersInSessionChk.add(chk);
 				memberList.addLine(chk);
 			}
