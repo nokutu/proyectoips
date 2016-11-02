@@ -50,6 +50,7 @@ public class Database {
         activities = new LinkedList<>();
         activityBookings = new LinkedList<>();
         activityMembers = new LinkedList<>();
+        monitors = new LinkedList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");
@@ -126,7 +127,7 @@ public class Database {
         }
 
         s = conn.createStatement();
-        rs = s.executeQuery(QUERY_ACTIVITY_MEMBER);
+        rs = s.executeQuery(QUERY_MONITOR);
         while (rs.next()) {
             monitors.add(new Monitor(rs.getInt(1), rs.getString(2)));
         }
@@ -220,5 +221,9 @@ public class Database {
 
     public List<ActivityMember> getActivityMembers() {
         return activityMembers;
+    }
+    
+    public List<Monitor> getMonitors(){
+    	return monitors;
     }
 }

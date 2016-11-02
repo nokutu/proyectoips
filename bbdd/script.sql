@@ -79,6 +79,7 @@ CREATE TABLE activitymember (
 
 CREATE TABLE monitor (
     monitor_id INTEGER NOT NULL,
+	monitor_nombre VARCHAR(80),
     PRIMARY KEY(monitor_id)
 );
 
@@ -110,7 +111,7 @@ INSERT INTO facilitybooking VALUES (5, 1, 0,
     PARSEDATETIME('15-11-2016 20:00:00', 'dd-MM-yyyy hh:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 
-INSERT INTO monitor VALUES(1);
+INSERT INTO monitor VALUES(1,'Rodolfo Perez');
 
 INSERT INTO activity VALUES (1, 'Taller 1', 25, 1);
 INSERT INTO activity VALUES (2, 'Taller 2', 50, 1);
@@ -118,7 +119,9 @@ INSERT INTO activity VALUES (3, 'Taller 3', 75, 1);
 INSERT INTO activity VALUES (4, 'Yoga 1', 10, 1);
 
 INSERT INTO activitybooking VALUES(1, 4);
+INSERT INTO activitybooking VALUES(2, 4);
 INSERT INTO activitybooking VALUES(1, 5);
+INSERT INTO activitybooking VALUES(2, 5);
 
 INSERT INTO activitymember VALUES (1, 4, 1, true, false);
 INSERT INTO activitymember VALUES (1, 4, 2, true, false);
