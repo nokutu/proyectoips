@@ -3,6 +3,7 @@ package ips.database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 /**
  * Represents each of the bookings made in a facility.
@@ -12,8 +13,8 @@ public class FacilityBooking implements DatabaseItem {
 	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facilitybooking_id=?";
 
-	private final static String PAYMENT_CASH = "cash";
-	private final static String PAYMENT_FEE = "fee";
+	public final static String PAYMENT_CASH = "Cash";
+	public final static String PAYMENT_FEE = "Fee";
 
 	private static int MAX_ID = 0;
 
@@ -31,6 +32,8 @@ public class FacilityBooking implements DatabaseItem {
 	private Timestamp entrance;
 	private Timestamp abandon;
 	private String state;
+
+	private Facility lazyFacility;
 
 	/**
 	 * Simple constructor. Entrance, abandon and state are set to default
@@ -228,5 +231,18 @@ public class FacilityBooking implements DatabaseItem {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	public Facility getFacility() {
+		if (lazyFacility == null) {
+			Optional<Facility> ofb = Database.getInstance().getFacilities().parallelStream()
+					.filter(f -> f.getFacilityId() == facilityId).findAny();
+			if (ofb.isPresent()) {
+				lazyFacility = ofb.get();
+			} else {
+				throw new IllegalStateException("No FacilityBooking found for selected ActivityBooking");
+			}
+		}
+		return lazyFacility;
 	}
 }

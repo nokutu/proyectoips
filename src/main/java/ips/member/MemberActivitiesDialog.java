@@ -1,12 +1,13 @@
 package ips.member;
 
 import ips.MainWindow;
+import ips.Utils;
 import ips.database.ActivityBooking;
 import ips.database.ActivityMember;
 import ips.database.Database;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -103,25 +104,22 @@ public class MemberActivitiesDialog extends JDialog {
         c.insets = new Insets(2, 5, 2, 10);
 
         JButton remove = new JButton("Borrarse");
-       // remove.setEnabled(false);
+        // remove.setEnabled(false);
         remove.addActionListener(l -> {
-        	
-        	ActivityMember am = activityMembers.get(activitiesList.getSelectedIndex());
-        	if(!am.isDeleted())
-        	{
-            am.setDeleted(true);
-            try {
-				am.update();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-            refreshActivitiesList();
-            
-        	}
-        	else
-        	{
-        		JOptionPane.showMessageDialog(this,"Ya has sido desapuntado de esta actividad");
-        	}
+
+            ActivityMember am = activityMembers.get(activitiesList.getSelectedIndex());
+            if (!am.isDeleted()) {
+                am.setDeleted(true);
+                try {
+                    am.update();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                refreshActivitiesList();
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Ya has sido desapuntado de esta actividad");
+            }
         });
         rightPanel.add(remove, c);
     }
@@ -134,8 +132,16 @@ public class MemberActivitiesDialog extends JDialog {
 
     private void refreshActivitiesList() {
         DefaultListModel<String> m = new DefaultListModel<>();
-        activityMembers = Database.getInstance().getActivityMembers().stream().filter(am -> !am.isDeleted() && am.getMemberId() == MemberMainScreen.userID).collect(Collectors.toList());
-        activityMembers.forEach(am -> m.addElement(am.getActivity().getActivityName()));
+        activityMembers = Database.getInstance().getActivityMembers().stream()
+                .filter(am -> !am.isDeleted() &&
+                        am.getMemberId() == MemberMainScreen.userID &&
+                        am.getFacilityBooking().getTimeStart().after(Utils.getCurrentTime()))
+                .collect(Collectors.toList());
+        activityMembers.stream()
+                .map(am -> am.getActivity().getActivityName() +
+                        " - " +
+                        new SimpleDateFormat().format(am.getFacilityBooking().getTimeStart()))
+                .forEach(m::addElement);
         activitiesList.setModel(m);
     }
 }

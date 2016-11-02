@@ -68,6 +68,17 @@ public class MemberMainScreen extends JPanel {
         });
         upperPanel.add(activitiesButton);
 
+        JButton reportButton = new JButton("Ver informes");
+        reportButton.addActionListener(l -> {
+            if (userID != 0) {
+                new ReportDialog().setVisible(true);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Numero de socio no valido");
+            }
+        });
+        upperPanel.add(reportButton);
+
         setRightPanel(new MemberBookPanel());
     }
 

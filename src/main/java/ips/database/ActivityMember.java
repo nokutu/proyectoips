@@ -23,6 +23,7 @@ public class ActivityMember implements DatabaseItem {
     private boolean assistance;
     private boolean deleted;
     private Activity lazyActivity;
+    private FacilityBooking lazyFacilityBooking;
 
     public ActivityMember(int activityId, int facilityBookingId, int memberId, boolean assistance, boolean deleted) {
         this.activityId = activityId;
@@ -91,13 +92,25 @@ public class ActivityMember implements DatabaseItem {
 
     public Activity getActivity() {
         if (lazyActivity == null) {
-            Optional<Activity> ofb = Database.getInstance().getActivities().parallelStream().filter(a -> a.getActivityId() == facilityBookingId).findAny();
+            Optional<Activity> ofb = Database.getInstance().getActivities().parallelStream().filter(a -> a.getActivityId() == activityId).findAny();
             if (ofb.isPresent()) {
                 lazyActivity = ofb.get();
             } else {
-                throw new IllegalStateException("No Activity found for selected ActivityBooking");
+                throw new IllegalStateException("No Activity found for selected ActivityBooking: " + activityId);
             }
         }
         return lazyActivity;
+    }
+
+    public FacilityBooking getFacilityBooking() {
+        if (lazyFacilityBooking == null) {
+            Optional<FacilityBooking> ofb = Database.getInstance().getFacilityBookings().parallelStream().filter(fb -> fb.getFacilityBookingId() == facilityBookingId).findAny();
+            if (ofb.isPresent()) {
+                lazyFacilityBooking = ofb.get();
+            } else {
+                throw new IllegalStateException("No FacilityBooking found for selected ActivityBooking");
+            }
+        }
+        return lazyFacilityBooking;
     }
 }
