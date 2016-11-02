@@ -19,6 +19,7 @@ public class Database {
     private final static String QUERY_ACTIVITY = "SELECT * FROM activity";
     private final static String QUERY_ACTIVITY_BOOKING = "SELECT * FROM activitybooking";
     private final static String QUERY_ACTIVITY_MEMBER = "SELECT * FROM activitymember";
+    private final static String QUERY_MONITOR = "SELECT * FROM monitor";
 
     private static Database instance;
     private Connection conn;
@@ -31,6 +32,7 @@ public class Database {
     private List<Activity> activities;
     private List<ActivityBooking> activityBookings;
     private List<ActivityMember> activityMembers;
+    private List<Monitor> monitors;
 
     public static Database getInstance() {
         if (instance == null) {
@@ -121,6 +123,12 @@ public class Database {
         rs = s.executeQuery(QUERY_ACTIVITY_MEMBER);
         while (rs.next()) {
             activityMembers.add(new ActivityMember(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getBoolean(4), rs.getBoolean(5)));
+        }
+
+        s = conn.createStatement();
+        rs = s.executeQuery(QUERY_ACTIVITY_MEMBER);
+        while (rs.next()) {
+            monitors.add(new Monitor(rs.getInt(1), rs.getString(2)));
         }
     }
 

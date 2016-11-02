@@ -37,7 +37,6 @@ public class AdministratorActivitiesDialog extends JDialog {
 
         createLeftPanel();
         createBottomPanel();
-        // TODO añadir el panel central
         createCenterPanel();
         createRightPanel();
 

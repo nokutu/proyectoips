@@ -63,7 +63,7 @@ public class FacilityBooking implements DatabaseItem {
 		this.abandon = abandon;
 		this.state = state;
 
-		MAX_ID = Math.max(MAX_ID, facilityBookingId + 1);
+		MAX_ID = Math.max(MAX_ID, facilityBookingId);
 	}
 
 	public int getFacilityBookingId() {

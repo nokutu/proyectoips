@@ -22,6 +22,7 @@ public class MemberActivitiesDialog extends JDialog {
     private List<ActivityBooking> activityBookings;
     private JList<String> activitiesList;
     private List<ActivityMember> activityMembers;
+    private JButton remove;
 
     public MemberActivitiesDialog() {
         super(MainWindow.getInstance(), true);
@@ -103,8 +104,8 @@ public class MemberActivitiesDialog extends JDialog {
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(2, 5, 2, 10);
 
-        JButton remove = new JButton("Borrarse");
-        // remove.setEnabled(false);
+        remove = new JButton("Borrarse");
+
         remove.addActionListener(l -> {
 
             ActivityMember am = activityMembers.get(activitiesList.getSelectedIndex());
@@ -137,6 +138,9 @@ public class MemberActivitiesDialog extends JDialog {
                         am.getMemberId() == MemberMainScreen.userID &&
                         am.getFacilityBooking().getTimeStart().after(Utils.getCurrentTime()))
                 .collect(Collectors.toList());
+        if (activityMembers.size() == 0) {
+            remove.setEnabled(false);
+        }
         activityMembers.stream()
                 .map(am -> am.getActivity().getActivityName() +
                         " - " +
