@@ -1,5 +1,6 @@
 package ips.monitor;
 
+import ips.Utils;
 import ips.database.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -68,12 +69,13 @@ public class MonitorMainScreen extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.CENTER;
 
-		JButton remove = new JButton("Borrar seleccionados");
+		JButton remove = new JButton("Marcar asistencia");
 		remove.addActionListener(l -> {
 			for (int i = 0; i < membersInSession.size(); i++) {
-				if (activityMembersInSessionChk.get(i).isSelected()) {
+				if (activityMembersInSessionChk.get(i).isSelected()&&activityMembersInSessionChk.get(i).isEnabled())
+				{
 					try {
-						activityMembersInSession.get(i).setDeleted(true);
+						activityMembersInSession.get(i).setAssistance(true);
 						activityMembersInSession.get(i).update();
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -177,6 +179,14 @@ public class MonitorMainScreen extends JPanel {
 				membersInSession.add(member);
 
 				JCheckBox chk = new JCheckBox(member.getMemberName());
+				if(am.isAssistance())
+				{
+					chk.setSelected(true);
+				}
+				if(!sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking().getTimeStart().before(Utils.getCurrentTime())||!sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking().getTimeEnd().after(Utils.getCurrentTime()))
+				{
+					chk.setEnabled(false);
+				}
 				activityMembersInSessionChk.add(chk);
 				memberList.addLine(chk);
 			}

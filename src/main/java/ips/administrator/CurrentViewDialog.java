@@ -159,6 +159,7 @@ public class CurrentViewDialog extends JDialog {
                 }
             });
             btnStartUse.setBounds(385, 123, 89, 23);
+            btnStartUse.setEnabled(false);
         }
         return btnStartUse;
     }
@@ -181,6 +182,7 @@ public class CurrentViewDialog extends JDialog {
                 }
             });
             btnEndUse.setBounds(385, 152, 89, 23);
+            btnStartUse.setEnabled(false);
         }
         return btnEndUse;
     }
