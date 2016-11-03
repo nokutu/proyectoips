@@ -38,7 +38,7 @@ public class AdministratorMainScreen extends JPanel {
     	upperPanel.add(btnCurrentDebts);
     	
     	JButton btnasistencia = new JButton("Mostrar faltas de asistencia");
-    	btnasistencia.addActionListener(e ->  new PayCurrentDebt(MainWindow.getInstance()).setVisible(true));
+    	btnasistencia.addActionListener(e ->  new AssistanceDialog().setVisible(true));
     	upperPanel.add(btnasistencia);
     	
     	JButton btnFeeUpdater = new JButton("Actualizar Tarifas");

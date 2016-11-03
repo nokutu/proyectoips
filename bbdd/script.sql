@@ -127,3 +127,4 @@ INSERT INTO activitymember VALUES (1, 4, 1, true, false);
 INSERT INTO activitymember VALUES (1, 4, 2, true, false);
 
 INSERT INTO activitymember VALUES (1, 5, 2, true, false);
+INSERT INTO activitymember VALUES (1, 5, 1, false, false);
