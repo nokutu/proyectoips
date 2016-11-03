@@ -1,5 +1,7 @@
 package ips;
 
+import ips.administrator.AdministratorBookPanel;
+import ips.administrator.AdministratorMainScreen;
 import ips.database.Availability;
 import ips.database.Booking;
 import ips.database.Database;
@@ -12,6 +14,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -28,8 +31,11 @@ public class AvailabilityPane extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Calendar calendar = Calendar.getInstance();
 	private String userName = "Administrator";
+	MainScreen MS;
+	List<Facility> facilities;
 
-	public AvailabilityPane(boolean admin, String userName) {
+	public AvailabilityPane(boolean admin, String userName, MainScreen mainScreen) {
+		MS = mainScreen;
 		this.admin = admin;
 		if(userName != null)
 			this.userName = userName;
@@ -38,11 +44,10 @@ public class AvailabilityPane extends JPanel {
 		JPanel weekPane = new JPanel();
 		add(weekPane, BorderLayout.NORTH);
 
-		JLabel lblAvailable = new JLabel("Facilities Availability. Select week.");
+		JLabel lblAvailable = new JLabel("Disponibilidad de las instalaciones. Seleccione Semana.");
 		weekPane.add(lblAvailable);
 		lblAvailable.setHorizontalAlignment(SwingConstants.CENTER);
 
-		btnPrevious.setEnabled(false);
 		btnPrevious.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				weeksFromNow--;
@@ -52,7 +57,7 @@ public class AvailabilityPane extends JPanel {
 		});
 		weekPane.add(btnPrevious);
 
-		lblWeek = new JLabel("empty");
+		lblWeek = new JLabel("Libre");
 		weekPane.add(lblWeek);
 		setWeek();
 
@@ -74,7 +79,7 @@ public class AvailabilityPane extends JPanel {
 
 		lblFacility = new JLabel();
 		centralPane.add(lblFacility, BorderLayout.NORTH);
-		lblFacility.setText("Select facility");
+		lblFacility.setText("Seleccione Instalación");
 
 		centralPane.add(centralWeekPanel, BorderLayout.CENTER);
 		centralWeekPanel.setLayout(new GridLayout(0, 8, 0, 0));
@@ -83,15 +88,18 @@ public class AvailabilityPane extends JPanel {
 		GridLayout gl_buttonPane = new GridLayout(14, 0);
 		buttonPane.setLayout(gl_buttonPane);
 
-		List<Facility> facilities = Database.getInstance().getFacilities();
+		facilities = Database.getInstance().getFacilities();
 		for (Facility facility : facilities) {
 			int a = facility.getFacilityId();
-			JButton botonAux = new JButton("Instalacion: " + a);
+			String b = facility.getFacilityName();
+			JButton botonAux = new JButton("Instalacion: " + b);
 			botonAux.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					instalacion = a;
-					lblFacility.setText("Horario de la instalacion: " + a);
+					lblFacility.setText("Horario de la instalacion: " + b);
 					addRows(a);
+					repaint();
+					revalidate();
 				}
 			});
 			buttonPane.add(botonAux);
@@ -124,21 +132,35 @@ public class AvailabilityPane extends JPanel {
 	private void addRow() {
 		JPanel rowPanel = new JPanel(new GridLayout(25, 1));
 		Date date = calendar.getTime();
-		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime())));
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
+		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(date.getTime())));
+
 		for (int i = 0; i < 24; i++) {
 			date = calendar.getTime();
 			long now = date.getTime();
-			JButton botonAux = new JButton("Empty");
+			JButton botonAux = new JButton("Libre");
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
 					botonAux = notAvailable(booking.getUserName());
 					break;
 				}
-			}
+			}/*
+			botonAux.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					long oneHour = now + 3600000;
+					Facility esta = null;
+					for (Facility facility : facilities) {
+						if (facility.getFacilityId() == instalacion) {
+							esta = facility;
+							break;
+						}
+					}
+					MS.setRightPanel(new AdministratorBookPanel(esta, new Timestamp(now), new Timestamp(oneHour)));
+				}
+			});*/
 			rowPanel.add(botonAux);
 			calendar.add(Calendar.HOUR, +1);
 		}
@@ -148,23 +170,19 @@ public class AvailabilityPane extends JPanel {
 	private void setWeek() {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
-		String week = "From: " + calendar.get(Calendar.DAY_OF_MONTH) + " of " + calendar.get(Calendar.MONTH) + " to: ";
+		String week = "Desde: " + calendar.get(Calendar.DAY_OF_MONTH) + " de " + calendar.get(Calendar.MONTH) + " hasta: ";
 		calendar.add(Calendar.DATE, +6);
-		week += calendar.get(Calendar.DAY_OF_MONTH) + " of " + calendar.get(Calendar.MONTH);
+		week += calendar.get(Calendar.DAY_OF_MONTH) + " de " + calendar.get(Calendar.MONTH);
 		lblWeek.setText(week);
 	}
 
 	private void nextPreviousButtons() {
-		if (weeksFromNow == 0)
-			btnPrevious.setEnabled(false);
-		else
-			btnPrevious.setEnabled(true);
 		if (instalacion != -1)
 			addRows(instalacion);
 	}
 
 	private JButton notAvailable(String user) {
-		JButton btnNot = new JButton("Not Available");
+		JButton btnNot = new JButton("No Disponible");
 		btnNot.setBackground(Color.RED);
 		if (admin) {
 			btnNot.setText(user);

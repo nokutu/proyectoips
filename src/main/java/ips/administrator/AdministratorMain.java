@@ -85,7 +85,7 @@ public class AdministratorMain extends JPanel {
         	btnAvailabilityOfFacilities = new JButton("Availability of facilities");
         	btnAvailabilityOfFacilities.addActionListener(e -> {
         		JDialog adminbook = new JDialog(MainWindow.getInstance());
-        		adminbook.setContentPane(new AvailabilityPane(true, null));
+        		adminbook.setContentPane(new AvailabilityPane(true, null, null));
         		adminbook.setSize(MainWindow.getInstance().getPreferredSize());
         		adminbook.setVisible(true);
             });
