@@ -91,24 +91,24 @@ INSERT INTO facility VALUES (1, 5,'Tennis 1');
 INSERT INTO facility VALUES (2, 3,'Tennis 2');
 
 INSERT INTO facilitybooking VALUES (1, 1, 1,
-    PARSEDATETIME('12-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('12-11-2016 19:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('12-11-2016 18:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('12-11-2016 19:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (2, 2, 1,
-    PARSEDATETIME('10-11-2016 15:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('12-11-2016 16:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('10-11-2016 15:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('12-11-2016 16:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (3, 1, 2,
-    PARSEDATETIME('13-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('13-11-2016 12:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('13-11-2016 10:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('13-11-2016 12:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (4, 1, 0,
-    PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('15-11-2016 10:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('15-11-2016 18:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (5, 1, 0,
-    PARSEDATETIME('15-11-2016 19:00:00', 'dd-MM-yyyy hh:mm:ss'),
-    PARSEDATETIME('15-11-2016 20:00:00', 'dd-MM-yyyy hh:mm:ss'),
+    PARSEDATETIME('15-11-2016 19:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('15-11-2016 20:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 
 INSERT INTO monitor VALUES(1,'Rodolfo Perez');
