@@ -85,6 +85,10 @@ public class Utils {
         return new Date(day.getTime() + hour * 1000 * 3600);
     }
 
+    public static Date addMinutesToHour(Date day, int minutes) {
+        return new Date(day.getTime() + minutes * 1000 * 60);
+    }
+
     public static boolean areSameDay(Date a, Date b) {
         Calendar calA = Calendar.getInstance();
         Calendar calB = Calendar.getInstance();
@@ -150,8 +154,6 @@ public class Utils {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
         }
-
     }
 }
