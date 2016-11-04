@@ -32,6 +32,9 @@ public class ActivityMember implements DatabaseItem {
         this.assistance = assistance;
         this.deleted = deleted;
     }
+    public ActivityMember(int activityId, int facilityBookingId, int memberId){
+    	this(activityId, facilityBookingId, memberId, true, false);
+    }
 
     @Override
     public void create() throws SQLException {

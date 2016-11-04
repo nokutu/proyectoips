@@ -42,10 +42,11 @@ import ips.database.Member;
  *
  */
 public class FeeUpdater {
-	
+
 	/**
 	 * 
-	 * @return una lista con los clientes que se han dado de baja y hay que avisarles por telefono de que tienen pagos pendientes
+	 * @return una lista con los clientes que se han dado de baja y hay que
+	 *         avisarles por telefono de que tienen pagos pendientes
 	 */
 	@SuppressWarnings("deprecation")
 	public static List<Member> update() {
@@ -59,7 +60,11 @@ public class FeeUpdater {
 																			// diciembre
 
 		for (FacilityBooking pago : Database.getInstance().getFacilityBookings()) {
-			pago.toString();
+			try {
+				pago.toString();
+			} catch (Exception ex) {
+				
+			}
 			if (!pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")
 					|| !pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Cash")
 							&& pago.getTimeStart().before(now)) {
@@ -75,10 +80,12 @@ public class FeeUpdater {
 						Fee thatFee = Database.getInstance().getFeeByMonth(pago.getMemberId(), nextMonth);
 						// if exists a fee for that month
 						double cost = Database.getInstance().getFacilityById(pago.getFacilityId()).getPrice();
-						
-						assert thatFee.getMemberId()==pago.getMemberId(); // TODO eliminar esto
-						
-						FeeItem newFeeItem =  new FeeItem(cost, thatFee);
+
+						assert thatFee.getMemberId() == pago.getMemberId(); // TODO
+																			// eliminar
+																			// esto
+
+						FeeItem newFeeItem = new FeeItem(cost, thatFee);
 						thatFee.getFeeItems().add(newFeeItem);
 						try {
 							newFeeItem.update();
@@ -99,9 +106,9 @@ public class FeeUpdater {
 					} finally {
 						pago.setPayed(true); // payed
 						Member socio = Database.getInstance().getMemberById(pago.getMemberId());
-						if(!socio.isSubscribed()){ // si esta de baja
+						if (!socio.isSubscribed()) { // si esta de baja
 							sociosDeBajaConPagosPendientes.add(socio);
-							
+
 						}
 					}
 				} // end if month filter

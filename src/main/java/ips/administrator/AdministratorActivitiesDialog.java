@@ -6,243 +6,278 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by nokutu on 25/10/2016.
  */
 public class AdministratorActivitiesDialog extends JDialog {
 
-    private CheckBoxList memberList = new CheckBoxList();
+	private CheckBoxList memberList = new CheckBoxList();
 
-    private List<ActivityBooking> sessionsList;
-    private List<Member> membersInSession;
-    private List<ActivityMember> activityMembersInSession;
-    private List<JCheckBox> activityMembersInSessionChk;
+	private List<ActivityBooking> sessionsList;
+	private List<Member> membersInSession;
+	private List<ActivityMember> activityMembersInSession;
+	private List<JCheckBox> activityMembersInSessionChk;
 
-    private JLabel assistanceLabel = new JLabel("");
-    private JComboBox<String> activities;
-    private JButton addMember = new JButton("Apuntar a socio");
-    private JComboBox<String> sessions;
+	private JLabel assistanceLabel = new JLabel("");
+	private JComboBox<String> activities;
+	private JButton addMember = new JButton("Apuntar al socio:");
+	private TextField addMemberTextField = new TextField("Numero de Socio a aÒadir");
+	private JComboBox<String> sessions;
+	private List<ActivityBooking> activityBookingsList;
 
-    public AdministratorActivitiesDialog() {
-        super(MainWindow.getInstance(), true);
+	public AdministratorActivitiesDialog() {
+		super(MainWindow.getInstance(), true);
 
-        setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
 
-        createLeftPanel();
-        createBottomPanel();
-        createCenterPanel();
-        createRightPanel();
+		createLeftPanel();
+		createBottomPanel();
+		createCenterPanel();
+		createRightPanel();
 
-        setMinimumSize(new Dimension(320, 180));
-        pack();
-        setLocationRelativeTo(MainWindow.getInstance());
-    }
+		setMinimumSize(new Dimension(320, 180));
+		pack();
+		setLocationRelativeTo(MainWindow.getInstance());
+	}
 
-    private void createRightPanel() {
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new GridBagLayout());
+	private void createRightPanel() {
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.CENTER;
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
 
-        JButton remove = new JButton("Borrar seleccionados");
-        remove.addActionListener(l -> {
-            for (int i = 0; i < membersInSession.size(); i++) {
-                if (activityMembersInSessionChk.get(i).isSelected()) {
-                    try {
-                        activityMembersInSession.get(i).setDeleted(true);
-                        activityMembersInSession.get(i).update();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            refreshCentralPanelList();
-        });
-        rightPanel.add(remove, c);
+		JButton remove = new JButton("Borrar seleccionados");
+		remove.addActionListener(l -> {
+			for (int i = 0; i < membersInSession.size(); i++) {
+				if (activityMembersInSessionChk.get(i).isSelected()) {
+					try {
+						activityMembersInSession.get(i).setDeleted(true);
+						activityMembersInSession.get(i).update();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			refreshCentralPanelList();
+		});
+		rightPanel.add(remove, c);
 
-        add(rightPanel, BorderLayout.EAST);
-    }
+		add(rightPanel, BorderLayout.EAST);
+	}
 
-    private void createLeftPanel() {
-        JPanel leftPanel = new JPanel();
-        leftPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        add(leftPanel, BorderLayout.WEST);
+	private void createLeftPanel() {
+		JPanel leftPanel = new JPanel();
+		leftPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		add(leftPanel, BorderLayout.WEST);
 
-        leftPanel.setLayout(new GridBagLayout());
+		leftPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(2, 10, 2, 5);
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(2, 10, 2, 5);
 
-        leftPanel.add(new JLabel("Actividad:"), c);
+		leftPanel.add(new JLabel("Actividad:"), c);
 
-        c.gridx++;
+		c.gridx++;
 
-        activities = new JComboBox<>();
-        DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-        Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
-        activities.setModel(activitiesModel);
-        leftPanel.add(activities, c);
+		activities = new JComboBox<>();
+		DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
+		Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activities.setModel(activitiesModel);
+		leftPanel.add(activities, c);
 
-        c.gridx = 0;
-        c.gridy++;
+		c.gridx = 0;
+		c.gridy++;
 
-        leftPanel.add(new JLabel("Sesi√≥n:"), c);
+		leftPanel.add(new JLabel("Sesi√≥n:"), c);
 
-        c.gridx++;
+		c.gridx++;
 
-        sessions = new JComboBox<>();
-        activities.addActionListener(l -> {
-            memberList.removeAll();
-            DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
-            sessionsList = Database.getInstance().getActivityBookings().stream()
-                    .filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
-                    .collect(Collectors.toList());
-            sessionsList.stream()
-                    .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
-                    .forEach(sessionsModel::addElement);
-            sessions.setModel(sessionsModel);
+		sessions = new JComboBox<>();
+		activities.addActionListener(l -> {
+			memberList.removeAll();
+			DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
+			activityBookingsList = sessionsList = Database.getInstance().getActivityBookings().stream()
+					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
+					.collect(Collectors.toList());
+			sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
+					.forEach(sessionsModel::addElement);
+			sessions.setModel(sessionsModel);
 
-            if (sessions.getModel().getSize() > 0) {
-                sessions.setSelectedIndex(0);
-            }
-            refreshAssistanceCount();
-        });
-        activities.setSelectedIndex(0);
+			if (sessions.getModel().getSize() > 0) {
+				sessions.setSelectedIndex(0);
+			}
+			refreshAssistanceCount();
+		});
+		activities.setSelectedIndex(0);
 
-        sessions.addActionListener(l -> {
-            refreshCentralPanelList();
-        });
-        if (sessions.getModel().getSize() > 0) {
-            sessions.setSelectedIndex(0);
-        }
+		sessions.addActionListener(l -> {
+			refreshCentralPanelList();
+		});
+		if (sessions.getModel().getSize() > 0) {
+			sessions.setSelectedIndex(0);
+		}
 
-        leftPanel.add(sessions, c);
-    }
+		leftPanel.add(sessions, c);
+	}
 
-    private void refreshCentralPanelList() {
-        memberList.removeAll();
-        membersInSession = new ArrayList<>();
-        activityMembersInSession = new ArrayList<>();
-        activityMembersInSessionChk = new ArrayList<>();
-        for (ActivityMember am : Database.getInstance().getActivityMembers()) {
-            if (am.getActivityId() == getSelectedActivity().getActivityId() &&
-                    am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId() &&
-                    !am.isDeleted()) {
-                activityMembersInSession.add(am);
+	private void refreshCentralPanelList() {
+		memberList.removeAll();
+		membersInSession = new ArrayList<>();
+		activityMembersInSession = new ArrayList<>();
+		activityMembersInSessionChk = new ArrayList<>();
+		for (ActivityMember am : Database.getInstance().getActivityMembers()) {
+			if (am.getActivityId() == getSelectedActivity().getActivityId()
+					&& am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId()
+					&& !am.isDeleted()) {
+				activityMembersInSession.add(am);
 
-                Member member = Database.getInstance().getMemberById(am.getMemberId());
-                membersInSession.add(member);
+				Member member = Database.getInstance().getMemberById(am.getMemberId());
+				membersInSession.add(member);
 
-                JCheckBox chk = new JCheckBox(member.getMemberName());
-                activityMembersInSessionChk.add(chk);
-                memberList.addLine(chk);
-            }
-            refreshAssistanceCount();
-        }
+				JCheckBox chk = new JCheckBox(member.getMemberName());
+				activityMembersInSessionChk.add(chk);
+				memberList.addLine(chk);
+			}
+			refreshAssistanceCount();
+		}
 
-        // Force the panel to refresh
-        SwingUtilities.invokeLater(() -> {
-            memberList.setVisible(false);
-            memberList.setVisible(true);
-        });
-    }
+		// Force the panel to refresh
+		SwingUtilities.invokeLater(() -> {
+			memberList.setVisible(false);
+			memberList.setVisible(true);
+		});
+	}
 
-    private void createBottomPanel() {
-        JPanel bottomPanel = new JPanel();
-        add(bottomPanel, BorderLayout.SOUTH);
+	private void createBottomPanel() {
+		JPanel bottomPanel = new JPanel();
+		add(bottomPanel, BorderLayout.SOUTH);
 
-        bottomPanel.add(new JLabel("Socios apuntados:"));
-        bottomPanel.add(assistanceLabel);
+		bottomPanel.add(new JLabel("Socios apuntados:"));
+		bottomPanel.add(assistanceLabel);
 
-        bottomPanel.add(addMember);
-    }
+		addMember.addActionListener(l -> {
+			try {
+				int activityId = Database.getInstance().getActivities().get(activities.getSelectedIndex())
+						.getActivityId();
+				Object[] a = activityBookingsList.stream().filter(ab -> new SimpleDateFormat()
+						.format(ab.getFacilityBooking().getTimeStart()).equals(sessions.getSelectedItem())).toArray();
+				ActivityBooking actbook = ((ActivityBooking) a[0]);
+				int facilityBookingId = actbook.getFacilityBookingId();
+				assert actbook.getActivityId() == activityId; // XXX
 
-    private void createCenterPanel() {
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BorderLayout());
+				ActivityMember newActivityMember = new ActivityMember(activityId, facilityBookingId,
+						Integer.valueOf(addMemberTextField.getText())); // peta
+																		// aqui,
+																		// numberFormatEx
+				Database.getInstance().getActivityMembers().add(newActivityMember);
+				newActivityMember.create(); // peta aqui, sqlEx
+			} catch (NumberFormatException nfe) {
+				nfe.printStackTrace();
+			} catch (SQLException sql) {
+				sql.printStackTrace();
+			}
 
-        JLabel colorlabel = new JLabel();
-        colorlabel.setText("Lista de miembros apuntados:");
+			refreshCentralPanelList();
 
-        centerPanel.add(colorlabel, BorderLayout.NORTH);
-        centerPanel.add(memberList, BorderLayout.CENTER);
+		});
 
-        add(centerPanel, BorderLayout.CENTER);
-    }
+		bottomPanel.add(addMember);
 
-    private void refreshAssistanceCount() {
-        Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
-                .filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() &&
-                        !am.isDeleted() &&
-                        am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
-                .map(am -> am.isAssistance() ? 1 : 0)
-                .reduce(Integer::sum);
-        Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
-                .filter(a -> a.getActivityName().equals(activities.getSelectedItem()))
-                .findAny();
-        if (activityOptional.isPresent()) {
-            if (assistantsOptional.isPresent()) {
-                // n assistants
-                assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
-                addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
-            } else {
-                // 0 assistants
-                assistanceLabel.setText("0/" + activityOptional.get().getAssistantLimit());
-                addMember.setEnabled(true);
-            }
-        } else {
-            // no activity selected
-            assistanceLabel.setText("");
-            addMember.setEnabled(false);
-        }
-    }
+		addMemberTextField.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				if (addMemberTextField.getText().equals("Numero de Socio a aÒadir"))
+					addMemberTextField.setText("");
+			}
+		});
+		bottomPanel.add(addMemberTextField);
+	}
 
-    private Activity getSelectedActivity() {
-        return Database.getInstance().getActivities().get(activities.getSelectedIndex());
-    }
+	private void createCenterPanel() {
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BorderLayout());
 
-    private class CheckBoxList extends JPanel {
+		JLabel colorlabel = new JLabel();
+		colorlabel.setText("Lista de miembros apuntados:");
 
-        private GridBagConstraints c;
+		centerPanel.add(colorlabel, BorderLayout.NORTH);
+		centerPanel.add(memberList, BorderLayout.CENTER);
 
-        private JLabel endLabel = new JLabel();
+		add(centerPanel, BorderLayout.CENTER);
+	}
 
-        public CheckBoxList() {
-            setLayout(new GridBagLayout());
-            c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.weightx = 1;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            setBackground(Color.white);
+	private void refreshAssistanceCount() {
+		Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
+				.filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() && !am.isDeleted() && am
+						.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
+				.map(am -> am.isAssistance() ? 1 : 0).reduce(Integer::sum);
+		Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
+				.filter(a -> a.getActivityName().equals(activities.getSelectedItem())).findAny();
+		if (activityOptional.isPresent()) {
+			if (assistantsOptional.isPresent()) {
+				// n assistants
+				assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
+				addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
+			} else {
+				// 0 assistants
+				assistanceLabel.setText("0/" + activityOptional.get().getAssistantLimit());
+				addMember.setEnabled(true);
+			}
+		} else {
+			// no activity selected
+			assistanceLabel.setText("");
+			addMember.setEnabled(false);
+		}
+	}
 
-            c.weighty = 1;
-            add(endLabel, c);
-            c.weighty = 0;
-        }
+	private Activity getSelectedActivity() {
+		return Database.getInstance().getActivities().get(activities.getSelectedIndex());
+	}
 
-        public void addLine(JCheckBox ch) {
-            remove(endLabel);
+	private class CheckBoxList extends JPanel {
 
-            ch.setBackground(Color.white);
-            add(ch, c);
-            c.gridy++;
+		private GridBagConstraints c;
 
-            c.weighty = 1;
-            add(endLabel, c);
-            c.weighty = 0;
-        }
-    }
+		private JLabel endLabel = new JLabel();
+
+		public CheckBoxList() {
+			setLayout(new GridBagLayout());
+			c = new GridBagConstraints();
+			c.gridx = 0;
+			c.gridy = 0;
+			c.weightx = 1;
+			c.anchor = GridBagConstraints.NORTHWEST;
+			setBackground(Color.white);
+
+			c.weighty = 1;
+			add(endLabel, c);
+			c.weighty = 0;
+		}
+
+		public void addLine(JCheckBox ch) {
+			remove(endLabel);
+
+			ch.setBackground(Color.white);
+			add(ch, c);
+			c.gridy++;
+
+			c.weighty = 1;
+			add(endLabel, c);
+			c.weighty = 0;
+		}
+	}
 }
