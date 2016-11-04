@@ -1,6 +1,7 @@
 package ips.administrator;
 
 import ips.MainWindow;
+import ips.Utils;
 import ips.database.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -33,7 +34,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private JButton addMember = new JButton("Apuntar al socio:");
 	private TextField addMemberTextField = new TextField("Numero de Socio a añadir");
 	private JComboBox<String> sessions;
-	private List<ActivityBooking> activityBookingsList;
+	// private List<ActivityBooking> activityBookingsList;
 
 	public AdministratorActivitiesDialog() {
 		super(MainWindow.getInstance(), true);
@@ -111,7 +112,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 		activities.addActionListener(l -> {
 			memberList.removeAll();
 			DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
-			activityBookingsList = sessionsList = Database.getInstance().getActivityBookings().stream()
+			sessionsList = Database.getInstance().getActivityBookings().stream()
 					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 					.collect(Collectors.toList());
 			sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
@@ -163,6 +164,10 @@ public class AdministratorActivitiesDialog extends JDialog {
 		});
 	}
 
+	private AdministratorActivitiesDialog getThis() {
+		return this;
+	}
+
 	private void createBottomPanel() {
 		JPanel bottomPanel = new JPanel();
 		add(bottomPanel, BorderLayout.SOUTH);
@@ -171,28 +176,59 @@ public class AdministratorActivitiesDialog extends JDialog {
 		bottomPanel.add(assistanceLabel);
 
 		addMember.addActionListener(l -> {
-			try {
+			try {// primero objenemos el numero del socio
+
+				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
+																				// aqui,
+																				// numberFormatEx;
+				if (Database.getInstance().getMembers().stream().filter(m -> m.getMemberId() == memberId)
+						.toArray().length == 0) {
+					JOptionPane.showMessageDialog(getThis(),
+							"No se ha encontrado un cliente con el numero de socio introducido");
+					return;
+				}
+				// segundo obtenemos la actividad
 				int activityId = Database.getInstance().getActivities().get(activities.getSelectedIndex())
 						.getActivityId();
-				Object[] a = activityBookingsList.stream().filter(ab -> new SimpleDateFormat()
-						.format(ab.getFacilityBooking().getTimeStart()).equals(sessions.getSelectedItem())).toArray();
-				ActivityBooking actbook = ((ActivityBooking) a[0]);
-				int facilityBookingId = actbook.getFacilityBookingId();
-				assert actbook.getActivityId() == activityId; // XXX
+				// tercero obtenemos la facilitybooking
+				FacilityBooking facilityBooking = sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking();
+				// cuarto obtenemos el numero actual de invitados y el maximo
+				Optional<Integer> assistantsOptional = getAssistantsOptional();
+				Optional<Activity> activityOptional = getActivityOptional();
+				int numeroMaximoApuntados = activityOptional.get().getAssistantLimit();
+				int numeroActualApuntados = assistantsOptional.isPresent() ? assistantsOptional.get() : 0;
 
-				ActivityMember newActivityMember = new ActivityMember(activityId, facilityBookingId,
-						Integer.valueOf(addMemberTextField.getText())); // peta
-																		// aqui,
-																		// numberFormatEx
-				Database.getInstance().getActivityMembers().add(newActivityMember);
-				newActivityMember.create(); // peta aqui, sqlEx
-			} catch (NumberFormatException nfe) {
-				nfe.printStackTrace();
+				ActivityMember newActivityMember = new ActivityMember(activityId, facilityBooking.getFacilityBookingId(),
+						memberId);
+				// CONDICIONES PARA AÑADIR:
+				// COMO ADMIN: cupo no lleno Y no ha empezado la actividad aun
+				if (numeroActualApuntados >= numeroMaximoApuntados)
+					JOptionPane.showMessageDialog(getThis(),
+							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
+							"Error", JOptionPane.ERROR_MESSAGE, null);
+				else if (!Utils.getCurrentTime().before(facilityBooking.getTimeStart())) {
+					JOptionPane.showMessageDialog(getThis(),
+							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
+							"Error", JOptionPane.ERROR_MESSAGE, null);
+				} else {
+					newActivityMember.create(); // peta aqui, sqlEx
+					Database.getInstance().getActivityMembers().add(newActivityMember);
+					JOptionPane.showMessageDialog(getThis(), "Añadido correctamente", "Correcto",
+							JOptionPane.INFORMATION_MESSAGE, null);
+				}
+
 			} catch (SQLException sql) {
+				JOptionPane.showMessageDialog(getThis(),
+						"Error, la transaccion no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad", "Error",
+						JOptionPane.ERROR_MESSAGE, null);
 				sql.printStackTrace();
+				return;
+			} catch (NumberFormatException ex1) {
+				JOptionPane.showMessageDialog(this, "Por favor, introduzca un numero de socio");
+				return;
+			} finally {
+				refreshCentralPanelList();
 			}
-
-			refreshCentralPanelList();
 
 		});
 
@@ -212,7 +248,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 		centerPanel.setLayout(new BorderLayout());
 
 		JLabel colorlabel = new JLabel();
-		colorlabel.setText("Lista de miembros apuntados:");
+		colorlabel.setText("Lista de socios apuntados:");
 
 		centerPanel.add(colorlabel, BorderLayout.NORTH);
 		centerPanel.add(memberList, BorderLayout.CENTER);
@@ -220,13 +256,21 @@ public class AdministratorActivitiesDialog extends JDialog {
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
-	private void refreshAssistanceCount() {
-		Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
+	private Optional<Integer> getAssistantsOptional() {
+		return Database.getInstance().getActivityMembers().parallelStream()
 				.filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() && !am.isDeleted() && am
 						.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
 				.map(am -> am.isAssistance() ? 1 : 0).reduce(Integer::sum);
-		Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
+	}
+
+	private Optional<Activity> getActivityOptional() {
+		return Database.getInstance().getActivities().parallelStream()
 				.filter(a -> a.getActivityName().equals(activities.getSelectedItem())).findAny();
+	}
+
+	private void refreshAssistanceCount() {
+		Optional<Integer> assistantsOptional = getAssistantsOptional();
+		Optional<Activity> activityOptional = getActivityOptional();
 		if (activityOptional.isPresent()) {
 			if (assistantsOptional.isPresent()) {
 				// n assistants
@@ -249,6 +293,11 @@ public class AdministratorActivitiesDialog extends JDialog {
 	}
 
 	private class CheckBoxList extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private GridBagConstraints c;
 
