@@ -1,6 +1,7 @@
 package ips.database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,15 +43,15 @@ public class Database {
     }
 
     private Database() {
-        facilities = new LinkedList<>();
-        facilityBookings = new LinkedList<>();
-        members = new LinkedList<>();
-        fees = new LinkedList<>();
-        feeItems = new LinkedList<>();
-        activities = new LinkedList<>();
-        activityBookings = new LinkedList<>();
-        activityMembers = new LinkedList<>();
-        monitors = new LinkedList<>();
+        facilities = new ArrayList<>();
+        facilityBookings = new ArrayList<>();
+        members = new ArrayList<>();
+        fees = new ArrayList<>();
+        feeItems = new ArrayList<>();
+        activities = new ArrayList<>();
+        activityBookings = new ArrayList<>();
+        activityMembers = new ArrayList<>();
+        monitors = new ArrayList<>();
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "SA");

@@ -31,7 +31,7 @@ public class MainWindow extends JFrame {
 
     private MainWindow() {
         super();
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(1200, 650));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         /*try {
