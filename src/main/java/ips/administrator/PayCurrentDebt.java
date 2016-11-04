@@ -7,15 +7,22 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import ips.MainWindow;
+import ips.Utils;
+import ips.database.ActivityBooking;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
@@ -28,6 +35,7 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 
@@ -40,6 +48,11 @@ public class PayCurrentDebt  extends JDialog{
 
 	    private JButton confirm;
 	    private JButton cancel;
+
+		private List<FacilityBooking> bookingsList;
+		List<Facility> finalbook;
+
+		private boolean empty;
 
 	public PayCurrentDebt(JFrame owner) 
 	{
@@ -90,57 +103,58 @@ public class PayCurrentDebt  extends JDialog{
 	  
 	  private void confirm(ActionEvent actionEvent) 
 	  {
-		  Date date =new Date();
-		  Timestamp fecha = new Timestamp(date.getTime());
 		  
 		  //extract the correct booking
 		  List<String> results = form.getResults();
-		  List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
-	      for( FacilityBooking f : bookings)
-	      {
-	    	  int facilityId = Integer.parseInt(results.get(0));
-              int memberId = Integer.parseInt(results.get(1));
+		  //List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+	     // for( FacilityBooking f : bookings)
+	      //{
+	    	 int facilityId = finalbook.get(Integer.parseInt(results.get(0))).getFacilityId();
+             book = bookingsList.get((Integer.parseInt(results.get(1))));
               
               
-              if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId&&!f.isPaid()&&f.getPaymentMethod().equals("Cash"))
+             /* if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId&&(f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())))
               {
             	  book=f;
               }
-	      }
+	      }*/
 	      
 	      //if there was a booking find if its currently in use
 	      if(book!=null)
 	      {
 		  
-	    	  if(fecha.after(book.getTimeEnd())||fecha.before(book.getTimeStart()))
-	    	  {
-	    		  String errors = "\n";
-	    		  errors += "Esta reserva no coincide con la hora actual, esta pagada o su metodo de pago no es efectivo\n";
-	    		  form.setError(errors);
-	    	  }
-	    	  else
-	    	  {
-        	  
-	    		  
-	    			  book.setPayed(true);
-	    			  try {
+	    		//  if(book.getPaymentMethod().equals("Cash"))
+	    		 // {
+	    	  
+	    			 // if(!book.isPaid())
+	    		  		//{
+	    				  book.setPayed(true);
+	    				  try {
 	                        book.update();
-	                    } catch (SQLException e1) {
-	                        e1.printStackTrace();
-	                    }
-	    			  Recibo recibo=new Recibo(book);
-	    			  recibo.grabarRecibo();
+	    			  		} catch (SQLException e1) {
+	                    	e1.printStackTrace();
+	    			  		}
+	    		    		Recibo recibo=new Recibo(book);
+	    		    		recibo.grabarRecibo();
 	    		  
           
-	    		  dispose();
-	    	  }
+	    			  		dispose();
+	    		  	/*	}
+	    		  		else
+	    		  		{
+	    		  			JOptionPane.showConfirmDialog(this, "Esta reserva ya esta pagada \n"); 
+	    		  		}
+	    		  }
+	    		  else
+	    		  {
+	    			  
+	    		  }*/
+	    	  
 	      }
 	      //if it wasnt found notify the user
 	      else
 	      {
-	    	  String errors = "\n";
-    		  errors += "La reserva elegida no existe \n";
-    		  form.setError(errors);
+	    	  JOptionPane.showConfirmDialog(this, "Unespected Error \n");
 	      }
 	    
       
@@ -151,12 +165,43 @@ public class PayCurrentDebt  extends JDialog{
 	private void cancel(ActionEvent actionEvent) {
 	        dispose();
 	    }
-
+ 
+	private void getBookings()
+	{
+		
+		bookingsList = Database.getInstance().getFacilityBookings().stream()
+                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&f.isPaid())
+                .collect(Collectors.toList());
+	}
+	
 	private void addForm() 
 	{
-       
-            form.addLine(new JLabel("ID instalacion:"), new JTextField(20));
-            form.addLine(new JLabel("ID miembro:"), new JTextField(20));
+       JComboBox<String> facilities = new JComboBox<>();
+       getBookings();
+		finalbook=new ArrayList<>();
+		
+		for(Facility f :Database.getInstance().getFacilities())
+		{
+			for(FacilityBooking fb: bookingsList)
+			{
+				if(f.getFacilityId()==fb.getFacilityBookingId())	
+				{
+					finalbook.add(f);
+				}
+			}
+			
+		}
+		
+		List<String> names = finalbook.stream().map(Facility::getFacilityName)
+				.collect(Collectors.toList());
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+		names.forEach(model::addElement);
+		facilities.setModel(model);
+		
+		form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false);
+		
+        form.addLine(new JLabel("ID miembro:"), new JTextField(20));
+            
 	}
 	
 	

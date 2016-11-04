@@ -1,17 +1,24 @@
 package ips.administrator;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ips.AvailabilityPane;
 import ips.FeeUpdater;
 import ips.MainScreen;
 import ips.MainWindow;
+import ips.Utils;
+import ips.database.Database;
+import ips.database.FacilityBooking;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by nokutu on 24/10/2016.
@@ -53,7 +60,20 @@ public class AdministratorMainScreen extends JPanel implements MainScreen{
 		c.gridx++;
 
 		JButton btnCurrentDebts = new JButton("Pagar deuda en efectivo (actual)");
-		btnCurrentDebts.addActionListener(e -> new PayCurrentDebt(MainWindow.getInstance()).setVisible(true));
+		btnCurrentDebts.addActionListener(e -> 
+		{
+          List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
+                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&f.isPaid())
+                .collect(Collectors.toList());
+          	if(bookingsList.isEmpty())
+          	{
+          		JOptionPane.showMessageDialog(this, " No existe ninguna reserva a pagar en efectivo a esta hora");
+          	}
+          	else
+			{
+          		new PayCurrentDebt(MainWindow.getInstance()).setVisible(true);
+			}  
+        });
 		upperPanel.add(btnCurrentDebts, c);
 
 		c.gridx = 0;
