@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class Booking {
 	private int bookingId;
+	private int userID;
 	private String userName;
 	private String facilityName;
 	private Timestamp timeStart;
@@ -31,6 +32,14 @@ public class Booking {
 
 	public void setBookingId(int bookingId) {
 		this.bookingId = bookingId;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	public String getUserName() {

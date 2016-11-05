@@ -41,7 +41,7 @@ public class AdministratorMainScreen extends JPanel implements MainScreen{
 		c.gridx = 0;
 		c.gridy = 0;
 
-		centerPanel = new AvailabilityPane(true, null, this);
+		centerPanel = new AvailabilityPane(true, 0, this);
 		add(centerPanel, BorderLayout.CENTER);
 
 		// TODO añadir el panel de Tony a center y los listeners que llamen a

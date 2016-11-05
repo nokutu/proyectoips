@@ -83,6 +83,7 @@ CREATE TABLE monitor (
     PRIMARY KEY(monitor_id)
 );
 
+INSERT INTO member VALUES (0, 'Administrador',false);
 INSERT INTO member VALUES (1, 'Gabriel',true);
 INSERT INTO member VALUES (2, 'Jorge',true);
 INSERT INTO member VALUES (3, 'Sergio',true);
