@@ -32,7 +32,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private JLabel assistanceLabel = new JLabel("");
 	private JComboBox<String> activities;
 	private JButton addMember = new JButton("Apuntar al socio:");
-	private TextField addMemberTextField = new TextField("Numero de Socio a añadir");
+	private TextField addMemberTextField = new TextField("Numero de Socio a a\u00F1adir");
 	private JComboBox<String> sessions;
 	// private List<ActivityBooking> activityBookingsList;
 
@@ -175,7 +175,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 		bottomPanel.add(new JLabel("Socios apuntados:"));
 		bottomPanel.add(assistanceLabel);
 
-		addMember.addActionListener(l -> {
+		addMember.addActionListener(l -> { //MARK marca de localizacion
 			try {// primero objenemos el numero del socio
 
 				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
@@ -213,7 +213,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 				} else {
 					newActivityMember.create(); // peta aqui, sqlEx
 					Database.getInstance().getActivityMembers().add(newActivityMember);
-					JOptionPane.showMessageDialog(getThis(), "Añadido correctamente", "Correcto",
+					JOptionPane.showMessageDialog(getThis(), "A\u00F1adido correctamente", "Correcto",
 							JOptionPane.INFORMATION_MESSAGE, null);
 				}
 
@@ -236,7 +236,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 		addMemberTextField.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				if (addMemberTextField.getText().equals("Numero de Socio a añadir"))
+				if (addMemberTextField.getText().equals("Numero de Socio a a\u00F1adir"))
 					addMemberTextField.setText("");
 			}
 		});
