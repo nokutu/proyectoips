@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -104,13 +106,14 @@ public class CurrentViewDialog extends JDialog {
         if (list == null) {
             list = new JList();
             list.setModel(model);
-            list.addMouseListener(new MouseAdapter() 
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.addListSelectionListener(new ListSelectionListener()
             {
+              public void valueChanged(ListSelectionEvent e)
+              {
+                if (e.getValueIsAdjusting() == false)
+                {
 
-				public void mouseClicked(MouseEvent e) 
-				{
-					if(e.getClickCount()==2)
-					{
 						book = books.get(list.getSelectedIndex());
 						if (book.getEntrance() != null && book.getAbandon() == null) 
 						{
@@ -158,7 +161,7 @@ public class CurrentViewDialog extends JDialog {
                     }
                 }
             });
-            btnStartUse.setBounds(385, 123, 89, 23);
+            btnStartUse.setBounds(370, 123, 114, 23);
             btnStartUse.setEnabled(false);
         }
         return btnStartUse;
@@ -181,8 +184,8 @@ public class CurrentViewDialog extends JDialog {
                     }
                 }
             });
-            btnEndUse.setBounds(385, 152, 89, 23);
-            btnStartUse.setEnabled(false);
+            btnEndUse.setBounds(370, 152, 114, 23);
+            btnEndUse.setEnabled(false);
         }
         return btnEndUse;
     }

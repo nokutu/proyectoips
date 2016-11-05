@@ -90,6 +90,12 @@ public class AdministratorMainScreen extends JPanel implements MainScreen{
 		upperPanel.add(btnFeeUpdater, c);
 
 		c.gridx++;
+		
+		JButton btnDetails = new JButton("Detalles de Reserva");
+		btnDetails.addActionListener(e -> new DetailsDialog(MainWindow.getInstance(),null));
+		upperPanel.add(btnDetails, c);
+
+		c.gridx++;
 
 		JButton activitiesButton = new JButton("Ver actividades");
 		activitiesButton.addActionListener(l -> new AdministratorActivitiesDialog().setVisible(true));
