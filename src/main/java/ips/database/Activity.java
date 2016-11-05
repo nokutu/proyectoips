@@ -52,6 +52,9 @@ public class Activity implements DatabaseItem {
     public int getAssistantLimit() {
         return assistantLimit;
     }
+    public int getMonitorId(){
+    	return monitorId;
+    }
 
     @Override
     public void update() throws SQLException {
