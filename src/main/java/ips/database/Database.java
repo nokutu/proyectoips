@@ -3,7 +3,6 @@ package ips.database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -86,7 +85,9 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_MEMBERS);
         while (rs.next()) {
-            members.add(new Member(rs.getInt(1), rs.getString(2), rs.getBoolean(3)));
+            if (rs.getInt(1) != 0) {
+                members.add(new Member(rs.getInt(1), rs.getString(2), rs.getBoolean(3)));
+            }
         }
 
         s = conn.createStatement();
@@ -199,9 +200,8 @@ public class Database {
 
 
     /**
-     * 
-     * @param id facility_id
-     * @param hora 
+     * @param id   facility_id
+     * @param hora
      */
     public FacilityBooking getBookingById(int id, int hora) {
         for (FacilityBooking b : facilityBookings) {
@@ -223,8 +223,8 @@ public class Database {
     public List<ActivityMember> getActivityMembers() {
         return activityMembers;
     }
-    
-    public List<Monitor> getMonitors(){
-    	return monitors;
+
+    public List<Monitor> getMonitors() {
+        return monitors;
     }
 }

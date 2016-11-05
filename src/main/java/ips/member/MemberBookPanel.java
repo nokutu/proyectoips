@@ -10,6 +10,7 @@ import ips.gui.Form;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -72,6 +73,9 @@ public class MemberBookPanel extends JPanel {
     private void addForm(boolean addExtra) {
         if (addExtra) {
             JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+            Dimension size = dateChooser.getPreferredSize();
+            size.width += 20;
+            dateChooser.setPreferredSize(size);
             dateChooser.setDate(Utils.getCurrentDate());
             form.addLine(new JLabel("Fecha:"), dateChooser);
 

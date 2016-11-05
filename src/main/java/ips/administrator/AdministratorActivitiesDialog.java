@@ -200,7 +200,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 				ActivityMember newActivityMember = new ActivityMember(activityId, facilityBooking.getFacilityBookingId(),
 						memberId);
-				// CONDICIONES PARA A—ADIR:
+				// CONDICIONES PARA A√ëADIR:
 				// COMO ADMIN: cupo no lleno Y no ha empezado la actividad aun
 				if (numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
@@ -208,7 +208,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				else if (!Utils.getCurrentTime().before(facilityBooking.getTimeStart())) {
 					JOptionPane.showMessageDialog(getThis(),
-							"Error, la transaccion no se puede llevar a cabo porque la actividad ya est· en curso",
+							"Error, la transaccion no se puede llevar a cabo porque la actividad ya est√° en curso",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				} else {
 					newActivityMember.create(); // peta aqui, sqlEx
@@ -219,12 +219,11 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 			} catch (SQLException sql) {
 				JOptionPane.showMessageDialog(getThis(),
-						"Error, la transaccion no se ha llevado a cabo\nEl socio ya est· en la lista de apuntados a la atividad", "Error",
+						"Error, la transacci√≥n no se ha llevado a cabo\nEl socio ya est√° en la lista de apuntados a la atividad", "Error",
 						JOptionPane.ERROR_MESSAGE, null);
-				sql.printStackTrace();
 				return;
 			} catch (NumberFormatException ex1) {
-				JOptionPane.showMessageDialog(this, "Por favor, introduzca un numero de socio");
+				JOptionPane.showMessageDialog(this, "Por favor, introduzca un n√∫mero de socio");
 				return;
 			} finally {
 				refreshCentralPanelList();

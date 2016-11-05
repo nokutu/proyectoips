@@ -283,7 +283,7 @@ public class AdministratorBookPanel extends JPanel {
 			}
 			Optional<Member> member = Database.getInstance().getMembers().stream()
 					.filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
-			if (!member.isPresent()) {
+			if (!member.isPresent() || fb.getMemberId() == 0) {
 				// Member not valid
 				errors += "n\u00FAmero de socio no v\u00E1lida.\n";
 				valid = false;

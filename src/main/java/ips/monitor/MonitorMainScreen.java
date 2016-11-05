@@ -75,6 +75,7 @@ public class MonitorMainScreen extends JPanel {
 		monitorIDComboBox.addActionListener(l -> {
 			monitorID = ((Monitor) monitorIDComboBox.getSelectedItem()).getMonitorId();
 			refreshLeftCombos();
+			refreshCentralPanelList();
 			//createLeftPanel();
 			//createCenterPanel();
 			// TODO actualizar el sur
@@ -86,7 +87,8 @@ public class MonitorMainScreen extends JPanel {
 		updateActivitiesCombo();
 		updateSessionsCombo();
 	}
-	void updateActivitiesCombo() {
+
+	private void updateActivitiesCombo() {
 		activitiesModel = new DefaultComboBoxModel<>();
 		Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID)
 				.forEach(a -> activitiesModel.addElement(a.getActivityName()));
@@ -102,8 +104,7 @@ public class MonitorMainScreen extends JPanel {
 	private void updateSessionsCombo(){
 		sessionsModel = new DefaultComboBoxModel<>();
 		sessionsList = Database.getInstance()
-				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == Database.getInstance()
-						.getActivities().get(activities.getSelectedIndex()).getActivityId())
+				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 				.collect(Collectors.toList());
 		sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
 				.forEach(sessionsModel::addElement);
@@ -327,7 +328,7 @@ public class MonitorMainScreen extends JPanel {
 	}
 
 	private Activity getSelectedActivity() {
-		return Database.getInstance().getActivities().get(activities.getSelectedIndex());
+		return Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID).collect(Collectors.toList()).get(activities.getSelectedIndex());
 	}
 
 	private class CheckBoxList extends JPanel {

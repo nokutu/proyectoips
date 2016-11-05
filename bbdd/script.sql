@@ -83,7 +83,6 @@ CREATE TABLE monitor (
     PRIMARY KEY(monitor_id)
 );
 
-INSERT INTO member VALUES (0, 'Administrador',false);
 INSERT INTO member VALUES (1, 'Gabriel',true);
 INSERT INTO member VALUES (2, 'Jorge',true);
 INSERT INTO member VALUES (3, 'Sergio',true);
@@ -96,7 +95,7 @@ INSERT INTO facilitybooking VALUES (1, 1, 1,
     PARSEDATETIME('12-11-2016 19:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (2, 2, 1,
-    PARSEDATETIME('10-11-2016 15:00:00', 'dd-MM-yyyy HH:mm:ss'),
+    PARSEDATETIME('12-11-2016 15:00:00', 'dd-MM-yyyy HH:mm:ss'),
     PARSEDATETIME('12-11-2016 16:00:00', 'dd-MM-yyyy HH:mm:ss'),
     'Cash', false, false, null, null, 'Valid');
 INSERT INTO facilitybooking VALUES (3, 1, 2,
