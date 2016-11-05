@@ -1,5 +1,7 @@
 package ips.member;
 
+import ips.AvailabilityPane;
+import ips.MainScreen;
 import ips.database.Database;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,7 +16,7 @@ import java.awt.BorderLayout;
 /**
  * Created by nokutu on 24/10/2016.
  */
-public class MemberMainScreen extends JPanel {
+public class MemberMainScreen extends JPanel implements MainScreen{
 
     public static int userID;
 
@@ -56,6 +58,19 @@ public class MemberMainScreen extends JPanel {
             }
         });
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
+        
+        JButton availabilityButton = new JButton("Ver disponibilidad");
+        availabilityButton.addActionListener(l -> {
+            if (userID != 0) {
+                add(new AvailabilityPane(false, userID, this), BorderLayout.CENTER);
+                repaint();
+                revalidate();
+            }
+            else{
+            	JOptionPane.showMessageDialog(this, "Numero de socio no valido");
+            }
+        });
+        upperPanel.add(availabilityButton);
 
         JButton activitiesButton = new JButton("Ver actividades");
         activitiesButton.addActionListener(l -> {
