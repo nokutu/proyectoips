@@ -1,7 +1,5 @@
 package ips;
 
-import ips.administrator.AdministratorBookPanel;
-import ips.administrator.AdministratorMainScreen;
 import ips.database.Availability;
 import ips.database.Booking;
 import ips.database.Database;
@@ -14,7 +12,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,15 +27,15 @@ public class AvailabilityPane extends JPanel {
 	JPanel centralWeekPanel = new JPanel();
 	private static final long serialVersionUID = 1L;
 	private Calendar calendar = Calendar.getInstance();
-	private String userName = "Administrator";
+	int userID = 0;
 	MainScreen MS;
 	List<Facility> facilities;
 
-	public AvailabilityPane(boolean admin, String userName, MainScreen mainScreen) {
+	public AvailabilityPane(boolean admin, int userID, MainScreen mainScreen) {
 		MS = mainScreen;
 		this.admin = admin;
-		if(userName != null)
-			this.userName = userName;
+		if(userID != 0)
+			this.userID = userID;
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel weekPane = new JPanel();
@@ -144,7 +141,7 @@ public class AvailabilityPane extends JPanel {
 			JButton botonAux = new JButton("Libre");
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
-					botonAux = notAvailable(booking.getUserName());
+					botonAux = setColor(booking);
 					break;
 				}
 			}/*
@@ -181,19 +178,22 @@ public class AvailabilityPane extends JPanel {
 			addRows(instalacion);
 	}
 
-	private JButton notAvailable(String user) {
+	private JButton setColor(Booking booking) {
 		JButton btnNot = new JButton("No Disponible");
 		btnNot.setBackground(Color.RED);
 		if (admin) {
+			String user = "Administrador";
+			if(booking.getUserName() != null)
+				user = booking.getUserName();
 			btnNot.setText(user);
-			if (user.equals("Administrator")) 
+			if (booking.getUserID()==0) 
 				btnNot.setBackground(Color.ORANGE);
 			else
 				btnNot.setBackground(Color.BLUE);
 		} 
 		else{
-			if (user.equals(userName)) {
-				btnNot.setText(user);
+			if (booking.getUserID() == userID) {
+				btnNot.setText(booking.getUserName());
 				btnNot.setBackground(Color.GREEN);
 			}
 			else

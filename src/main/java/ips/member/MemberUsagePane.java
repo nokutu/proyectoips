@@ -39,7 +39,7 @@ public class MemberUsagePane extends JPanel {
 		});
 		weekPane.add(btnPrevious);
 
-		lblWeek = new JLabel("empty");
+		lblWeek = new JLabel("Libre");
 		weekPane.add(lblWeek);
 		setWeek();
 
@@ -94,6 +94,7 @@ public class MemberUsagePane extends JPanel {
 			date = calendar.getTime();
 			long now = date.getTime();
 			JButton botonAux = new JButton("No hay reservas");
+			botonAux.setBackground(Color.GREEN);
 			botonAux.setEnabled(false);
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
@@ -110,9 +111,9 @@ public class MemberUsagePane extends JPanel {
 	private void setWeek() {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
-		String week = "From: " + calendar.get(Calendar.DAY_OF_MONTH) + " of " + calendar.get(Calendar.MONTH) + " to: ";
+		String week = "Desde: " + calendar.get(Calendar.DAY_OF_MONTH) + " del " + calendar.get(Calendar.MONTH) + " hasta: ";
 		calendar.add(Calendar.DATE, +6);
-		week += calendar.get(Calendar.DAY_OF_MONTH) + " of " + calendar.get(Calendar.MONTH);
+		week += calendar.get(Calendar.DAY_OF_MONTH) + " del " + calendar.get(Calendar.MONTH);
 		lblWeek.setText(week);
 	}
 
