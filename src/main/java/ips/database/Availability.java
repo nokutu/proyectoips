@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Availability {
-	private final static String SELECT_QUERY = "SELECT MEMBER.MEMBER_NAME, FACILITYBOOKING.TIME_START, FACILITYBOOKING.TIME_END FROM FACILITYBOOKING, MEMBER WHERE FACILITY_ID = ? AND FACILITYBOOKING.MEMBER_ID = MEMBER.MEMBER_ID ORDER BY FACILITYBOOKING.TIME_START ";
+	private final static String SELECT_QUERY = "SELECT MEMBER.MEMBER_ID, MEMBER.MEMBER_NAME, FACILITYBOOKING.TIME_START, FACILITYBOOKING.TIME_END FROM FACILITYBOOKING, MEMBER WHERE FACILITY_ID = ? AND FACILITYBOOKING.MEMBER_ID = MEMBER.MEMBER_ID ORDER BY FACILITYBOOKING.TIME_START ";
 
 	 private static PreparedStatement createStatement;
 	 
@@ -19,7 +19,12 @@ public class Availability {
 	        ResultSet rs = createStatement.executeQuery();
 	        ArrayList<Booking> bookings = new ArrayList<Booking>();
 	        while (rs.next()) {
-	        	bookings.add(new Booking(rs.getString(1), rs.getTimestamp(2), rs.getTimestamp(3)));
+	        	Booking b = new Booking();
+	        	b.setUserID(rs.getInt(1));
+	        	b.setUserName(rs.getString(2));
+	        	b.setTimeStart(rs.getTimestamp(3));
+	        	b.setTimeEnd(rs.getTimestamp(4));
+	        	bookings.add(b);
 	        }
 		return bookings;
 	 }

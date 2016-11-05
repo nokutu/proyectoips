@@ -1,5 +1,6 @@
 package ips;
 
+import ips.administrator.AdministratorBookPanel;
 import ips.database.Availability;
 import ips.database.Booking;
 import ips.database.Database;
@@ -12,6 +13,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -133,8 +135,7 @@ public class AvailabilityPane extends JPanel {
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(date.getTime())));
-
+		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
 		for (int i = 0; i < 24; i++) {
 			date = calendar.getTime();
 			long now = date.getTime();
@@ -144,7 +145,7 @@ public class AvailabilityPane extends JPanel {
 					botonAux = setColor(booking);
 					break;
 				}
-			}/*
+			}
 			botonAux.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					long oneHour = now + 3600000;
@@ -157,7 +158,7 @@ public class AvailabilityPane extends JPanel {
 					}
 					MS.setRightPanel(new AdministratorBookPanel(esta, new Timestamp(now), new Timestamp(oneHour)));
 				}
-			});*/
+			});
 			rowPanel.add(botonAux);
 			calendar.add(Calendar.HOUR, +1);
 		}
@@ -167,9 +168,11 @@ public class AvailabilityPane extends JPanel {
 	private void setWeek() {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
-		String week = "Desde: " + calendar.get(Calendar.DAY_OF_MONTH) + " de " + calendar.get(Calendar.MONTH) + " hasta: ";
+		Date date = calendar.getTime();
+		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime()) + ". Hasta: ";
 		calendar.add(Calendar.DATE, +6);
-		week += calendar.get(Calendar.DAY_OF_MONTH) + " de " + calendar.get(Calendar.MONTH);
+		date = calendar.getTime();
+		week += new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime());
 		lblWeek.setText(week);
 	}
 
@@ -179,27 +182,28 @@ public class AvailabilityPane extends JPanel {
 	}
 
 	private JButton setColor(Booking booking) {
-		JButton btnNot = new JButton("No Disponible");
-		btnNot.setBackground(Color.RED);
+		JButton boton = new JButton("No Disponible");
+		boton.setBackground(Color.RED);
 		if (admin) {
 			String user = "Administrador";
 			if(booking.getUserName() != null)
 				user = booking.getUserName();
-			btnNot.setText(user);
+			boton.setText(user);
 			if (booking.getUserID()==0) 
-				btnNot.setBackground(Color.ORANGE);
+				boton.setBackground(Color.ORANGE);
 			else
-				btnNot.setBackground(Color.BLUE);
+				boton.setBackground(Color.BLUE);
 		} 
 		else{
 			if (booking.getUserID() == userID) {
-				btnNot.setText(booking.getUserName());
-				btnNot.setBackground(Color.GREEN);
+				boton.setText(booking.getUserName());
+				boton.setBackground(Color.GREEN);
 			}
-			else
-				btnNot.setBackground(Color.BLUE);
+			else{
+				boton.setBackground(Color.BLUE);
+				boton.setEnabled(false);
+			}
 		}
-		btnNot.setEnabled(false);
-		return btnNot;
+		return boton;
 	}
 }

@@ -19,7 +19,7 @@ public class MemberUsage {
 	        ResultSet rs = createStatement.executeQuery();
 	        ArrayList<Booking> bookings = new ArrayList<Booking>();
 	        while (rs.next()) {
-	        	bookings.add(new Booking(rs.getInt(5), rs.getString(4), rs.getString(2), rs.getTimestamp(8), rs.getTimestamp(9), rs.getString(10)));
+	        	bookings.add(new Booking(rs.getInt(5), idUser, rs.getString(4), rs.getString(2), rs.getTimestamp(8), rs.getTimestamp(9), rs.getString(10)));
 	        }
 		return bookings;
 	 }

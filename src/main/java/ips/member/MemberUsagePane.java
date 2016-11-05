@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -29,7 +30,6 @@ public class MemberUsagePane extends JPanel {
 		JPanel weekPane = new JPanel();
 		add(weekPane, BorderLayout.NORTH);
 
-		btnPrevious.setEnabled(false);
 		btnPrevious.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				weeksFromNow--;
@@ -85,7 +85,7 @@ public class MemberUsagePane extends JPanel {
 	private void addRow() {
 		JPanel rowPanel = new JPanel(new GridLayout(25, 1));
 		Date date = calendar.getTime();
-		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime())));
+		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
@@ -94,7 +94,6 @@ public class MemberUsagePane extends JPanel {
 			date = calendar.getTime();
 			long now = date.getTime();
 			JButton botonAux = new JButton("No hay reservas");
-			botonAux.setBackground(Color.GREEN);
 			botonAux.setEnabled(false);
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
@@ -111,9 +110,11 @@ public class MemberUsagePane extends JPanel {
 	private void setWeek() {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
-		String week = "Desde: " + calendar.get(Calendar.DAY_OF_MONTH) + " del " + calendar.get(Calendar.MONTH) + " hasta: ";
+		Date date = calendar.getTime();
+		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime()) + ". Hasta: ";
 		calendar.add(Calendar.DATE, +6);
-		week += calendar.get(Calendar.DAY_OF_MONTH) + " del " + calendar.get(Calendar.MONTH);
+		date = calendar.getTime();
+		week += new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime());
 		lblWeek.setText(week);
 	}
 
@@ -122,7 +123,10 @@ public class MemberUsagePane extends JPanel {
 		btnNot.setEnabled(true);
 		switch (booking.getState()) {
 		case "Valid":
-			btnNot.setBackground(Color.GREEN);
+			if(booking.getTimeStart().after(new Timestamp(System.currentTimeMillis())))
+				btnNot.setBackground(Color.GREEN);
+			else
+				btnNot.setBackground(Color.BLUE);
 			break;
 		case "Annulled":
 			btnNot.setBackground(Color.GRAY);

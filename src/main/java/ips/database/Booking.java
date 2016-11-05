@@ -11,14 +11,13 @@ public class Booking {
 	private Timestamp timeEnd;
 	private String state;
 	
-	public Booking(String userName, Timestamp timeStart, Timestamp timeEnd) {
-		this.userName = userName;
-		this.timeStart = timeStart;
-		this.timeEnd = timeEnd;
+	public Booking() {
+
 	}
 	
-	public Booking(int bookingId, String userName, String facilityName, Timestamp timeStart, Timestamp timeEnd, String state) {
+	public Booking(int bookingId, int userID, String userName, String facilityName, Timestamp timeStart, Timestamp timeEnd, String state) {
 		this.bookingId = bookingId;
+		this.userID = userID;
 		this.userName = userName;
 		this.facilityName = facilityName;
 		this.timeStart = timeStart;
