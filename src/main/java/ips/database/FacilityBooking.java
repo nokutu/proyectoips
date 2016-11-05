@@ -205,11 +205,29 @@ public class FacilityBooking implements DatabaseItem {
 	 * @return a string representation of the whole class
 	 */
 	public String toStringFull() {
-		String linea = "Facility: " + Integer.toString(this.getFacilityId()) + " ";
-		linea += "Member: " + Integer.toString(this.getMemberId()) + " ";
-		linea += "Start: " + this.getTimeStart().toString() + " ";
-		linea += "End: " + this.getTimeEnd().toString() + " ";
-		linea += " ";
+		String linea = "Instalacion: " + this.getFacility().getFacilityName() + " \n ";
+		linea += "ID de la instalacion: " + this.getFacility().getFacilityName() + " \n ";
+		if(this.getMemberId()!=0)
+		{
+		linea += "IDSocio: " + Integer.toString(this.getMemberId()) + " \n ";
+		linea += "Socio: " + Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n ";
+		}
+		else
+		{
+		linea += "Reservado para la administracion  \n ";	
+		}
+		
+		linea += "Inicio: " + this.getTimeStart().toString() + " \n ";
+		linea += "Final: " + this.getTimeEnd().toString() + " \n ";
+		linea += "Metodo de pago: " + this.getPaymentMethod() + " \n ";
+		if(this.isPaid())
+		{
+			linea += "Sin pagar \n ";
+		}
+		else
+			linea += "Pagada \n ";
+		
+		
 		return linea;
 	}
 
@@ -218,9 +236,17 @@ public class FacilityBooking implements DatabaseItem {
 	 */
 	public String toString() {
 		String s = "";
-		s += "Facility " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName();
-		String name = Database.getInstance().getMemberById(this.getMemberId()).getMemberName();
-		s += "by member " + name + " \n";
+		String name = "";
+		s += "Instalacion: " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName();
+		if(this.getMemberId()==0)
+		{
+			s += ", por la administracion \n";
+		}
+		else
+		{
+		name = Database.getInstance().getMemberById(this.getMemberId()).getMemberName();
+		s += ", por el socio: " + name + " \n";
+		}
 		return s;
 	}
 

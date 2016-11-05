@@ -1,12 +1,15 @@
 package ips.administrator;
 
 
+import ips.database.Database;
 import ips.database.FacilityBooking;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.stream.Collectors;
 import java.awt.FlowLayout;
 
 public class DetailsDialog extends JDialog {
@@ -16,15 +19,23 @@ public class DetailsDialog extends JDialog {
     private JTextArea textDescription;
     private JPanel panelSur;
     private JButton btnCancelarEstaReserva;
+    private JComboBox bookingsBox;
 
     public DetailsDialog(JFrame owner, FacilityBooking book) {
         super(owner, true);
         this.book = book;
+        if(book==null)
+        {
+        getContentPane().add(getBookingsBox(), BorderLayout.WEST);
+        }
         getContentPane().add(getScrollPane(), BorderLayout.CENTER);
         getContentPane().add(getPanelSur(), BorderLayout.SOUTH);
+        
+        
 
         pack();
         setLocationRelativeTo(owner);
+        this.setVisible(true);
     }
 
 
@@ -51,7 +62,10 @@ public class DetailsDialog extends JDialog {
     private JTextArea getTextDescription() {
         if (textDescription == null) {
             textDescription = new JTextArea();
+            if(book!=null)
             textDescription.setText(book.toStringFull());
+            else
+            textDescription.setText("Seleccione una reserva");
         }
         return textDescription;
     }
@@ -74,5 +88,20 @@ public class DetailsDialog extends JDialog {
 			});
 		}
 		return btnCancelarEstaReserva;
+	}
+	private JComboBox getBookingsBox() {
+		if (bookingsBox == null) {
+			bookingsBox = new JComboBox();
+			DefaultComboBoxModel<String> booksModel = new DefaultComboBoxModel<>();
+			Database.getInstance().getFacilityBookings().forEach(a -> booksModel.addElement(a.toString()));
+			bookingsBox.setModel(booksModel);
+			bookingsBox.addActionListener(l -> {
+				FacilityBooking fb = Database.getInstance().getFacilityBookings().get(bookingsBox.getSelectedIndex());
+				textDescription.setText(fb.toStringFull());
+			
+			});
+			book= Database.getInstance().getFacilityBookings().get(bookingsBox.getSelectedIndex());
+		}
+		return bookingsBox;
 	}
 }
