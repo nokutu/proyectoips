@@ -112,11 +112,12 @@ INSERT INTO facilitybooking VALUES (5, 1, 0,
     'Cash', false, false, null, null, 'Valid');
 
 INSERT INTO monitor VALUES(1,'Rodolfo Perez');
+INSERT INTO monitor VALUES(2,'Otro Monitor');
 
 INSERT INTO activity VALUES (1, 'Taller 1', 25, 1);
 INSERT INTO activity VALUES (2, 'Taller 2', 50, 1);
 INSERT INTO activity VALUES (3, 'Taller 3', 75, 1);
-INSERT INTO activity VALUES (4, 'Yoga 1', 10, 1);
+INSERT INTO activity VALUES (4, 'Yoga 1', 10, 2);
 
 INSERT INTO activitybooking VALUES(1, 4);
 INSERT INTO activitybooking VALUES(2, 4);

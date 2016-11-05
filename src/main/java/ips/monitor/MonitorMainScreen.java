@@ -1,24 +1,32 @@
 package ips.monitor;
 
+import ips.MainWindow;
 import ips.Utils;
 import ips.database.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by nokutu on 25/10/2016.
  */
 public class MonitorMainScreen extends JPanel {
 
-	JPanel centerPanel;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private CheckBoxList memberList = new CheckBoxList();
 
 	private List<ActivityBooking> sessionsList;
@@ -28,11 +36,14 @@ public class MonitorMainScreen extends JPanel {
 
 	private JLabel assistanceLabel = new JLabel("");
 	private JComboBox<String> activities;
-	private JButton addMember = new JButton("Apuntar a socio");
+	private JButton addMember = new JButton("Apuntar al socio:");
+	private TextField addMemberTextField = new TextField("Numero de Socio a a\u00F1adir");
 	private JComboBox<String> sessions;
+	DefaultComboBoxModel<String> sessionsModel;
+	DefaultComboBoxModel<String> activitiesModel;
+	// private List<ActivityBooking> activityBookingsList;
 
-	private JComboBox<Monitor> monitorIDTextField;
-
+	private JComboBox<Monitor> monitorIDComboBox;
 	public static int monitorID;
 
 	public MonitorMainScreen() {
@@ -40,71 +51,65 @@ public class MonitorMainScreen extends JPanel {
 
 		setLayout(new BorderLayout());
 
+		createNorthPanel();
 		createLeftPanel();
 		createBottomPanel();
 		createCenterPanel();
-		createRightPanel();
-		createNorthPanel();
-		
+
+		setMinimumSize(new Dimension(320, 180));
 	}
 
 	private void createNorthPanel() {
 		JPanel monitorIDPanel = new JPanel();
 		add(monitorIDPanel, BorderLayout.NORTH);
 
-		monitorIDPanel.add(new JLabel("ID de Monitor:"));
-		
-		monitorIDTextField = new JComboBox<>();
+		monitorIDPanel.add(new JLabel("Monitor:"));
+
+		monitorIDComboBox = new JComboBox<>();
 		DefaultComboBoxModel<Monitor> monitorsModel = new DefaultComboBoxModel<>();
 		Database.getInstance().getMonitors().forEach(a -> monitorsModel.addElement(a));
-		monitorIDTextField.setModel(monitorsModel);		
-		monitorIDTextField.addActionListener(l -> update((Monitor)monitorIDTextField.getSelectedItem()));
-		monitorIDPanel.add(monitorIDTextField);
-	}
-
-	private void createRightPanel() {
-		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new GridBagLayout());
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.CENTER;
-
-		/*JButton remove = new JButton("Marcar asistencia");
-		remove.addActionListener(l -> {
-			for (int i = 0; i < membersInSession.size(); i++) {
-				if (activityMembersInSessionChk.get(i).isSelected() && activityMembersInSessionChk.get(i).isEnabled())
-				{
-					try {
-						activityMembersInSession.get(i).setAssistance(true);
-						activityMembersInSession.get(i).update();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			refreshCentralPanelList();
+		monitorIDComboBox.setModel(monitorsModel);
+		monitorIDComboBox.setSelectedIndex(0);
+		monitorID = ((Monitor) monitorIDComboBox.getSelectedItem()).getMonitorId();
+		// refreshLeftCombos(); //MARK
+		monitorIDComboBox.addActionListener(l -> {
+			monitorID = ((Monitor) monitorIDComboBox.getSelectedItem()).getMonitorId();
+			refreshLeftCombos();
+			//createLeftPanel();
+			//createCenterPanel();
+			// TODO actualizar el sur
 		});
-		rightPanel.add(remove, c);*/
+		monitorIDPanel.add(monitorIDComboBox);
+	}
+	private void refreshLeftCombos() { // TODO
+		System.err.println("actualizo");
+		updateActivitiesCombo();
+		updateSessionsCombo();
+	}
+	void updateActivitiesCombo() {
+		activitiesModel = new DefaultComboBoxModel<>();
+		Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID)
+				.forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activities.setModel(activitiesModel);
 
-		add(rightPanel, BorderLayout.EAST);
+		// Force the panel to refresh
+		SwingUtilities.invokeLater(() -> {
+			memberList.setVisible(false);
+			memberList.setVisible(true);
+		});
+
+	}
+	private void updateSessionsCombo(){
+		sessionsModel = new DefaultComboBoxModel<>();
+		sessionsList = Database.getInstance()
+				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == Database.getInstance()
+						.getActivities().get(activities.getSelectedIndex()).getActivityId())
+				.collect(Collectors.toList());
+		sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
+				.forEach(sessionsModel::addElement);
+		sessions.setModel(sessionsModel);
 	}
 
-	 private void update(Monitor member) {
-	        if (checkMonitor(member.getMonitorId())) {
-	            monitorID = member.getMonitorId();
-	        } else {
-	            monitorID = 0;
-	        }
-	    }
-
-	    private boolean checkMonitor(int i) {
-	        try {
-	            return Database.getInstance().getMonitors().stream().filter(m -> m.getMonitorId() == i).findAny().isPresent();
-	        } catch (NumberFormatException e) {
-	            return false;
-	        }
-	    }
-	    
 	private void createLeftPanel() {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -124,22 +129,24 @@ public class MonitorMainScreen extends JPanel {
 		c.gridx++;
 
 		activities = new JComboBox<>();
-		DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-		Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activitiesModel = new DefaultComboBoxModel<>();
+		Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID)
+				.forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activities.setModel(activitiesModel);
 		activities.setModel(activitiesModel);
 		leftPanel.add(activities, c);
 
 		c.gridx = 0;
 		c.gridy++;
 
-		leftPanel.add(new JLabel("Sesión:"), c);
+		leftPanel.add(new JLabel("Sesi\u00F3n:"), c);
 
 		c.gridx++;
 
 		sessions = new JComboBox<>();
 		activities.addActionListener(l -> {
 			memberList.removeAll();
-			DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
+			sessionsModel = new DefaultComboBoxModel<>();
 			sessionsList = Database.getInstance().getActivityBookings().stream()
 					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 					.collect(Collectors.toList());
@@ -150,6 +157,8 @@ public class MonitorMainScreen extends JPanel {
 			if (sessions.getModel().getSize() > 0) {
 				sessions.setSelectedIndex(0);
 			}
+			refreshCentralPanelList(); // TODO poner esto y aqui pero en el de
+										// activity??
 			refreshAssistanceCount();
 		});
 		activities.setSelectedIndex(0);
@@ -179,35 +188,6 @@ public class MonitorMainScreen extends JPanel {
 				membersInSession.add(member);
 
 				JCheckBox chk = new JCheckBox(member.getMemberName());
-				if(am.isAssistance())
-				{
-					chk.setSelected(true);
-				}
-				if(!sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking().getTimeStart().before(Utils.getCurrentTime())||!sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking().getTimeEnd().after(Utils.getCurrentTime()))
-				{
-					chk.setEnabled(false);
-				}
-				chk.addActionListener(l->{
-					if (chk.isSelected() && chk.isEnabled())
-					{
-					try 
-					{
-						am.setAssistance(true);
-						am.update();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					}
-					if (!chk.isSelected() && chk.isEnabled())
-					{
-						try 
-						{
-							am.setAssistance(false);
-							am.update();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-				}});
 				activityMembersInSessionChk.add(chk);
 				memberList.addLine(chk);
 			}
@@ -221,6 +201,10 @@ public class MonitorMainScreen extends JPanel {
 		});
 	}
 
+	private Component getThis() {
+		return this;
+	}
+
 	private void createBottomPanel() {
 		JPanel bottomPanel = new JPanel();
 		add(bottomPanel, BorderLayout.SOUTH);
@@ -228,11 +212,77 @@ public class MonitorMainScreen extends JPanel {
 		bottomPanel.add(new JLabel("Socios apuntados:"));
 		bottomPanel.add(assistanceLabel);
 
+		addMember.addActionListener(l -> { // MARK
+			try {// primero objenemos el numero del socio
+
+				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
+																				// aqui,
+																				// numberFormatEx;
+				if (Database.getInstance().getMembers().stream().filter(m -> m.getMemberId() == memberId)
+						.toArray().length == 0) {
+					JOptionPane.showMessageDialog(getThis(),
+							"No se ha encontrado un cliente con el numero de socio introducido");
+					return;
+				}
+				// segundo obtenemos la actividad
+				int activityId = Database.getInstance().getActivities().get(activities.getSelectedIndex())
+						.getActivityId();
+				// tercero obtenemos la facilitybooking
+				FacilityBooking facilityBooking = sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking();
+				// cuarto obtenemos el numero actual de invitados y el maximo
+				Optional<Integer> assistantsOptional = getAssistantsOptional();
+				Optional<Activity> activityOptional = getActivityOptional();
+				int numeroMaximoApuntados = activityOptional.get().getAssistantLimit();
+				int numeroActualApuntados = assistantsOptional.isPresent() ? assistantsOptional.get() : 0;
+
+				ActivityMember newActivityMember = new ActivityMember(activityId,
+						facilityBooking.getFacilityBookingId(), memberId);
+				// CONDICIONES PARA AÑADIR:
+				// COMO MONITOR: cupo no lleno Y entre 5 minutos antes de
+				// empezar y 10 despues de haberlo hecho
+				if (numeroActualApuntados >= numeroMaximoApuntados)
+					JOptionPane.showMessageDialog(getThis(),
+							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
+							"Error", JOptionPane.ERROR_MESSAGE, null);
+				else if (!Utils.getCurrentTime().before(facilityBooking.getTimeStart())) {
+					JOptionPane.showMessageDialog(getThis(),
+							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
+							"Error", JOptionPane.ERROR_MESSAGE, null);
+				} else {
+					newActivityMember.create(); // peta aqui, sqlEx
+					Database.getInstance().getActivityMembers().add(newActivityMember);
+					JOptionPane.showMessageDialog(getThis(), "A\u00F1adido correctamente", "Correcto",
+							JOptionPane.INFORMATION_MESSAGE, null);
+				}
+
+			} catch (SQLException sql) {
+				JOptionPane.showMessageDialog(getThis(),
+						"Error, la transaccion no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad",
+						"Error", JOptionPane.ERROR_MESSAGE, null);
+				sql.printStackTrace();
+				return;
+			} catch (NumberFormatException ex1) {
+				JOptionPane.showMessageDialog(this, "Por favor, introduzca un numero de socio");
+				return;
+			} finally {
+				refreshCentralPanelList();
+			}
+
+		});
+
 		bottomPanel.add(addMember);
+
+		addMemberTextField.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				if (addMemberTextField.getText().equals("Numero de Socio a a\u00F1adir"))
+					addMemberTextField.setText("");
+			}
+		});
+		bottomPanel.add(addMemberTextField);
 	}
 
 	private void createCenterPanel() {
-		centerPanel = new JPanel();
+		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout());
 
 		JLabel colorlabel = new JLabel();
@@ -244,13 +294,21 @@ public class MonitorMainScreen extends JPanel {
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
-	private void refreshAssistanceCount() {
-		Optional<Integer> assistantsOptional = Database.getInstance().getActivityMembers().parallelStream()
+	private Optional<Integer> getAssistantsOptional() {
+		return Database.getInstance().getActivityMembers().parallelStream()
 				.filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() && !am.isDeleted() && am
 						.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
 				.map(am -> am.isAssistance() ? 1 : 0).reduce(Integer::sum);
-		Optional<Activity> activityOptional = Database.getInstance().getActivities().parallelStream()
+	}
+
+	private Optional<Activity> getActivityOptional() {
+		return Database.getInstance().getActivities().parallelStream()
 				.filter(a -> a.getActivityName().equals(activities.getSelectedItem())).findAny();
+	}
+
+	private void refreshAssistanceCount() {
+		Optional<Integer> assistantsOptional = getAssistantsOptional();
+		Optional<Activity> activityOptional = getActivityOptional();
 		if (activityOptional.isPresent()) {
 			if (assistantsOptional.isPresent()) {
 				// n assistants
@@ -273,6 +331,11 @@ public class MonitorMainScreen extends JPanel {
 	}
 
 	private class CheckBoxList extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private GridBagConstraints c;
 
