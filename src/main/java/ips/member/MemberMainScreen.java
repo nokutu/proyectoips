@@ -12,6 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 /**
  * Created by nokutu on 24/10/2016.
@@ -62,6 +63,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
         JButton availabilityButton = new JButton("Ver disponibilidad");
         availabilityButton.addActionListener(l -> {
             if (userID != 0) {
+            	vaciar();
                 add(new AvailabilityPane(false, userID, this), BorderLayout.CENTER);
                 repaint();
                 revalidate();
@@ -71,6 +73,20 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             }
         });
         upperPanel.add(availabilityButton);
+        
+        JButton myBookingsButton = new JButton("Mis reservas");
+        myBookingsButton.addActionListener(l -> {
+            if (userID != 0) {
+            	vaciar();
+                add(new MemberUsagePane(userID), BorderLayout.CENTER);
+                repaint();
+                revalidate();
+            }
+            else{
+            	JOptionPane.showMessageDialog(this, "Numero de socio no valido");
+            }
+        });
+        upperPanel.add(myBookingsButton);
 
         JButton activitiesButton = new JButton("Ver actividades");
         activitiesButton.addActionListener(l -> {
@@ -119,5 +135,12 @@ public class MemberMainScreen extends JPanel implements MainScreen{
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+    
+    private void vaciar(){
+    	BorderLayout layout = (BorderLayout) getLayout();
+    	Component ob = layout.getLayoutComponent(BorderLayout.CENTER);
+    	if(ob != null)
+    		remove(ob);
     }
 }
