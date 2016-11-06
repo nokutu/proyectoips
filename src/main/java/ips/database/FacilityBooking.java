@@ -227,7 +227,19 @@ public class FacilityBooking implements DatabaseItem {
 		else
 			linea += "Pagada \n ";
 		
-		
+		switch (this.state) {
+		case "Valid":
+			linea += "Estado: Válida \n";
+			break;
+		case "Annulled":
+			linea += "Estado: Anulada \n";
+			break;
+		case "Canceled":
+			linea += "Estado: Cancelada \n";
+			break;
+		default:
+			break;
+		}
 		return linea;
 	}
 
