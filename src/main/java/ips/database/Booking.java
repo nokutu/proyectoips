@@ -10,6 +10,7 @@ public class Booking {
 	private Timestamp timeStart;
 	private Timestamp timeEnd;
 	private String state;
+	private int pricePerHour;
 	
 	public Booking() {
 
@@ -79,6 +80,14 @@ public class Booking {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public int getPricePerHour() {
+		return pricePerHour;
+	}
+
+	public void setPricePerHour(int pricePerHour) {
+		this.pricePerHour = pricePerHour;
 	}
 
 	@Override

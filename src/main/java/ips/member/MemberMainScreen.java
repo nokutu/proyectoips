@@ -87,6 +87,20 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             }
         });
         upperPanel.add(myBookingsButton);
+        
+        JButton MyPayments = new JButton("Detalles de Pagos");
+        MyPayments.addActionListener(l -> {
+            if (userID != 0) {
+            	vaciar();
+                add(new PaymentsDetailsPanel(userID), BorderLayout.CENTER);
+                repaint();
+                revalidate();
+            }
+            else{
+            	JOptionPane.showMessageDialog(this, "Numero de socio no valido");
+            }
+        });
+        upperPanel.add(MyPayments);
 
         JButton activitiesButton = new JButton("Ver actividades");
         activitiesButton.addActionListener(l -> {
