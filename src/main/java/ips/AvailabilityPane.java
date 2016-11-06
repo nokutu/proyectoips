@@ -224,8 +224,13 @@ public class AvailabilityPane extends JPanel {
                 boton.setEnabled(false);
             }
         }
-        boton.addActionListener(l->MemberBookingCancelDialog.show(
-        		(FacilityBooking)Database.getInstance().getFacilityBookings().stream().filter(fb->fb.getFacilityId()==booking.getBookingId()).toArray()[0]));
+        if (!admin) {
+        	boton.addActionListener(l->{
+        		Object[] result=Database.getInstance().getFacilityBookings().stream().filter(fb->fb.getFacilityId()==booking.getBookingId()).toArray();
+        		MemberBookingCancelDialog.show((FacilityBooking)result[0]);
+        	}
+        			);
+        }
         return boton;
     }
 }

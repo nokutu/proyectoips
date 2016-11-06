@@ -24,7 +24,7 @@ public class AdministratorBookingCancelDialog {
 	 */
 	private static FacilityBooking booking;
 	
-	public AdministratorBookingCancelDialog() {}
+	public AdministratorBookingCancelDialog() {} 
 	
 	public static void show(FacilityBooking booking){
 		AdministratorBookingCancelDialog.booking = booking;

@@ -116,7 +116,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 					.collect(Collectors.toList());
 			sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
-					.forEach(sessionsModel::addElement);
+			.forEach(sessionsModel::addElement);
 			sessions.setModel(sessionsModel);
 
 			if (sessions.getModel().getSize() > 0) {
@@ -179,8 +179,8 @@ public class AdministratorActivitiesDialog extends JDialog {
 			try {// primero objenemos el numero del socio
 
 				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
-																				// aqui,
-																				// numberFormatEx;
+				// aqui,
+				// numberFormatEx;
 				if (Database.getInstance().getMembers().stream().filter(m -> m.getMemberId() == memberId)
 						.toArray().length == 0) {
 					JOptionPane.showMessageDialog(getThis(),
@@ -211,16 +211,25 @@ public class AdministratorActivitiesDialog extends JDialog {
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				} else {
-					newActivityMember.create(); // peta aqui, sqlEx
-					Database.getInstance().getActivityMembers().add(newActivityMember);
+					Optional<ActivityMember> a = Database.getInstance().getActivityMembers().stream()
+							.filter(am->am.getActivityId()==newActivityMember.getActivityId() && am.equals(newActivityMember)).findAny();
+					if(a.isPresent()){
+						ActivityMember b=a.get();
+						b.setDeleted(false);
+						b.update();
+					}
+					else{
+						newActivityMember.create(); // peta aqui, sqlEx
+						Database.getInstance().getActivityMembers().add(newActivityMember);
+					}
 					JOptionPane.showMessageDialog(getThis(), "A\u00F1adido correctamente", "Correcto",
 							JOptionPane.INFORMATION_MESSAGE, null);
 				}
 
 			} catch (SQLException sql) {
-				JOptionPane.showMessageDialog(getThis(),
-						"Error, la transacción no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad", "Error",
-						JOptionPane.ERROR_MESSAGE, null);
+					JOptionPane.showMessageDialog(getThis(),
+							"Error, la transacción no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad", "Error",
+							JOptionPane.ERROR_MESSAGE, null);
 				return;
 			} catch (NumberFormatException ex1) {
 				JOptionPane.showMessageDialog(this, "Por favor, introduzca un número de socio");
@@ -258,7 +267,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private Optional<Integer> getAssistantsOptional() {
 		return Database.getInstance().getActivityMembers().parallelStream()
 				.filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() && !am.isDeleted() && am
-						.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
+				.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
 				.map(am -> am.isAssistance() ? 1 : 0).reduce(Integer::sum);
 	}
 

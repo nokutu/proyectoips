@@ -116,4 +116,16 @@ public class ActivityMember implements DatabaseItem {
         }
         return lazyFacilityBooking;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if(obj instanceof ActivityMember){
+    		ActivityMember obj2 = (ActivityMember)obj;
+    		return obj2.getActivityId()==this.activityId
+			&& obj2.getFacilityBookingId()==this.facilityBookingId
+			&& obj2.getMemberId()==this.memberId;
+    	}
+    	else return false;
+    	
+    }
 }
