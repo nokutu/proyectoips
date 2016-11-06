@@ -7,6 +7,7 @@ import ips.database.Booking;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
+import ips.member.MemberBookingCancelDialog;
 
 import javax.swing.*;
 
@@ -223,6 +224,8 @@ public class AvailabilityPane extends JPanel {
                 boton.setEnabled(false);
             }
         }
+        boton.addActionListener(l->MemberBookingCancelDialog.show(
+        		(FacilityBooking)Database.getInstance().getFacilityBookings().stream().filter(fb->fb.getFacilityId()==booking.getBookingId()).toArray()[0]));
         return boton;
     }
 }
