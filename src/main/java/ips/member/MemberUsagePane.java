@@ -1,6 +1,10 @@
 package ips.member;
 
+import ips.MainScreen;
+import ips.administrator.DetailsDialog;
 import ips.database.Booking;
+import ips.database.Database;
+import ips.database.FacilityBooking;
 import ips.database.MemberUsage;
 
 import javax.swing.*;
@@ -23,8 +27,10 @@ public class MemberUsagePane extends JPanel {
 	JPanel centralWeekPanel = new JPanel();
 	private static final long serialVersionUID = 1L;
 	private Calendar calendar = Calendar.getInstance();
+	MainScreen MS;
 
-	public MemberUsagePane(int idUser) {
+	public MemberUsagePane(int idUser, MainScreen mainScreen) {
+		this.MS = mainScreen;
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel weekPane = new JPanel();
@@ -85,7 +91,8 @@ public class MemberUsagePane extends JPanel {
 	private void addRow() {
 		JPanel rowPanel = new JPanel(new GridLayout(25, 1));
 		Date date = calendar.getTime();
-		rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
+		rowPanel.add(
+				new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
@@ -98,8 +105,19 @@ public class MemberUsagePane extends JPanel {
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
 					botonAux = setboton(booking);
+					botonAux.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
+								if (fb.getFacilityBookingId() == booking.getBookingId()) {
+									MS.setRightPanel(new DetailsDialog(fb));
+									repaint();
+									revalidate();
+								}
+							}
+						}
+					});
 					break;
-				}	
+				}
 			}
 			rowPanel.add(botonAux);
 			calendar.add(Calendar.HOUR, +1);
@@ -111,7 +129,8 @@ public class MemberUsagePane extends JPanel {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
 		Date date = calendar.getTime();
-		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime()) + ". Hasta: ";
+		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime())
+				+ ". Hasta: ";
 		calendar.add(Calendar.DATE, +6);
 		date = calendar.getTime();
 		week += new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime());
@@ -123,7 +142,7 @@ public class MemberUsagePane extends JPanel {
 		btnNot.setEnabled(true);
 		switch (booking.getState()) {
 		case "Valid":
-			if(booking.getTimeStart().after(new Timestamp(System.currentTimeMillis())))
+			if (booking.getTimeStart().after(new Timestamp(System.currentTimeMillis())))
 				btnNot.setBackground(Color.GREEN);
 			else
 				btnNot.setBackground(Color.BLUE);

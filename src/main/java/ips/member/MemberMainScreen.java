@@ -78,7 +78,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
         myBookingsButton.addActionListener(l -> {
             if (userID != 0) {
             	vaciar();
-                add(new MemberUsagePane(userID), BorderLayout.CENTER);
+                add(new MemberUsagePane(userID, this), BorderLayout.CENTER);
                 repaint();
                 revalidate();
             }

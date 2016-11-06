@@ -89,6 +89,10 @@ INSERT INTO member VALUES (3, 'Sergio',true);
 
 INSERT INTO facility VALUES (1, 5,'Tennis 1');
 INSERT INTO facility VALUES (2, 3,'Tennis 2');
+INSERT INTO facility VALUES (3, 5,'Sala Libre 1');
+INSERT INTO facility VALUES (4, 3,'Sala Libre 2');
+INSERT INTO facility VALUES (5, 5,'Futbol 7');
+INSERT INTO facility VALUES (6, 3,'Tatami');
 
 INSERT INTO facilitybooking VALUES (1, 1, 1,
     PARSEDATETIME('12-11-2016 18:00:00', 'dd-MM-yyyy HH:mm:ss'),
