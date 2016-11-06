@@ -30,9 +30,7 @@ public class MonitorMainScreen extends JPanel {
 	private CheckBoxList memberList = new CheckBoxList();
 
 	private List<ActivityBooking> sessionsList;
-	private List<Member> membersInSession;
 	private List<ActivityMember> activityMembersInSession;
-	private List<JCheckBox> activityMembersInSessionChk;
 
 	private JLabel assistanceLabel = new JLabel("");
 	private JComboBox<String> activities;
@@ -176,9 +174,7 @@ public class MonitorMainScreen extends JPanel {
 
 	private void refreshCentralPanelList() {
 		memberList.removeAll();
-		membersInSession = new ArrayList<>();
 		activityMembersInSession = new ArrayList<>();
-		activityMembersInSessionChk = new ArrayList<>();
 		for (ActivityMember am : Database.getInstance().getActivityMembers()) {
 			if (am.getActivityId() == getSelectedActivity().getActivityId()
 					&& am.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId()
@@ -186,10 +182,17 @@ public class MonitorMainScreen extends JPanel {
 				activityMembersInSession.add(am);
 
 				Member member = Database.getInstance().getMemberById(am.getMemberId());
-				membersInSession.add(member);
 
 				JCheckBox chk = new JCheckBox(member.getMemberName());
-				activityMembersInSessionChk.add(chk);
+				chk.setSelected(am.isAssistance());
+				chk.addActionListener(l -> {
+					am.setAssistance(chk.isSelected());
+					try {
+						am.update();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				});
 				memberList.addLine(chk);
 			}
 			refreshAssistanceCount();
@@ -260,11 +263,8 @@ public class MonitorMainScreen extends JPanel {
 				JOptionPane.showMessageDialog(getThis(),
 						"Error, la transaccion no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad",
 						"Error", JOptionPane.ERROR_MESSAGE, null);
-				sql.printStackTrace();
-				return;
 			} catch (NumberFormatException ex1) {
-				JOptionPane.showMessageDialog(this, "Por favor, introduzca un numero de socio");
-				return;
+				JOptionPane.showMessageDialog(this, "Por favor, introduzca un número de socio");
 			} finally {
 				refreshCentralPanelList();
 			}

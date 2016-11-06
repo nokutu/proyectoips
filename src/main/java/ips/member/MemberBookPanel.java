@@ -187,7 +187,7 @@ public class MemberBookPanel extends JPanel {
                     .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
             assert of.isPresent();
 
-            if (!Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+            if (valid && !Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
                 // Facility not free
                 valid = false;
                 errors += "La instalaci\u00F3n está ocupada en la horas seleccionadas.\n";

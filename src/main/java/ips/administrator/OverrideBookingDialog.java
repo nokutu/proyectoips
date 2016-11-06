@@ -3,6 +3,7 @@ package ips.administrator;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import ips.MainWindow;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -33,12 +34,13 @@ public class OverrideBookingDialog extends JDialog {
 	
 
 	public OverrideBookingDialog(List<FacilityBooking> bookings) {
+		super(MainWindow.getInstance(), true);
 		// this.bookings = bookings;
 		setTitle("Aviso");
-		setPreferredSize(new Dimension(350, 120));
+		setMinimumSize(new Dimension(350, 120));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		//setResizable(false);
-		setBounds(100, 100, 450, 300);
+		setResizable(false);
+		//setBounds(100, 100, 450, 300);
 		setModalityType(JDialog.DEFAULT_MODALITY_TYPE);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -50,6 +52,7 @@ public class OverrideBookingDialog extends JDialog {
 			txtYaExiste.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			txtYaExiste.setHighlighter(null);
 			txtYaExiste.setEditable(false);
+			txtYaExiste.setFocusable(false);
 			txtYaExiste.setFont(new Font("Tahoma", Font.PLAIN, 13));
 			txtYaExiste.setBackground(UIManager.getColor("Panel.background"));
 			txtYaExiste.setLineWrap(true);
@@ -97,6 +100,7 @@ public class OverrideBookingDialog extends JDialog {
 			}
 		}
 		pack();
+		setLocationRelativeTo(MainWindow.getInstance());
 	}
 
 	public boolean getValid() {
