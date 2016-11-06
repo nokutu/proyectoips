@@ -32,7 +32,7 @@ public class AdministratorMain extends JPanel {
         add(getBtnCurrentBookings());
         add(getBtnFeeUpdater());
         add(getBtnAvailabilityOfFacilities());
-        add(getBtnBorrarCuandoEl());
+        //add(getBtnBorrarCuandoEl());
     }
     
     private JButton getBtnCurrentBookings() 
@@ -92,7 +92,7 @@ public class AdministratorMain extends JPanel {
         }
         return btnAvailabilityOfFacilities;
 	}
-	private JButton getBtnBorrarCuandoEl() {
+	/*private JButton getBtnBorrarCuandoEl() {
 		if (btnBorrarCuandoEl == null) {
 			btnBorrarCuandoEl = new JButton("Borrar esto cuando el panel de detalles este integrado con el panel de de ver las reservas");
 			btnBorrarCuandoEl.addActionListener(e -> {
@@ -105,5 +105,5 @@ public class AdministratorMain extends JPanel {
 			});
 		}
 		return btnBorrarCuandoEl;
-	}
+	}*/
 }

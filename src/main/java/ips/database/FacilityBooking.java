@@ -206,7 +206,7 @@ public class FacilityBooking implements DatabaseItem {
 	 */
 	public String toStringFull() {
 		String linea = "Instalacion: " + this.getFacility().getFacilityName() + " \n ";
-		linea += "ID de la instalacion: " + this.getFacility().getFacilityName() + " \n ";
+		linea += "ID de la instalacion: " + this.getFacility().getFacilityId() + " \n ";
 		if(this.getMemberId()!=0)
 		{
 		linea += "IDSocio: " + Integer.toString(this.getMemberId()) + " \n ";

@@ -1,10 +1,13 @@
 package ips;
 
 import ips.administrator.AdministratorBookPanel;
+import ips.administrator.DetailsDialog;
 import ips.database.Availability;
 import ips.database.Booking;
 import ips.database.Database;
 import ips.database.Facility;
+import ips.database.FacilityBooking;
+
 import javax.swing.*;
 
 import java.awt.BorderLayout;
@@ -135,18 +138,23 @@ public class AvailabilityPane extends JPanel {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        
         rowPanel.add(new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
         for (int i = 0; i < 24; i++) {
             date = calendar.getTime();
             long now = date.getTime();
+            int facilityBookId=0;
+            
             JButton botonAux = new JButton("Libre");
             for (Booking booking : bookings) {
                 if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
+                	facilityBookId = booking.getBookingId();
                     botonAux = setColor(booking);
                     break;
                 }
             }
             JButton finalBotonAux = botonAux;
+            int idaux=facilityBookId;
             botonAux.addActionListener(e -> {
                 long oneHour = now + 3600000;
                 Facility esta = null;
@@ -159,7 +167,17 @@ public class AvailabilityPane extends JPanel {
                 if (finalBotonAux.getText().equals("Libre")) {
                     MS.setRightPanel(new AdministratorBookPanel(esta, new Timestamp(now), new Timestamp(oneHour)));
                 } else {
-                    // TODO Mostrar panel de detalles
+               
+                	for(FacilityBooking fb: Database.getInstance().getFacilityBookings())
+                	{
+                		if(fb.getFacilityBookingId()==idaux)
+                		{
+                			 // TODO Mostrar panel de detalles
+                			 MS.setRightPanel(new DetailsDialog(fb));
+                		}
+                	}
+                	
+                   
                 }
             });
             rowPanel.add(botonAux);
