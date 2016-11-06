@@ -5,7 +5,6 @@ import ips.Utils;
 import ips.database.*;
 import ips.gui.Form;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -60,7 +59,6 @@ public class AdministratorBookPanel extends JPanel {
         c.gridy = 0;
 
         form = new Form();
-        setBorder(new BevelBorder(BevelBorder.LOWERED));
         add(form.getPanel(), c);
 
         addForm(facility, timeStart, timeEnd);

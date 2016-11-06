@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Utilities class
@@ -23,7 +24,9 @@ public class Utils {
      * @return true if the facility is free; false otherwise.
      */
     public static boolean isFacilityFree(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
-        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings().stream()
+                .filter(fb -> !fb.isDeletedFlag())
+                .collect(Collectors.toList());
         for (FacilityBooking fb : bookings) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)
                     && !fb.isDeletedFlag()) {
@@ -67,7 +70,9 @@ public class Utils {
      * @return true if the facility is free; false otherwise.
      */
     public static boolean isMemberFree(Member member, Timestamp timeStart, Timestamp timeEnd) {
-        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
+        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings().stream()
+                .filter(fb -> !fb.isDeletedFlag())
+                .collect(Collectors.toList());
         for (FacilityBooking fb : bookings) {
             if (fb.getMemberId() == member.getMemberId() && areSameDay(fb.getTimeStart(), timeStart)
                     && !fb.isDeletedFlag()) {
