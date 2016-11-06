@@ -1,3 +1,5 @@
+
+------ BORRAR TODAS LAS TABLAS ------
 DROP TABLE IF EXISTS facilityBooking;
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS facility;
@@ -8,51 +10,9 @@ DROP TABLE IF EXISTS activitybooking;
 DROP TABLE IF EXISTS activitymember;
 DROP TABLE IF EXISTS monitor;
 
-CREATE TABLE facilityBooking (
-    facilitybooking_id INTEGER NOT NULL,
-	facility_id INTEGER NOT NULL,
-	member_id INTEGER NOT NULL,
-	time_start TIMESTAMP NOT NULL,
-	time_end TIMESTAMP,
-	payment_method VARCHAR(16),
-    paid BOOLEAN,
-    facilitybooking_deleted BOOLEAN,
-	entrance TIMESTAMP,
-	abandon TIMESTAMP,
-	state VARCHAR(16),
-    CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
-    CONSTRAINT chk_state CHECK (state IN ('Valid', 'Annulled', 'Canceled')),
-    PRIMARY KEY (facilitybooking_id)
-);
 
-CREATE TABLE member (
-	member_id INTEGER NOT NULL PRIMARY KEY,
-	member_name VARCHAR(32) NOT NULL,
-	subscribed BOOLEAN NOT NULL
-);
 
-CREATE TABLE facility (
-	facility_id INTEGER NOT NULL PRIMARY KEY,
-	price INTEGER,
-	facility_name VARCHAR(32)
-);
-
-CREATE TABLE fee (
-    fee_month DATE NOT NULL,
-    fee_member_id INTEGER NOT NULL,
-	fee_base INTEGER NOT NULL,
-	PRIMARY KEY (fee_month, fee_member_id)
-
-);
-
-CREATE TABLE feeitem (
-    feeitem_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    feeitem_concept VARCHAR(64),
-	fee_month DATE NOT NULL,
-    fee_member_id INTEGER NOT NULL,
-    feeitem_amount NUMBER,
-	CONSTRAINT fk_FEE_ITEM FOREIGN KEY(fee_month, fee_member_id) REFERENCES FEE(fee_month, fee_member_id)
-);
+------ CREACION DE LAS TABLAS ------
 
 CREATE TABLE activity (
     activity_id INTEGER NOT NULL,
@@ -77,11 +37,66 @@ CREATE TABLE activitymember (
     PRIMARY KEY(activity_id, facilitybooking_id, member_id),
 );
 
+CREATE TABLE facility (
+	facility_id INTEGER NOT NULL PRIMARY KEY,
+	price INTEGER,
+	facility_name VARCHAR(32)
+);
+
+CREATE TABLE facilityBooking (
+    facilitybooking_id INTEGER NOT NULL AUTO_INCREMENT,
+	facility_id INTEGER NOT NULL,
+	member_id INTEGER NOT NULL,
+	time_start TIMESTAMP NOT NULL,
+	time_end TIMESTAMP,
+	payment_method VARCHAR(16),
+    paid BOOLEAN,
+    facilitybooking_deleted BOOLEAN,
+	entrance TIMESTAMP,
+	abandon TIMESTAMP,
+	state VARCHAR(16),
+    CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
+    CONSTRAINT chk_state CHECK (state IN ('Valid', 'Annulled', 'Canceled')),
+    PRIMARY KEY (facilitybooking_id)
+);
+
+CREATE TABLE fee (
+    fee_month DATE NOT NULL,
+    fee_member_id INTEGER NOT NULL,
+	fee_base INTEGER NOT NULL,
+	PRIMARY KEY (fee_month, fee_member_id)
+
+);
+
+CREATE TABLE feeitem (
+    feeitem_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    feeitem_concept VARCHAR(64),
+	fee_month DATE NOT NULL,
+    fee_member_id INTEGER NOT NULL,
+    feeitem_amount NUMBER,
+	CONSTRAINT fk_FEE_ITEM FOREIGN KEY(fee_month, fee_member_id) REFERENCES FEE(fee_month, fee_member_id)
+);
+
+CREATE TABLE member (
+	member_id INTEGER NOT NULL PRIMARY KEY,
+	member_name VARCHAR(32) NOT NULL,
+	subscribed BOOLEAN NOT NULL
+);
+
 CREATE TABLE monitor (
     monitor_id INTEGER NOT NULL,
 	monitor_nombre VARCHAR(80),
     PRIMARY KEY(monitor_id)
 );
+
+
+
+
+
+
+
+------ AÑADIR DATOS A LAS TABLAS ------
+/*
 
 INSERT INTO member VALUES (1, 'Gabriel',true);
 INSERT INTO member VALUES (2, 'Jorge',true);
@@ -133,3 +148,4 @@ INSERT INTO activitymember VALUES (1, 4, 2, true, false);
 
 INSERT INTO activitymember VALUES (1, 5, 2, true, false);
 INSERT INTO activitymember VALUES (1, 5, 1, false, false);
+*/

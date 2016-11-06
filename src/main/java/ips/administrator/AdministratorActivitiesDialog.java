@@ -212,7 +212,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				} else {
 					Optional<ActivityMember> a = Database.getInstance().getActivityMembers().stream()
-							.filter(am->am.getActivityId()==newActivityMember.getActivityId() && am.equals(newActivityMember)).findAny();
+							.filter(am->am.isDeleted() && am.equals(newActivityMember)).findAny();
 					if(a.isPresent()){
 						ActivityMember b=a.get();
 						b.setDeleted(false);

@@ -42,7 +42,7 @@ public class MemberActivitiesDialog extends JDialog {
 
 		createLeftPanel();
 		createRightPanel();
-		//createCenterPanel();
+		createCenterPanel();
 
 		setMinimumSize(new Dimension(320, 180));
 		pack();
@@ -117,7 +117,7 @@ public class MemberActivitiesDialog extends JDialog {
 
 				ActivityMember newActivityMember = new ActivityMember(activityId,
 						facilityBooking.getFacilityBookingId(), memberId);
-				// CONDICIONES PARA A—ADIR:
+				// CONDICIONES PARA A√ëADIR:
 				// COMO SOCIO: cupo no lleno Y entre 24 horas antes de
 				// empezar y 1 hora despues de la hora de hacerlo
 				if (numeroActualApuntados >= numeroMaximoApuntados)
@@ -140,7 +140,7 @@ public class MemberActivitiesDialog extends JDialog {
 
 			} catch (SQLException sql) {
 				JOptionPane.showMessageDialog(getThis(),
-						"Error, la transaccion no se ha llevado a cabo\nUd. ya est· apuntado a la atividad selecccionada",
+						"Error, la transaccion no se ha llevado a cabo\nUd. ya est√° apuntado a la atividad selecccionada",
 						"Error", JOptionPane.ERROR_MESSAGE, null);
 				sql.printStackTrace();
 				return;
