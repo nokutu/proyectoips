@@ -56,7 +56,7 @@ public class AdministratorMainScreen extends JPanel implements MainScreen{
 		JButton btnPayDebts = new JButton("Pagar deuda en efectivo (no actual)");
 		btnPayDebts.addActionListener(e ->{
 	          List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
-	                  .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag())
+	                  .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
 	                  .collect(Collectors.toList());
 	            if(bookingsList.isEmpty())
 	            {
@@ -75,7 +75,7 @@ public class AdministratorMainScreen extends JPanel implements MainScreen{
 		btnCurrentDebts.addActionListener(e -> 
 		{
           List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag())
+                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
                 .collect(Collectors.toList());
           	if(bookingsList.isEmpty())
           	{

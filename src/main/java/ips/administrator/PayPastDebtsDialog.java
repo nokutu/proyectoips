@@ -39,7 +39,7 @@ public class PayPastDebtsDialog extends JDialog {
         createBottomPanel();
 
         
-        setMinimumSize(new Dimension(320, 180));
+        setMinimumSize(new Dimension(620, 320));
         setVisible(true);
         pack();
         setLocationRelativeTo(MainWindow.getInstance());
@@ -103,7 +103,7 @@ public class PayPastDebtsDialog extends JDialog {
         facilities = new JComboBox<>();
         DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
         bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag())
+                .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
                 .collect(Collectors.toList());
         for(FacilityBooking fb: bookingsList)
         {
@@ -139,6 +139,7 @@ public class PayPastDebtsDialog extends JDialog {
     }
 
     private void refreshCentralPanelList() {
+    	refreshArrays();
         bookList.removeAll();
         selectedByFacilitysList = new ArrayList<>();
         DefaultListModel<String> d= new DefaultListModel<>();
@@ -159,6 +160,33 @@ public class PayPastDebtsDialog extends JDialog {
             bookList.setVisible(false);
             bookList.setVisible(true);
         });
+    }
+    
+    
+    private void refreshArrays()
+    {
+    	bookingsList= new ArrayList();
+    	facilitiesList= new ArrayList();
+    	DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
+        bookingsList = Database.getInstance().getFacilityBookings().stream()
+                .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
+                .collect(Collectors.toList());
+        for(FacilityBooking fb: bookingsList)
+        {
+        	for(Facility f: Database.getInstance().getFacilities())
+        	{
+        		if(f.getFacilityId()==fb.getFacilityId()&&!facilitiesList.contains(f))
+        		{
+        			facilitiesList.add(f);
+        		}
+        	}
+        }
+        if(facilitiesList.isEmpty())
+        {
+        	dispose();
+        }
+        facilitiesList.forEach(a -> facilitiesModel.addElement(a.getFacilityName()));
+        facilities.setModel(facilitiesModel);
     }
 
 

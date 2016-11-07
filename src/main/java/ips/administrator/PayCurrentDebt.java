@@ -111,7 +111,7 @@ public class PayCurrentDebt  extends JDialog{
 	      //{
 	    	 
              book = bookingsList.get((Integer.parseInt(results.get(0))));
-             int memberId = Integer.parseInt(results.get(0));//finalbook.get(Integer.parseInt(results.get(0))).getFacilityId();
+             int memberId = Integer.parseInt(results.get(1));//finalbook.get(Integer.parseInt(results.get(0))).getFacilityId();
               
              /* if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId&&(f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())))
               {
@@ -171,7 +171,7 @@ public class PayCurrentDebt  extends JDialog{
 	{
 		
 		bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag())
+                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
                 .collect(Collectors.toList());
 	}
 	

@@ -24,7 +24,7 @@ public class Recibo
 		        String linea =done.toStringFull();
 		        
 		        Date date= new Date();
-		        linea+="Was paid at "+new Timestamp(date.getTime())+" \n";
+		        linea+="Fue pagado en "+new Timestamp(date.getTime())+" \n";
 		 
 		        fichero.write(linea);
 		        fichero.close();
