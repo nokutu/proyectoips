@@ -45,6 +45,7 @@ public class PaymentsDetailsPanel extends JPanel {
 			Date d = new Date(booking.getTimeStart().getTime());
 			Date e = new Date(booking.getTimeEnd().getTime() - booking.getTimeStart().getTime());
 			duracion = Integer.parseInt(new SimpleDateFormat("HH").format(e.getTime()));
+			duracion -= 1;
 			if(anio == 0 || anio != Integer.parseInt(new SimpleDateFormat("YYYY").format(d.getTime()))){
 				anio = Integer.parseInt(new SimpleDateFormat("YYYY").format(d.getTime()));
 				model.addElement(""+anio);
@@ -53,7 +54,6 @@ public class PaymentsDetailsPanel extends JPanel {
 				mes = new SimpleDateFormat("MMMM").format(d.getTime());
 				model.addElement("        "+mes);
 			}
-			
 			model.addElement("            Instalación: " + booking.getFacilityName() + " Fecha: " + new SimpleDateFormat("dd/MM/YYYY HH:mm").format(d.getTime()) + " Duración: " +duracion+" horas" + " Total: " +duracion * booking.getPricePerHour() + "€" );
 		}
 		add(pane, BorderLayout.CENTER);
