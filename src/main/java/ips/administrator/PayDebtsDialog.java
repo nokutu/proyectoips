@@ -72,7 +72,7 @@ public class PayDebtsDialog extends JDialog {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         for (FacilityBooking f : bookings) {
             //si no esta pagado entra en cuenta
-            if (f.getPaymentMethod() != null && !f.isPaid() && f.getPaymentMethod().equals("Cash")) {
+            if (f.getPaymentMethod() != null && !f.isPaid() && f.getPaymentMethod().equals("Cash")&&f.getTimeEnd().before(Utils.getCurrentTime())) {
                 debts.add(f);
             }
         }
@@ -163,8 +163,8 @@ public class PayDebtsDialog extends JDialog {
         JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
         form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
 
-        JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-        form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
+        //JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+        //form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
         form.addLine(new JLabel("ID instalacion:"), new JTextField(20));
 

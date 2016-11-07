@@ -109,9 +109,9 @@ public class PayCurrentDebt  extends JDialog{
 		  //List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
 	     // for( FacilityBooking f : bookings)
 	      //{
-	    	 int facilityId = finalbook.get(Integer.parseInt(results.get(0))).getFacilityId();
-             book = bookingsList.get((Integer.parseInt(results.get(1))));
-              
+	    	 
+             book = bookingsList.get((Integer.parseInt(results.get(0))));
+             int memberId = Integer.parseInt(results.get(0));//finalbook.get(Integer.parseInt(results.get(0))).getFacilityId();
               
              /* if(f.getFacilityId()==facilityId&&f.getMemberId()==memberId&&(f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())))
               {
@@ -120,7 +120,7 @@ public class PayCurrentDebt  extends JDialog{
 	      }*/
 	      
 	      //if there was a booking find if its currently in use
-	      if(book!=null)
+	      if(book.getMemberId()==memberId)
 	      {
 		  
 	    		//  if(book.getPaymentMethod().equals("Cash"))
@@ -136,7 +136,8 @@ public class PayCurrentDebt  extends JDialog{
 	    			  		}
 	    		    		Recibo recibo=new Recibo(book);
 	    		    		recibo.grabarRecibo();
-	    		  
+	    		    		
+	    		    		JOptionPane.showMessageDialog(this, "ID de socio identificada,reserva pagada \n");
           
 	    			  		dispose();
 	    		  	/*	}
@@ -154,7 +155,7 @@ public class PayCurrentDebt  extends JDialog{
 	      //if it wasnt found notify the user
 	      else
 	      {
-	    	  JOptionPane.showConfirmDialog(this, "Unespected Error \n");
+	    	  JOptionPane.showMessageDialog(this, "ID de socio no se corresponde con la reserva \n");
 	      }
 	    
       
@@ -170,7 +171,7 @@ public class PayCurrentDebt  extends JDialog{
 	{
 		
 		bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&f.isPaid())
+                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag())
                 .collect(Collectors.toList());
 	}
 	
@@ -180,11 +181,12 @@ public class PayCurrentDebt  extends JDialog{
        getBookings();
 		finalbook=new ArrayList<>();
 		
-		for(Facility f :Database.getInstance().getFacilities())
+		
+		for(FacilityBooking fb: bookingsList)
 		{
-			for(FacilityBooking fb: bookingsList)
+			for(Facility f :Database.getInstance().getFacilities())
 			{
-				if(f.getFacilityId()==fb.getFacilityBookingId())	
+				if(f.getFacilityId()==fb.getFacilityId())	
 				{
 					finalbook.add(f);
 				}
