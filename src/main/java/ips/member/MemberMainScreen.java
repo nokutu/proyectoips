@@ -59,7 +59,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             }
         });
         // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
-        
+
         JButton availabilityButton = new JButton("Ver disponibilidad");
         availabilityButton.addActionListener(l -> {
             if (userID != 0) {
@@ -73,7 +73,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             }
         });
         upperPanel.add(availabilityButton);
-        
+
         JButton myBookingsButton = new JButton("Mis reservas");
         myBookingsButton.addActionListener(l -> {
             if (userID != 0) {
@@ -87,7 +87,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             }
         });
         upperPanel.add(myBookingsButton);
-        
+
         JButton MyPayments = new JButton("Detalles de Pagos");
         MyPayments.addActionListener(l -> {
             if (userID != 0) {
@@ -133,6 +133,9 @@ public class MemberMainScreen extends JPanel implements MainScreen{
         }
         add(panel, BorderLayout.EAST);
         rightPanel = panel;
+
+        this.repaint();
+        this.revalidate();
     }
 
     private void updateUser(String id) {
@@ -150,7 +153,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
             return false;
         }
     }
-    
+
     private void vaciar(){
     	BorderLayout layout = (BorderLayout) getLayout();
     	Component ob = layout.getLayoutComponent(BorderLayout.CENTER);

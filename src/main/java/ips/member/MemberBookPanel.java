@@ -7,9 +7,9 @@ import ips.database.Facility;
 import ips.database.FacilityBooking;
 import ips.database.Member;
 import ips.gui.Form;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,6 +17,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class MemberBookPanel extends JPanel {
         setBorder(new BevelBorder(BevelBorder.LOWERED));
         add(form.getPanel(), c);
 
-        addForm(timeStart == null);
+        addForm();
 
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 0, 5);
@@ -70,29 +71,40 @@ public class MemberBookPanel extends JPanel {
         add(confirm, c);
     }
 
-    private void addForm(boolean addExtra) {
-        if (addExtra) {
-            JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
-            Dimension size = dateChooser.getPreferredSize();
-            size.width += 20;
-            dateChooser.setPreferredSize(size);
+    private void addForm() {
+        JDateChooser dateChooser = new JDateChooser("dd/MM/yyyy", "", '_');
+        Dimension size = dateChooser.getPreferredSize();
+        size.width += 20;
+        dateChooser.setPreferredSize(size);
+        form.addLine(new JLabel("Fecha:"), dateChooser);
+        if (timeStart != null) {
+            dateChooser.setDate(Utils.getDateFromTime(timeStart));
+        } else {
             dateChooser.setDate(Utils.getCurrentDate());
-            form.addLine(new JLabel("Fecha:"), dateChooser);
 
-            JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-            JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-
-            form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
-            form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
-
-            JComboBox<String> facilities = new JComboBox<>();
-            List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-            names.forEach(model::addElement);
-            facilities.setModel(model);
-            form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false
-            );
         }
+
+        JSpinner hourStartSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+        JSpinner hourEndSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+        if (timeStart != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(timeStart);
+            hourStartSpinner.setValue(c.get(Calendar.HOUR_OF_DAY));
+            if (timeEnd != null) {
+                c.setTime(timeEnd);
+                hourEndSpinner.setValue(c.get(Calendar.HOUR_OF_DAY));
+            }
+        }
+
+        form.addLine(new JLabel("Hora de inicio:"), hourStartSpinner);
+        form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
+
+        JComboBox<String> facilities = new JComboBox<>();
+        List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
+        DefaultComboBoxModel<String> facilityModel = new DefaultComboBoxModel<>();
+        names.forEach(facilityModel::addElement);
+        facilities.setModel(facilityModel);
+        form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false);
 
         JComboBox<String> paymentCombo = new JComboBox<>();
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
@@ -123,25 +135,15 @@ public class MemberBookPanel extends JPanel {
 
         try {
             List<String> results = form.getResults();
-            if (this.timeStart == null) {
-                timeStart = new Timestamp(Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(results.get(DATE))),
-                        Integer.parseInt(results.get(TIME_START))).getTime());
-                timeEnd = new Timestamp(Utils.addHourToDay(
-                        new Timestamp(Long.parseLong(results.get(DATE))),
-                        Integer.parseInt(results.get(TIME_END))).getTime());
-                facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
-                memberId = MemberMainScreen.userID;
-                paymentMethod = results.get(PAYMENT_METHOD);
-            } else {
-                // Should only be reached if tony finishes his part
-
-                /*facilityId = facility.getFacilityId();
-                timeStart = this.timeStart;
-                timeEnd = this.timeEnd;
-                memberId = MemberMainScreen.userID;
-                paymentMethod = results.get(0);*/
-            }
+            timeStart = new Timestamp(Utils.addHourToDay(
+                    new Timestamp(Long.parseLong(results.get(DATE))),
+                    Integer.parseInt(results.get(TIME_START))).getTime());
+            timeEnd = new Timestamp(Utils.addHourToDay(
+                    new Timestamp(Long.parseLong(results.get(DATE))),
+                    Integer.parseInt(results.get(TIME_END))).getTime());
+            facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
+            memberId = MemberMainScreen.userID;
+            paymentMethod = results.get(PAYMENT_METHOD);
 
             return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
         } catch (NumberFormatException e) {
