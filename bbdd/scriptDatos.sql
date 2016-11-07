@@ -43,7 +43,7 @@ INSERT INTO monitor VALUES(8,'Maria Jose Monitora');
 
 ------ CREACION DE INSTALACIONES ------
 
-INSERT INTO facility VALUES (1, 5,'Cancha de Tenis pequeña');
+INSERT INTO facility VALUES (1, 5,'Cancha de Tenis pequeï¿½a');
 INSERT INTO facility VALUES (2, 4,'Sala Tenis de Mesa');
 INSERT INTO facility VALUES (3, 5,'Sala Libre 1');
 INSERT INTO facility VALUES (4, 3,'Sala Libre 2');
@@ -52,7 +52,7 @@ INSERT INTO facility VALUES (6, 2,'Tatami');
 INSERT INTO facility VALUES (7, 5,'Cancha de Balonceto');
 INSERT INTO facility VALUES (8, 15,'Piscina Adultos');
 INSERT INTO facility VALUES (9, 9,'Piscina Mediana');
-INSERT INTO facility VALUES (10, 7,'Piscina Pequeña');
+INSERT INTO facility VALUES (10, 7,'Piscina Pequeï¿½a');
 INSERT INTO facility VALUES (11, 3,'Sauna');
 INSERT INTO facility VALUES (12, 5,'Sala de badminton');
 
@@ -144,6 +144,8 @@ INSERT INTO "FACILITYBOOKING"  VALUES (74,8,0,{ts '2016-11-26 09:00:00.0'},{ts '
 INSERT INTO "FACILITYBOOKING"  VALUES (75,8,0,{ts '2016-11-06 06:00:00.0'},{ts '2016-11-06 09:00:00.0'},'Cash',0,0,null,null,'Valid');
 INSERT INTO "FACILITYBOOKING"  VALUES (76,1,0,{ts '2016-11-08 05:00:00.0'},{ts '2016-11-08 07:00:00.0'},'Cash',0,0,null,null,'Valid');
 INSERT INTO "FACILITYBOOKING"  VALUES (77,1,0,{ts '2016-11-07 02:00:00.0'},{ts '2016-11-07 03:00:00.0'},'Cash',0,0,null,null,'Valid');
+INSERT INTO "FACILITYBOOKING"  VALUES (78,1,1,{ts '2016-11-07 11:00:00.0'},{ts '2016-11-07 13:00:00.0'},'Cash',0,0,null,null,'Valid');
+INSERT INTO "FACILITYBOOKING"  VALUES (79,2,2,{ts '2016-11-07 11:00:00.0'},{ts '2016-11-07 13:00:00.0'},'Cash',0,0,null,null,'Valid');
 
 
 

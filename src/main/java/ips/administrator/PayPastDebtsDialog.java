@@ -58,14 +58,15 @@ public class PayPastDebtsDialog extends JDialog {
         pagar.addActionListener(l->{
         	FacilityBooking fb = selectedByFacilitysList.get(bookList.getSelectedIndex());
         	fb.setPayed(true);
- 			  try {
-                     fb.update();
-                 } catch (SQLException e1) {
-                     e1.printStackTrace();
-                 }
- 			  Recibo recibo=new Recibo(fb);
- 			  recibo.grabarRecibo();
- 			 refreshCentralPanelList();
+            try {
+                fb.update();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            Recibo recibo=new Recibo(fb);
+ 			recibo.grabarRecibo();
+ 			refreshCentralPanelList();
+            dispose();
         });
      
         bottomPanel.add(pagar);
