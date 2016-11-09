@@ -94,7 +94,7 @@ public class Database {
         rs = s.executeQuery(QUERY_FACILITYBOOKINGS);
         while (rs.next()) {
             facilityBookings.add(new FacilityBooking(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getTimestamp(4), rs.getTimestamp(5),
-                    rs.getString(6), rs.getBoolean(7), rs.getBoolean(8), rs.getTimestamp(9), rs.getTimestamp(10), rs.getString(11)));
+                    rs.getString(6), rs.getBoolean(7), rs.getTimestamp(8), rs.getTimestamp(9), rs.getString(10), rs.getString(11), rs.getTimestamp(12)));
         }
 
 
@@ -113,13 +113,13 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY);
         while (rs.next()) {
-            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
+            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3)));
         }
 
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY_BOOKING);
         while (rs.next()) {
-            activityBookings.add(new ActivityBooking(rs.getInt(1), rs.getInt(2)));
+            activityBookings.add(new ActivityBooking(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
         }
 
         s = conn.createStatement();

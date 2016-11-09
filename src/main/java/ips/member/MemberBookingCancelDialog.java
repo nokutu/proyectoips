@@ -29,8 +29,6 @@ public class MemberBookingCancelDialog {
 	 * Using the date of a booking, determines if you can delete or not that
 	 * booking. </br>
 	 * In case of can, a warning will be shown.
-	 *
-	 * @param booking
 	 */
 	public MemberBookingCancelDialog() { }
 	
@@ -40,7 +38,7 @@ public class MemberBookingCancelDialog {
 			int r = JOptionPane.showConfirmDialog(MainWindow.getInstance(), "¿Estás seguro de que quieres cancelar esta reserva?",
 					"Delete confirmation", JOptionPane.OK_CANCEL_OPTION);
 			if (r == JOptionPane.OK_OPTION) {
-				booking.setDeletedFlag(true);// to have a bookings log, we dont
+				booking.setState(FacilityBooking.STATE_CANCELLED);// to have a bookings log, we dont
 												// delete, we mark a deleted
 												// flag
 				try {
@@ -58,8 +56,6 @@ public class MemberBookingCancelDialog {
 	}
 
 	/**
-	 * @param current
-	 *            the current date of now(?)
 	 * @return if it's possible or not to cancel (actualy just mark as deleted)
 	 *         the pertintent booking
 	 */
@@ -67,7 +63,7 @@ public class MemberBookingCancelDialog {
 		long current = new Date().getTime(); // the current time
 		long MAX_DURATION = MILLISECONDS.convert(1, HOURS);
 
-		if (!booking.isPaid() && !booking.isDeletedFlag()) {
+		if (!booking.isPaid() && booking.getState().equals(FacilityBooking.STATE_VALID)) {
 
 			long duration = booking.getTimeStart().getTime() - current;
 

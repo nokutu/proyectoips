@@ -145,7 +145,7 @@ public class MemberBookPanel extends JPanel {
             memberId = MemberMainScreen.userID;
             paymentMethod = results.get(PAYMENT_METHOD);
 
-            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false);
         } catch (NumberFormatException e) {
             return null;
         }

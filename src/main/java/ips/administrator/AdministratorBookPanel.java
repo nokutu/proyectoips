@@ -32,7 +32,8 @@ public class AdministratorBookPanel extends JPanel {
     private static final int REPEAT = 6;
     private static final int REPETITION_END_DATE = 7;
     private static final int ASSIGN_TO_ACTIVITY = 8;
-    private static final int ACTIVITY_ID = 9;
+    private static final int ACTIVITY_POS = 9;
+    private static final int MONITOR_POS = 10;
 
     private static final int NO_REPEAT = 0;
     private static final int REPEAT_WEEKLY = 1;
@@ -126,6 +127,7 @@ public class AdministratorBookPanel extends JPanel {
 
         JCheckBox assignToActivity = new JCheckBox("Asignar a actividad");
         JComboBox<String> activities = new JComboBox<>();
+        JComboBox<String> monitors = new JComboBox<>();
 
         JComboBox<String> recursive = new JComboBox<>();
 
@@ -134,6 +136,7 @@ public class AdministratorBookPanel extends JPanel {
             paymentCombo.setEnabled(!bookForCenter.isSelected());
             assignToActivity.setEnabled(bookForCenter.isSelected());
             activities.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
+            monitors.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
             recursive.setEnabled(bookForCenter.isSelected());
             endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.getSelectedIndex() != 0);
             idTextField.setText(String.valueOf(0));
@@ -158,16 +161,22 @@ public class AdministratorBookPanel extends JPanel {
 
         assignToActivity.setEnabled(false);
         activities.setEnabled(false);
+        monitors.setEnabled(false);
         assignToActivity.addActionListener(l -> activities.setEnabled(assignToActivity.isSelected()));
 
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
         Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
         activities.setModel(activitiesModel);
 
+        DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
+        Database.getInstance().getMonitors().stream().map(Monitor::getName).forEach(monitorsModel::addElement);
+        monitors.setModel(monitorsModel);
+
         form.addSpace();
 
         form.addLine(assignToActivity, true);
         form.addLine(new JLabel("Actividad:"), activities, false);
+        form.addLine(new JLabel("Monitor"), monitors, false);
     }
 
     private void confirm(ActionEvent actionEvent) {
@@ -211,11 +220,12 @@ public class AdministratorBookPanel extends JPanel {
 
         if (valid) {
             try {
+                int monitorId = Database.getInstance().getMonitors().get(Integer.parseInt(form.getResults().get(MONITOR_POS))).getMonitorId();
                 for (FacilityBooking fb : bookings) {
                     if (Boolean.parseBoolean(form.getResults().get(ASSIGN_TO_ACTIVITY))) {
                         ActivityBooking ab = new ActivityBooking(
-                                Database.getInstance().getActivities().get(Integer.parseInt(form.getResults().get(ACTIVITY_ID))).getActivityId(),
-                                fb.getFacilityBookingId());
+                                Database.getInstance().getActivities().get(Integer.parseInt(form.getResults().get(ACTIVITY_POS))).getActivityId(),
+                                fb.getFacilityBookingId(), monitorId);
                         Database.getInstance().getActivityBookings().add(ab);
                         ab.create();
                     }
@@ -251,7 +261,7 @@ public class AdministratorBookPanel extends JPanel {
             int memberId = Integer.parseInt(results.get(MEMBER_ID));
             String paymentMethod = results.get(PAYMENT_METHOD);
 
-            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false, false);
+            return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false);
         } catch (NumberFormatException e) {
             form.setError("Por favor, rellena todos los campos.\n");
             setSize(getWidth(), getPreferredSize().height);

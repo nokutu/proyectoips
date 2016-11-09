@@ -16,19 +16,24 @@ public class FacilityBooking implements DatabaseItem {
 	public final static String PAYMENT_CASH = "Cash";
 	public final static String PAYMENT_FEE = "Fee";
 
+	public static final String STATE_VALID = "Valid";
+	public static final String STATE_ANNULLED = "Annulled";
+	public static final String STATE_CANCELLED = "Cancelled";
+
 	private static int MAX_ID = 0;
 
 	private static PreparedStatement createStatement;
 	private static PreparedStatement updateStatement;
 
 	private int facilityBookingId;
+	private String cancellationCause;
+	private Timestamp cancellationDate;
 	private int facilityId;
 	private int memberId;
 	private Timestamp timeStart;
 	private Timestamp timeEnd;
 	private String paymentMethod;
 	private boolean paid;
-	private boolean deletedFlag;
 	private Timestamp entrance;
 	private Timestamp abandon;
 	private String state;
@@ -40,17 +45,17 @@ public class FacilityBooking implements DatabaseItem {
 	 * values.
 	 */
 	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
-			boolean paid, boolean deletedFlag) {
-		this(facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, deletedFlag, null, null, "Valid");
+			boolean paid) {
+		this(facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, null, null, STATE_VALID, null, null);
 	}
 
 	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
-			boolean paid, boolean deletedFlag, Timestamp entrance, Timestamp abandon, String state) {
-		this(MAX_ID + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, deletedFlag, entrance, abandon, state);
+			boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause, Timestamp cancellationDate) {
+		this(MAX_ID + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, entrance, abandon, state, cancellationCause, cancellationDate);
 	}
 
 	public FacilityBooking(int facilityBookingId, int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
-						   boolean paid, boolean deletedFlag, Timestamp entrance, Timestamp abandon, String state) {
+						   boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause, Timestamp cancellationDate) {
 		this.facilityBookingId = facilityBookingId;
 		this.setTimeStart(timeStart);
 		this.setTimeEnd(timeEnd);
@@ -58,10 +63,11 @@ public class FacilityBooking implements DatabaseItem {
 		this.setMemberId(memberId);
 		this.paymentMethod = paymentMethod;
 		this.paid = paid;
-		this.deletedFlag = deletedFlag;
 		this.entrance = entrance;
 		this.abandon = abandon;
 		this.state = state;
+		this.cancellationCause = cancellationCause;
+		this.cancellationDate = cancellationDate;
 
 		MAX_ID = Math.max(MAX_ID, facilityBookingId);
 	}
@@ -115,7 +121,6 @@ public class FacilityBooking implements DatabaseItem {
 		createStatement.setTimestamp(5, new Timestamp(timeEnd.getTime()));
 		createStatement.setString(6, paymentMethod);
 		createStatement.setBoolean(7, paid);
-		createStatement.setBoolean(8, deletedFlag);
 		if (entrance != null) {
 			createStatement.setTimestamp(9, new Timestamp(entrance.getTime()));
 		} else {
@@ -140,8 +145,7 @@ public class FacilityBooking implements DatabaseItem {
 		}
 		updateStatement.setString(1, paymentMethod);
 		updateStatement.setBoolean(2, paid);
-		updateStatement.setBoolean(3, deletedFlag);
-		
+
 		if (entrance != null) {
 			updateStatement.setTimestamp(4, new Timestamp(entrance.getTime()));
 		} else {
@@ -161,6 +165,10 @@ public class FacilityBooking implements DatabaseItem {
 		updateStatement.execute();
 	}
 
+	public String getState() {
+		return state;
+	}
+
 	public Timestamp getTimeStart() {
 		return timeStart;
 	}
@@ -175,14 +183,6 @@ public class FacilityBooking implements DatabaseItem {
 
 	public void setTimeEnd(Timestamp timeEnd) {
 		this.timeEnd = timeEnd;
-	}
-
-	public boolean isDeletedFlag() {
-		return deletedFlag;
-	}
-
-	public void setDeletedFlag(boolean deletedFlag) {
-		this.deletedFlag = deletedFlag;
 	}
 
 	public int getMemberId() {
@@ -228,13 +228,13 @@ public class FacilityBooking implements DatabaseItem {
 			linea += "Pagada \n ";
 		
 		switch (this.state) {
-		case "Valid":
+		case STATE_VALID:
 			linea += "Estado: Válida \n";
 			break;
-		case "Annulled":
+		case STATE_ANNULLED:
 			linea += "Estado: Anulada \n";
 			break;
-		case "Canceled":
+		case STATE_CANCELLED:
 			linea += "Estado: Cancelada \n";
 			break;
 		default:
@@ -262,15 +262,6 @@ public class FacilityBooking implements DatabaseItem {
 		return s;
 	}
 
-	public void cancel() {
-		setDeletedFlag(true);
-		try {
-			update();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-	}
-
 	public Facility getFacility() {
 		if (lazyFacility == null) {
 			Optional<Facility> ofb = Database.getInstance().getFacilities().parallelStream()
@@ -282,5 +273,9 @@ public class FacilityBooking implements DatabaseItem {
 			}
 		}
 		return lazyFacility;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 }

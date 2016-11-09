@@ -3,6 +3,7 @@ package ips.administrator;
 import ips.MainWindow;
 import ips.Utils;
 import ips.database.*;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
@@ -21,13 +22,13 @@ public class PayPastDebtsDialog extends JDialog {
 
     private JList<String> bookList = new JList();
 
-    private List<Facility> facilitiesList=new ArrayList();
+    private List<Facility> facilitiesList = new ArrayList();
     private List<FacilityBooking> selectedByFacilitysList;
 
     private JLabel assistanceLabel = new JLabel("");
     private JComboBox<String> facilities;
 
-	private List<FacilityBooking> bookingsList;
+    private List<FacilityBooking> bookingsList;
 
     public PayPastDebtsDialog() {
         super(MainWindow.getInstance(), true);
@@ -38,7 +39,7 @@ public class PayPastDebtsDialog extends JDialog {
         createCenterPanel();
         createBottomPanel();
 
-        
+
         setMinimumSize(new Dimension(620, 320));
         setVisible(true);
         pack();
@@ -47,43 +48,43 @@ public class PayPastDebtsDialog extends JDialog {
 
 
     private void createBottomPanel() {
-    	JPanel bottomPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         bottomPanel.setLayout(new FlowLayout());
-        
-        
+
+
         add(bottomPanel, BorderLayout.SOUTH);
-        
-        JButton pagar=new JButton("Pagar");
-        pagar.addActionListener(l->{
-        	FacilityBooking fb = selectedByFacilitysList.get(bookList.getSelectedIndex());
-        	fb.setPayed(true);
+
+        JButton pagar = new JButton("Pagar");
+        pagar.addActionListener(l -> {
+            FacilityBooking fb = selectedByFacilitysList.get(bookList.getSelectedIndex());
+            fb.setPayed(true);
             try {
                 fb.update();
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
-            Recibo recibo=new Recibo(fb);
- 			recibo.grabarRecibo();
- 			refreshCentralPanelList();
+            Recibo recibo = new Recibo(fb);
+            recibo.grabarRecibo();
+            refreshCentralPanelList();
             dispose();
         });
-     
+
         bottomPanel.add(pagar);
-        
-        
-        JButton atras=new JButton("Atras");
-        atras.addActionListener(l->{
-        	dispose();
+
+
+        JButton atras = new JButton("Atras");
+        atras.addActionListener(l -> {
+            dispose();
         });
-        
+
         bottomPanel.add(atras);
-        
-		
-	}
 
 
-	private void createLeftPanel() {
+    }
+
+
+    private void createLeftPanel() {
         JPanel leftPanel = new JPanel();
         leftPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         add(leftPanel, BorderLayout.WEST);
@@ -104,26 +105,24 @@ public class PayPastDebtsDialog extends JDialog {
         facilities = new JComboBox<>();
         DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
         bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
+                .filter(f -> f.getTimeEnd().before(Utils.getCurrentTime()) && f.getPaymentMethod().equals("Cash") &&
+                        !f.isPaid() && f.getState().equals(FacilityBooking.STATE_VALID) && f.getMemberId() != 0)
                 .collect(Collectors.toList());
-        for(FacilityBooking fb: bookingsList)
-        {
-        	for(Facility f: Database.getInstance().getFacilities())
-        	{
-        		if(f.getFacilityId()==fb.getFacilityId()&&!facilitiesList.contains(f))
-        		{
-        			facilitiesList.add(f);
-        		}
-        	}
+        for (FacilityBooking fb : bookingsList) {
+            for (Facility f : Database.getInstance().getFacilities()) {
+                if (f.getFacilityId() == fb.getFacilityId() && !facilitiesList.contains(f)) {
+                    facilitiesList.add(f);
+                }
+            }
         }
         facilitiesList.forEach(a -> facilitiesModel.addElement(a.getFacilityName()));
         facilities.setModel(facilitiesModel);
         leftPanel.add(facilities, c);
 
-      
+
         facilities.addActionListener(l -> {
-        	
-        	 refreshCentralPanelList();
+
+            refreshCentralPanelList();
            /* bookList.removeAll();
             DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
             sessionsList = Database.getInstance().getActivityBookings().stream()
@@ -133,25 +132,23 @@ public class PayPastDebtsDialog extends JDialog {
                     .map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
                     .forEach(sessionsModel::addElement);
             sessions.setModel(sessionsModel);*/
-           
+
         });
         facilities.setSelectedIndex(0);
 
     }
 
     private void refreshCentralPanelList() {
-    	refreshArrays();
+        refreshArrays();
         bookList.removeAll();
         selectedByFacilitysList = new ArrayList<>();
-        DefaultListModel<String> d= new DefaultListModel<>();
-        for (FacilityBooking fb : bookingsList) 
-        {
-            if (fb.getFacilityId() == getSelectedFacility().getFacilityId()) 
-            {
+        DefaultListModel<String> d = new DefaultListModel<>();
+        for (FacilityBooking fb : bookingsList) {
+            if (fb.getFacilityId() == getSelectedFacility().getFacilityId()) {
                 selectedByFacilitysList.add(fb);
 
-                
-                d.addElement("ID de socio: "+fb.getMemberId()+" fecha: "+fb.getTimeStart().toLocalDateTime());
+
+                d.addElement("ID de socio: " + fb.getMemberId() + " fecha: " + fb.getTimeStart().toLocalDateTime());
                 bookList.setModel(d);
             }
         }
@@ -162,29 +159,25 @@ public class PayPastDebtsDialog extends JDialog {
             bookList.setVisible(true);
         });
     }
-    
-    
-    private void refreshArrays()
-    {
-    	bookingsList= new ArrayList();
-    	facilitiesList= new ArrayList();
-    	DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
+
+
+    private void refreshArrays() {
+        bookingsList = new ArrayList();
+        facilitiesList = new ArrayList();
+        DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
         bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
+                .filter(f -> f.getTimeEnd().before(Utils.getCurrentTime()) && f.getPaymentMethod().equals("Cash") &&
+                        !f.isPaid() && f.getState().equals(FacilityBooking.STATE_VALID) && f.getMemberId() != 0)
                 .collect(Collectors.toList());
-        for(FacilityBooking fb: bookingsList)
-        {
-        	for(Facility f: Database.getInstance().getFacilities())
-        	{
-        		if(f.getFacilityId()==fb.getFacilityId()&&!facilitiesList.contains(f))
-        		{
-        			facilitiesList.add(f);
-        		}
-        	}
+        for (FacilityBooking fb : bookingsList) {
+            for (Facility f : Database.getInstance().getFacilities()) {
+                if (f.getFacilityId() == fb.getFacilityId() && !facilitiesList.contains(f)) {
+                    facilitiesList.add(f);
+                }
+            }
         }
-        if(facilitiesList.isEmpty())
-        {
-        	dispose();
+        if (facilitiesList.isEmpty()) {
+            dispose();
         }
         facilitiesList.forEach(a -> facilitiesModel.addElement(a.getFacilityName()));
         facilities.setModel(facilitiesModel);
@@ -208,5 +201,5 @@ public class PayPastDebtsDialog extends JDialog {
         return facilitiesList.get(facilities.getSelectedIndex());
     }
 
- 
+
 }

@@ -65,8 +65,8 @@ public class FeeUpdater {
 			} catch (Exception ex) {
 				
 			}
-			if (!pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")
-					|| !pago.isDeletedFlag() && !pago.isPaid() && pago.getPaymentMethod().equals("Cash")
+			if (pago.getState().equals(FacilityBooking.STATE_VALID) && !pago.isPaid() && pago.getPaymentMethod().equals("Fee")
+					|| pago.getState().equals(FacilityBooking.STATE_VALID) && !pago.isPaid() && pago.getPaymentMethod().equals("Cash")
 							&& pago.getTimeStart().before(now)) {
 				// si no borrada ni pagada o si ya ha pasado la hora pero el
 				// socio no ha pagado, se le cobra

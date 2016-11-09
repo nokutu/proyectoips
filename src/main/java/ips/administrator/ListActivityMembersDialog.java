@@ -3,6 +3,7 @@ package ips.administrator;
 import ips.database.Activity;
 import ips.database.ActivityBooking;
 import ips.database.Database;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;

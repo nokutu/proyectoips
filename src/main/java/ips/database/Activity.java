@@ -2,14 +2,15 @@ package ips.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by nokutu on 17/10/2016.
  */
 public class Activity implements DatabaseItem {
 
-    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?, ?, ?)";
+    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?, ?)";
     private final static String UPDATE_QUERY = "";
 
     private static PreparedStatement createStatement;
@@ -18,13 +19,13 @@ public class Activity implements DatabaseItem {
     private int activityId;
     private String activityName;
     private int assistantLimit;
-    private int monitorId;
 
-    public Activity(int activityId, String activityName, int assistantLimit, int monitorId) {
+    private List<ActivityBooking> lazyActivityBookings;
+
+    public Activity(int activityId, String activityName, int assistantLimit) {
         this.activityId = activityId;
         this.activityName = activityName;
         this.assistantLimit = assistantLimit;
-        this.monitorId = monitorId;
     }
 
     @Override
@@ -36,7 +37,6 @@ public class Activity implements DatabaseItem {
         createStatement.setInt(1, activityId);
         createStatement.setString(2, activityName);
         createStatement.setInt(3, assistantLimit);
-        createStatement.setInt(4, monitorId);
 
         createStatement.execute();
     }
@@ -52,12 +52,16 @@ public class Activity implements DatabaseItem {
     public int getAssistantLimit() {
         return assistantLimit;
     }
-    public int getMonitorId(){
-    	return monitorId;
-    }
 
     @Override
     public void update() throws SQLException {
         // TODO
+    }
+
+    public List<ActivityBooking> getActivityBookings() {
+        if (lazyActivityBookings == null) {
+            lazyActivityBookings = Database.getInstance().getActivityBookings().stream().filter(ab -> ab.getActivityId() == activityId).collect(Collectors.toList());
+        }
+        return lazyActivityBookings;
     }
 }

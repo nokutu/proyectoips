@@ -8,15 +8,16 @@ import ips.database.FacilityBooking;
 import ips.database.MemberUsage;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MemberUsagePane extends JPanel {
 	private JLabel lblWeek;
@@ -141,16 +142,16 @@ public class MemberUsagePane extends JPanel {
 		JButton btnNot = new JButton(booking.getFacilityName());
 		btnNot.setEnabled(true);
 		switch (booking.getState()) {
-		case "Valid":
+		case FacilityBooking.STATE_VALID:
 			if (booking.getTimeStart().after(new Timestamp(System.currentTimeMillis())))
 				btnNot.setBackground(Color.GREEN);
 			else
 				btnNot.setBackground(Color.BLUE);
 			break;
-		case "Annulled":
+		case FacilityBooking.STATE_ANNULLED:
 			btnNot.setBackground(Color.GRAY);
 			break;
-		case "Canceled":
+		case FacilityBooking.STATE_CANCELLED:
 			btnNot.setBackground(Color.RED);
 			break;
 		default:

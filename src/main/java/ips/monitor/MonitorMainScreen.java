@@ -43,6 +43,7 @@ public class MonitorMainScreen extends JPanel {
 
 	private JComboBox<Monitor> monitorIDComboBox;
 	public static int monitorID;
+	private List<Activity> activitiesList;
 
 	public MonitorMainScreen() {
 		super();
@@ -87,9 +88,12 @@ public class MonitorMainScreen extends JPanel {
 	}
 
 	private void updateActivitiesCombo() {
+
 		activitiesModel = new DefaultComboBoxModel<>();
-		Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID)
-				.forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		activitiesList = Database.getInstance().getActivities().stream()
+				.filter(a -> a.getActivityBookings().stream().filter(ab -> ab.getMonitorId() == monitorID).findAny().isPresent())
+				.collect(Collectors.toList());
+		activitiesList.forEach(a -> activitiesModel.addElement(a.getActivityName()));
 		activities.setModel(activitiesModel);
 
 		// Force the panel to refresh
@@ -102,7 +106,7 @@ public class MonitorMainScreen extends JPanel {
 	private void updateSessionsCombo(){
 		sessionsModel = new DefaultComboBoxModel<>();
 		sessionsList = Database.getInstance()
-				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
+				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId() && ab.getMonitorId() == monitorID)
 				.collect(Collectors.toList());
 		sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
 				.forEach(sessionsModel::addElement);
@@ -129,10 +133,7 @@ public class MonitorMainScreen extends JPanel {
 
 		activities = new JComboBox<>();
 		activitiesModel = new DefaultComboBoxModel<>();
-		Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID)
-				.forEach(a -> activitiesModel.addElement(a.getActivityName()));
-		activities.setModel(activitiesModel);
-		activities.setModel(activitiesModel);
+		updateActivitiesCombo();
 		leftPanel.add(activities, c);
 
 		c.gridx = 0;
@@ -328,7 +329,7 @@ public class MonitorMainScreen extends JPanel {
 	}
 
 	private Activity getSelectedActivity() {
-		return Database.getInstance().getActivities().stream().filter(a -> a.getMonitorId() == monitorID).collect(Collectors.toList()).get(activities.getSelectedIndex());
+		return activitiesList.get(activities.getSelectedIndex());
 	}
 
 	private class CheckBoxList extends JPanel {

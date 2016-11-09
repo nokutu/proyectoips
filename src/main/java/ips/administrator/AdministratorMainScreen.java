@@ -23,106 +23,105 @@ import java.util.stream.Collectors;
 /**
  * Created by nokutu on 24/10/2016.
  */
-public class AdministratorMainScreen extends JPanel implements MainScreen{
+public class AdministratorMainScreen extends JPanel implements MainScreen {
 
-	private JPanel rightPanel;
-	private JPanel upperPanel;
-	private JPanel centerPanel;
+    private JPanel rightPanel;
+    private JPanel upperPanel;
+    private JPanel centerPanel;
 
-	public AdministratorMainScreen() {
-		setLayout(new BorderLayout());
+    public AdministratorMainScreen() {
+        setLayout(new BorderLayout());
 
-		upperPanel = new JPanel(new GridBagLayout());
-		add(upperPanel, BorderLayout.NORTH);
+        upperPanel = new JPanel(new GridBagLayout());
+        add(upperPanel, BorderLayout.NORTH);
 
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(5, 10, 5, 10);
-		c.gridx = 0;
-		c.gridy = 0;
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 10, 5, 10);
+        c.gridx = 0;
+        c.gridy = 0;
 
-		centerPanel = new AvailabilityPane(true, 0, this);
-		add(centerPanel, BorderLayout.CENTER);
+        centerPanel = new AvailabilityPane(true, 0, this);
+        add(centerPanel, BorderLayout.CENTER);
 
-		// TODO añadir el panel de Tony a center y los listeners que llamen a
-		// setRightPanel
+        // TODO añadir el panel de Tony a center y los listeners que llamen a
+        // setRightPanel
 
-		JButton btnCurrentBooks = new JButton("Listar reservas en uso");
-		btnCurrentBooks.addActionListener(e -> new CurrentViewDialog(MainWindow.getInstance()).setVisible(true));
-		upperPanel.add(btnCurrentBooks, c);
+        JButton btnCurrentBooks = new JButton("Listar reservas en uso");
+        btnCurrentBooks.addActionListener(e -> new CurrentViewDialog(MainWindow.getInstance()).setVisible(true));
+        upperPanel.add(btnCurrentBooks, c);
 
-		c.gridx++;
+        c.gridx++;
 
-		JButton btnPayDebts = new JButton("Pagar deuda en efectivo (no actual)");
-		btnPayDebts.addActionListener(e ->{
-	          List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
-	                  .filter(f ->f.getTimeEnd().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
-	                  .collect(Collectors.toList());
-	            if(bookingsList.isEmpty())
-	            {
-	            		JOptionPane.showMessageDialog(this, " No existe ninguna reserva por pagar en efectivo");
-	            }
-	            else
-	  			{
-	            	new PayPastDebtsDialog();	
-	  			}  
-	          });
-		upperPanel.add(btnPayDebts, c);
-
-		c.gridx++;
-
-		JButton btnCurrentDebts = new JButton("Pagar deuda en efectivo (actual)");
-		btnCurrentDebts.addActionListener(e -> 
-		{
-          List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
-                .filter(f ->f.getTimeEnd().after(Utils.getCurrentTime())&&f.getTimeStart().before(Utils.getCurrentTime())&& f.getPaymentMethod().equals("Cash")&&!f.isPaid()&&!f.isDeletedFlag()&&f.getMemberId()!=0)
-                .collect(Collectors.toList());
-          	if(bookingsList.isEmpty())
-          	{
-          		JOptionPane.showMessageDialog(this, " No existe ninguna reserva a pagar en efectivo a esta hora");
-          	}
-          	else
-			{
-          		new PayCurrentDebt(MainWindow.getInstance()).setVisible(true);
-			}  
+        JButton btnPayDebts = new JButton("Pagar deuda en efectivo (no actual)");
+        btnPayDebts.addActionListener(e -> {
+            List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
+                    .filter(f -> f.getTimeEnd().before(Utils.getCurrentTime()) &&
+                            f.getPaymentMethod().equals("Cash") && !f.isPaid() &&
+                            f.getState().equals(FacilityBooking.STATE_VALID) && f.getMemberId() != 0)
+                    .collect(Collectors.toList());
+            if (bookingsList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, " No existe ninguna reserva por pagar en efectivo");
+            } else {
+                new PayPastDebtsDialog();
+            }
         });
-		upperPanel.add(btnCurrentDebts, c);
+        upperPanel.add(btnPayDebts, c);
 
-		c.gridx = 0;
-		c.gridy++;
+        c.gridx++;
 
-		JButton btnasistencia = new JButton("Mostrar faltas de asistencia");
-		btnasistencia.addActionListener(e -> new AssistanceDialog().setVisible(true));
-		upperPanel.add(btnasistencia, c);
+        JButton btnCurrentDebts = new JButton("Pagar deuda en efectivo (actual)");
+        btnCurrentDebts.addActionListener(e ->
+        {
+            List<FacilityBooking> bookingsList = Database.getInstance().getFacilityBookings().stream()
+                    .filter(f -> f.getTimeEnd().after(Utils.getCurrentTime()) &&
+                            f.getTimeStart().before(Utils.getCurrentTime()) &&
+                            f.getPaymentMethod().equals("Cash") && !f.isPaid() &&
+                            f.getState().equals(FacilityBooking.STATE_VALID) && f.getMemberId() != 0)
+                    .collect(Collectors.toList());
+            if (bookingsList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, " No existe ninguna reserva a pagar en efectivo a esta hora");
+            } else {
+                new PayCurrentDebt(MainWindow.getInstance()).setVisible(true);
+            }
+        });
+        upperPanel.add(btnCurrentDebts, c);
 
-		c.gridx++;
+        c.gridx = 0;
+        c.gridy++;
 
-		JButton btnFeeUpdater = new JButton("Actualizar Tarifas");
-		btnFeeUpdater.addActionListener(e -> FeeUpdater.update());
-		upperPanel.add(btnFeeUpdater, c);
+        JButton btnasistencia = new JButton("Mostrar faltas de asistencia");
+        btnasistencia.addActionListener(e -> new AssistanceDialog().setVisible(true));
+        upperPanel.add(btnasistencia, c);
 
-		c.gridx++;
-		
+        c.gridx++;
+
+        JButton btnFeeUpdater = new JButton("Actualizar Tarifas");
+        btnFeeUpdater.addActionListener(e -> FeeUpdater.update());
+        upperPanel.add(btnFeeUpdater, c);
+
+        c.gridx++;
+
 		/*JButton btnDetails = new JButton("Detalles de Reserva");
 		btnDetails.addActionListener(e -> new DetailsDialog(MainWindow.getInstance(),null));
 		upperPanel.add(btnDetails, c);
 
 		c.gridx++;*/
 
-		JButton activitiesButton = new JButton("Ver actividades");
-		activitiesButton.addActionListener(l -> new AdministratorActivitiesDialog().setVisible(true));
-		upperPanel.add(activitiesButton, c);
+        JButton activitiesButton = new JButton("Ver actividades");
+        activitiesButton.addActionListener(l -> new AdministratorActivitiesDialog().setVisible(true));
+        upperPanel.add(activitiesButton, c);
 
-		setRightPanel(new AdministratorBookPanel());
-	}
+        setRightPanel(new AdministratorBookPanel());
+    }
 
-	public void setRightPanel(JPanel panel) {
-		if (rightPanel != null) {
-			remove(rightPanel);
-		}
-		add(panel, BorderLayout.EAST);
-		rightPanel = panel;
-		this.repaint();
-		this.revalidate();
-	}
+    public void setRightPanel(JPanel panel) {
+        if (rightPanel != null) {
+            remove(rightPanel);
+        }
+        add(panel, BorderLayout.EAST);
+        rightPanel = panel;
+        this.repaint();
+        this.revalidate();
+    }
 }

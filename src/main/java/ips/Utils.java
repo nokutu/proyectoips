@@ -25,11 +25,11 @@ public class Utils {
      */
     public static boolean isFacilityFree(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings().stream()
-                .filter(fb -> !fb.isDeletedFlag())
+                .filter(fb -> fb.getState().equals(FacilityBooking.STATE_VALID))
                 .collect(Collectors.toList());
         for (FacilityBooking fb : bookings) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)
-                    && !fb.isDeletedFlag()) {
+                    && fb.getState().equals(FacilityBooking.STATE_VALID)) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
                         || timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd())
                         || timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
@@ -49,7 +49,7 @@ public class Utils {
         List<FacilityBooking> result = new ArrayList<>();
         for (FacilityBooking fb : bookings) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)
-                    && !fb.isDeletedFlag()) {
+                    && fb.getState().equals(FacilityBooking.STATE_VALID)) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
                         || timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd())
                         || timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
@@ -71,11 +71,11 @@ public class Utils {
      */
     public static boolean isMemberFree(Member member, Timestamp timeStart, Timestamp timeEnd) {
         List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings().stream()
-                .filter(fb -> !fb.isDeletedFlag())
+                .filter(fb -> fb.getState().equals(FacilityBooking.STATE_VALID))
                 .collect(Collectors.toList());
         for (FacilityBooking fb : bookings) {
             if (fb.getMemberId() == member.getMemberId() && areSameDay(fb.getTimeStart(), timeStart)
-                    && !fb.isDeletedFlag()) {
+                    && fb.getState().equals(FacilityBooking.STATE_VALID)) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
                         || timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd())
                         || timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {

@@ -80,7 +80,14 @@ public class OverrideBookingDialog extends JDialog {
 				okButton.setActionCommand("OK");
 				okButton.addActionListener(e -> {
 					for (FacilityBooking fb : bookings) {
-						fb.cancel(); // cancelamos todas las reservas...
+						if (fb.getMemberId() == 0) {
+							fb.setState(FacilityBooking.STATE_CANCELLED);
+						} else {
+							fb.setState(FacilityBooking.STATE_ANNULLED);
+
+							// TODO preguntar por la causa
+						}
+						//fb.cancel(); // cancelamos todas las reservas...
 					}
 					// ...e indicamos que podemos reservar
 					valid = true;

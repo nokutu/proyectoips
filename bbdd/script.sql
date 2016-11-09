@@ -18,13 +18,13 @@ CREATE TABLE activity (
     activity_id INTEGER NOT NULL,
     activity_name VARCHAR(32) NOT NULL,
     assistant_limit INTEGER,
-    monitor_id INTEGER,
     PRIMARY KEY(activity_id)
 );
 
 CREATE TABLE activitybooking (
     activity_id INTEGER NOT NULL,
     facilitybooking_id INTEGER NOT NULL,
+    monitor_id INTEGER,
     PRIMARY KEY (activity_id, facilitybooking_id)
 );
 
@@ -51,10 +51,11 @@ CREATE TABLE facilityBooking (
 	time_end TIMESTAMP,
 	payment_method VARCHAR(16),
     paid BOOLEAN,
-    facilitybooking_deleted BOOLEAN,
 	entrance TIMESTAMP,
 	abandon TIMESTAMP,
 	state VARCHAR(16),
+	cancellation_cause VARCHAR(128),
+	cancellation_date TIMESTAMP,
     CONSTRAINT chk_payment_method CHECK (payment_method IN ('Fee', 'Cash')),
     CONSTRAINT chk_state CHECK (state IN ('Valid', 'Annulled', 'Canceled')),
     PRIMARY KEY (facilitybooking_id)
