@@ -107,7 +107,7 @@ public class MemberBookPanel extends JPanel {
         form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false);
 
         JComboBox<String> paymentCombo = new JComboBox<>();
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Efectivo", "Cuenta"});
         paymentCombo.setModel(model);
         form.addLine(new JLabel("Método de pago:"), paymentCombo);
     }
@@ -143,7 +143,7 @@ public class MemberBookPanel extends JPanel {
                     Integer.parseInt(results.get(TIME_END))).getTime());
             facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
             memberId = MemberMainScreen.userID;
-            paymentMethod = results.get(PAYMENT_METHOD);
+            paymentMethod = FacilityBooking.translate(results.get(PAYMENT_METHOD));
 
             return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false);
         } catch (NumberFormatException e) {

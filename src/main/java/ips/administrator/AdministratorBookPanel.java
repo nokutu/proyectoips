@@ -129,7 +129,7 @@ public class AdministratorBookPanel extends JPanel {
         JComboBox<String> activities = new JComboBox<>();
         JComboBox<String> monitors = new JComboBox<>();
 
-        JComboBox<String> recursive = new JComboBox<>();
+        JCheckBox recursive = new JCheckBox("Repetir");
 
         bookForCenter.addActionListener(l -> {
             idTextField.setEnabled(!bookForCenter.isSelected());
@@ -138,31 +138,31 @@ public class AdministratorBookPanel extends JPanel {
             activities.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
             monitors.setEnabled(assignToActivity.isSelected() && bookForCenter.isSelected());
             recursive.setEnabled(bookForCenter.isSelected());
-            endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.getSelectedIndex() != 0);
+            endDateChooser.setEnabled(bookForCenter.isSelected() && recursive.isSelected());
             idTextField.setText(String.valueOf(0));
         });
         form.addLine(bookForCenter);
         form.addLine(new JLabel("ID de socio:"), idTextField);
 
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cash", "Fee"});
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cuenta", "Efectivo"});
         paymentCombo.setModel(model);
         form.addLine(new JLabel("M\u00E9todo de pago:"), paymentCombo);
 
         form.addSpace();
 
         recursive.setEnabled(false);
-        DefaultComboBoxModel<String> recursiveModel = new DefaultComboBoxModel<>(
-                new String[]{"No repetir", "Semanalmente", "Mensualmente"});
-        recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.getSelectedIndex() > 0));
-        recursive.setModel(recursiveModel);
-        form.addLine(new JLabel("Repetir:"), recursive, false);
+        recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.isSelected()));
+        form.addLine(recursive);
 
         form.addLine(new JLabel("Fecha fin repetici\u00F3n:"), endDateChooser);
 
         assignToActivity.setEnabled(false);
         activities.setEnabled(false);
         monitors.setEnabled(false);
-        assignToActivity.addActionListener(l -> activities.setEnabled(assignToActivity.isSelected()));
+        assignToActivity.addActionListener(l -> {
+            activities.setEnabled(assignToActivity.isSelected());
+            monitors.setEnabled(assignToActivity.isSelected());
+        });
 
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
         Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
@@ -190,18 +190,11 @@ public class AdministratorBookPanel extends JPanel {
         while (time.before(repetitionEnd) || increase == 0) {
             bookings.add(createBooking(increase));
 
-            if (Integer.parseInt(form.getResults().get(REPEAT)) == REPEAT_WEEKLY) {
+            if (Boolean.parseBoolean(form.getResults().get(REPEAT))) {
                 // Semanalmente
                 Calendar c = Calendar.getInstance();
                 c.setTime(time);
                 c.add(Calendar.WEEK_OF_YEAR, 1);
-                increase += c.getTime().getTime() - time.getTime();
-                time = new Timestamp(c.getTime().getTime());
-            } else if (Integer.parseInt(form.getResults().get(REPEAT)) == REPEAT_MONTHLY) {
-                // Mensualmente
-                Calendar c = Calendar.getInstance();
-                c.setTime(time);
-                c.add(Calendar.MONTH, 1);
                 increase += c.getTime().getTime() - time.getTime();
                 time = new Timestamp(c.getTime().getTime());
             } else {
@@ -259,7 +252,7 @@ public class AdministratorBookPanel extends JPanel {
             int facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITY_ID)))
                     .getFacilityId();
             int memberId = Integer.parseInt(results.get(MEMBER_ID));
-            String paymentMethod = results.get(PAYMENT_METHOD);
+            String paymentMethod = FacilityBooking.translate(results.get(PAYMENT_METHOD));
 
             return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false);
         } catch (NumberFormatException e) {

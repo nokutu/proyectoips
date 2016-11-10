@@ -3,6 +3,8 @@ package ips.database;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,10 +22,18 @@ public class FacilityBooking implements DatabaseItem {
 	public static final String STATE_ANNULLED = "Annulled";
 	public static final String STATE_CANCELLED = "Cancelled";
 
+	private static Map<String, String> TRANSLATIONS;
+
 	private static int MAX_ID = 0;
 
 	private static PreparedStatement createStatement;
 	private static PreparedStatement updateStatement;
+
+	static {
+		TRANSLATIONS = new HashMap<>();
+		TRANSLATIONS.put("Cuota", "Fee");
+		TRANSLATIONS.put("Efectivo", "Cash");
+	}
 
 	private int facilityBookingId;
 	private String cancellationCause;
@@ -277,5 +287,9 @@ public class FacilityBooking implements DatabaseItem {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public static String translate(String string) {
+		return TRANSLATIONS.get(string);
 	}
 }
