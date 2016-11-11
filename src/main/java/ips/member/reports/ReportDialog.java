@@ -1,4 +1,4 @@
-package ips.member;
+package ips.member.reports;
 
 import ips.MainWindow;
 import ips.member.reports.BookingsCashNotPassedDialog;
@@ -36,6 +36,14 @@ public class ReportDialog extends JDialog {
             new BookingsCashNotPassedDialog(this).setVisible(true);
         });
         center.add(bookingsCashNotPassedButton, c);
+
+        c.gridy++;
+
+        JButton bookingsFeeNotPassedButton = new JButton("Ver reservas en la cuota que aun no han pasado");
+        bookingsFeeNotPassedButton.addActionListener( l-> {
+            new BookingsFeeNotPassedDialog(this).setVisible(true);
+        });
+        center.add(bookingsFeeNotPassedButton, c);
 
         pack();
         setLocationRelativeTo(MainWindow.getInstance());

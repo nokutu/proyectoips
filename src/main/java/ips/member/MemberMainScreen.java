@@ -3,6 +3,7 @@ package ips.member;
 import ips.AvailabilityPane;
 import ips.MainScreen;
 import ips.database.Database;
+import ips.member.reports.ReportDialog;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,7 +59,6 @@ public class MemberMainScreen extends JPanel implements MainScreen{
                 updateUser(userIDTextField.getText());
             }
         });
-        // TODO añadir el panel de Tony a center y los listeners que llamen a setRightPanel
 
         JButton availabilityButton = new JButton("Ver disponibilidad");
         availabilityButton.addActionListener(l -> {

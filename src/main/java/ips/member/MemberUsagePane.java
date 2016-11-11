@@ -70,7 +70,7 @@ public class MemberUsagePane extends JPanel {
 
 	private void addRows(int idUser) {
 		try {
-			bookings = MemberUsage.Select(idUser);
+			bookings = MemberUsage.select(idUser);
 		} catch (SQLException e) {
 			System.out.println("Error en el método addrows de MemberUsagePane");
 			e.printStackTrace();

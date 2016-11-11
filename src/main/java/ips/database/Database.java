@@ -133,6 +133,8 @@ public class Database {
         while (rs.next()) {
             monitors.add(new Monitor(rs.getInt(1), rs.getString(2)));
         }
+
+        s.close();
     }
 
     public Connection getConnection() {

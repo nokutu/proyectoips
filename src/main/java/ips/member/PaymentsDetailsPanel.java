@@ -6,8 +6,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import ips.database.Booking;
-import ips.database.Database;
-import ips.database.MemberUsage;
 import ips.database.PaymentsDetails;
 
 import java.awt.BorderLayout;
@@ -31,7 +29,7 @@ public class PaymentsDetailsPanel extends JPanel {
 		JScrollPane pane = new JScrollPane(list);
 
 		try {
-			bookings = PaymentsDetails.Select(idUser);
+			bookings = PaymentsDetails.select(idUser);
 		} catch (SQLException e) {
 			System.out.println("Error en el constructor de PaymentDetailsPanel");
 			e.printStackTrace();

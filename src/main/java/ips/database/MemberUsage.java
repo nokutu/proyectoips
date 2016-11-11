@@ -10,7 +10,7 @@ public class MemberUsage {
 
 	 private static PreparedStatement createStatement;
 	 
-	 public static ArrayList<Booking> Select(int idUser) throws SQLException{
+	 public static ArrayList<Booking> select(int idUser) throws SQLException{
 		 if (createStatement == null) {
 	            createStatement = Database.getInstance().getConnection().prepareStatement(SELECT_QUERY);
 	        }

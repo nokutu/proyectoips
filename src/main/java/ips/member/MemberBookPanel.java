@@ -7,9 +7,9 @@ import ips.database.Facility;
 import ips.database.FacilityBooking;
 import ips.database.Member;
 import ips.gui.Form;
-
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +99,9 @@ public class MemberBookPanel extends JPanel {
         form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
         JComboBox<String> facilities = new JComboBox<>();
-        List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName).collect(Collectors.toList());
+        List<String> names = Database.getInstance().getFacilities().stream()
+                .map(Facility::getFacilityName)
+                .collect(Collectors.toList());
         DefaultComboBoxModel<String> facilityModel = new DefaultComboBoxModel<>();
         names.forEach(facilityModel::addElement);
         facilities.setModel(facilityModel);
@@ -127,12 +128,6 @@ public class MemberBookPanel extends JPanel {
     }
 
     private FacilityBooking createBooking() {
-        int facilityId = 0;
-        int memberId = 0;
-        Timestamp timeStart = null;
-        Timestamp timeEnd = null;
-        String paymentMethod = null;
-
         try {
             List<String> results = form.getResults();
             timeStart = new Timestamp(Utils.addHourToDay(
@@ -141,9 +136,9 @@ public class MemberBookPanel extends JPanel {
             timeEnd = new Timestamp(Utils.addHourToDay(
                     new Timestamp(Long.parseLong(results.get(DATE))),
                     Integer.parseInt(results.get(TIME_END))).getTime());
-            facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
-            memberId = MemberMainScreen.userID;
-            paymentMethod = FacilityBooking.translate(results.get(PAYMENT_METHOD));
+            int facilityId = Database.getInstance().getFacilities().get(Integer.parseInt(results.get(FACILITy))).getFacilityId();
+            int memberId = MemberMainScreen.userID;
+            String paymentMethod = FacilityBooking.translate(results.get(PAYMENT_METHOD));
 
             return new FacilityBooking(facilityId, memberId, timeStart, timeEnd, paymentMethod, false);
         } catch (NumberFormatException e) {
@@ -174,22 +169,20 @@ public class MemberBookPanel extends JPanel {
                 errors += "Un socio solo puedo reservar un máximo de 2 horas.\nEl tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
             }
 
-            Optional<Member> member = Database.getInstance().getMembers().stream()
-                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
-            if (!member.isPresent()) {
+            Member member = Member.get(fb.getMemberId());
+            if (member == null) {
                 // Member not valid
                 errors += "Id de miembro no válida.\n";
                 valid = false;
-            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+            } else if (!Utils.isMemberFree(member, fb.getTimeStart(), fb.getTimeEnd())) {
                 errors += "Ya tienes una reserva en esta franja de tiempo.\n";
                 valid = false;
             }
 
-            Optional<Facility> of = Database.getInstance().getFacilities().stream()
-                    .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
-            assert of.isPresent();
+            Facility facility = fb.getFacility();
+            assert facility != null;
 
-            if (valid && !Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+            if (valid && !Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {
                 // Facility not free
                 valid = false;
                 errors += "La instalaci\u00F3n está ocupada en la horas seleccionadas.\n";

@@ -100,7 +100,8 @@ public class AdministratorBookPanel extends JPanel {
         form.addLine(new JLabel("Hora de fin:"), hourEndSpinner);
 
         JComboBox<String> facilities = new JComboBox<>();
-        List<String> names = Database.getInstance().getFacilities().stream().map(Facility::getFacilityName)
+        List<String> names = Database.getInstance().getFacilities().stream()
+                .map(Facility::getFacilityName)
                 .collect(Collectors.toList());
         DefaultComboBoxModel<String> facilitiesModel = new DefaultComboBoxModel<>();
         names.forEach(facilitiesModel::addElement);
@@ -169,7 +170,9 @@ public class AdministratorBookPanel extends JPanel {
         activities.setModel(activitiesModel);
 
         DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
-        Database.getInstance().getMonitors().stream().map(Monitor::getName).forEach(monitorsModel::addElement);
+        Database.getInstance().getMonitors().stream()
+                .map(Monitor::getName)
+                .forEach(monitorsModel::addElement);
         monitors.setModel(monitorsModel);
 
         form.addSpace();
@@ -280,23 +283,20 @@ public class AdministratorBookPanel extends JPanel {
                 valid = false;
                 errors += "Un socio solo puedo reservar un m\u00E1ximo de 2 horas.\nEl tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
             }
-            Optional<Member> member = Database.getInstance().getMembers().stream()
-                    .filter((m) -> m.getMemberId() == fb.getMemberId()).findAny();
-            if (!member.isPresent() || fb.getMemberId() == 0) {
+            Member member = Member.get(fb.getMemberId());
+            if (member == null || fb.getMemberId() == 0) {
                 // Member not valid
                 errors += "n\u00FAmero de socio no v\u00E1lida.\n";
                 valid = false;
-            } else if (!Utils.isMemberFree(member.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+            } else if (!Utils.isMemberFree(member, fb.getTimeStart(), fb.getTimeEnd())) {
                 errors += "El socio ya tiene una reserva en esta franja de tiempo.\n";
                 valid = false;
             }
-            Optional<Facility> of = Database.getInstance().getFacilities().stream()
-                    .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
-            assert of.isPresent();
 
-            if (of.isPresent() && !Utils.isFacilityFree(of.get(), fb.getTimeStart(), fb.getTimeEnd())) {
+            Facility facility = fb.getFacility();
+            if (facility != null && !Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {
                 // Facility not free
-                List<FacilityBooking> reserva = Utils.getBookingsAt(of.get(), fb.getTimeStart(), fb.getTimeEnd());
+                List<FacilityBooking> reserva = Utils.getBookingsAt(facility, fb.getTimeStart(), fb.getTimeEnd());
                 OverrideBookingDialog ob;
                 (ob = new OverrideBookingDialog(reserva)).setVisible(true);
                 valid = ob.getValid();
@@ -322,11 +322,10 @@ public class AdministratorBookPanel extends JPanel {
         boolean valid = true;
         String errors = "";
 
-        Optional<Facility> facility = Database.getInstance().getFacilities().stream()
-                .filter((f) -> f.getFacilityId() == fb.getFacilityId()).findAny();
+        Facility facility = fb.getFacility();
 
         // la facility debe existir
-        if (!facility.isPresent()) {
+        if (facility == null) {
             throw new IllegalStateException("La instalaci\u00F3n tiene que existir");
         }
 
@@ -336,8 +335,8 @@ public class AdministratorBookPanel extends JPanel {
             valid = false;
         }
 
-        if (facility.isPresent() && !Utils.isFacilityFree(facility.get(), fb.getTimeStart(), fb.getTimeEnd())) {
-            List<FacilityBooking> reserva = Utils.getBookingsAt(facility.get(), fb.getTimeStart(), fb.getTimeEnd());
+        if (!Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {
+            List<FacilityBooking> reserva = Utils.getBookingsAt(facility, fb.getTimeStart(), fb.getTimeEnd());
             OverrideBookingDialog ob;
             (ob = new OverrideBookingDialog(reserva)).setVisible(true);
             valid = ob.getValid();

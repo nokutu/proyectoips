@@ -23,15 +23,16 @@ import java.util.stream.Stream;
 public class MonitorMainScreen extends JPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private static int monitorID;
+
 	private CheckBoxList memberList = new CheckBoxList();
-
 	private List<ActivityBooking> sessionsList;
-	private List<ActivityMember> activityMembersInSession;
 
+	private List<ActivityMember> activityMembersInSession;
 	private JLabel assistanceLabel = new JLabel("");
 	private JComboBox<String> activities;
 	private JButton addMember = new JButton("Apuntar al socio:");
@@ -39,10 +40,9 @@ public class MonitorMainScreen extends JPanel {
 	private JComboBox<String> sessions;
 	DefaultComboBoxModel<String> sessionsModel;
 	DefaultComboBoxModel<String> activitiesModel;
-	// private List<ActivityBooking> activityBookingsList;
 
+	// private List<ActivityBooking> activityBookingsList;
 	private JComboBox<Monitor> monitorIDComboBox;
-	public static int monitorID;
 	private List<Activity> activitiesList;
 
 	public MonitorMainScreen() {
@@ -81,14 +81,13 @@ public class MonitorMainScreen extends JPanel {
 		});
 		monitorIDPanel.add(monitorIDComboBox);
 	}
-	private void refreshLeftCombos() { // TODO
+	private void refreshLeftCombos() {
 		System.err.println("actualizo");
 		updateActivitiesCombo();
 		updateSessionsCombo();
 	}
 
 	private void updateActivitiesCombo() {
-
 		activitiesModel = new DefaultComboBoxModel<>();
 		activitiesList = Database.getInstance().getActivities().stream()
 				.filter(a -> a.getActivityBookings().stream().filter(ab -> ab.getMonitorId() == monitorID).findAny().isPresent())
@@ -157,8 +156,7 @@ public class MonitorMainScreen extends JPanel {
 			if (sessions.getModel().getSize() > 0) {
 				sessions.setSelectedIndex(0);
 			}
-			refreshCentralPanelList(); // TODO poner esto y aqui pero en el de
-										// activity??
+			refreshCentralPanelList(); // TODO poner esto y aqui pero en el de activity??
 			refreshAssistanceCount();
 		});
 		activities.setSelectedIndex(0);

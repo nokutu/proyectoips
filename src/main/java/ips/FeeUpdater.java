@@ -81,9 +81,7 @@ public class FeeUpdater {
 						// if exists a fee for that month
 						double cost = Database.getInstance().getFacilityById(pago.getFacilityId()).getPrice();
 
-						assert thatFee.getMemberId() == pago.getMemberId(); // TODO
-																			// eliminar
-																			// esto
+						assert thatFee.getMemberId() == pago.getMemberId(); // TODO	eliminar esto
 
 						FeeItem newFeeItem = new FeeItem(cost, thatFee);
 						thatFee.getFeeItems().add(newFeeItem);

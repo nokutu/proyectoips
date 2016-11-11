@@ -10,7 +10,7 @@ public class Availability {
 
 	 private static PreparedStatement createStatement;
 	 
-	 public static ArrayList<Booking> Select(int idFacility) throws SQLException{
+	 public static ArrayList<Booking> select(int idFacility) throws SQLException{
 		 if (createStatement == null) {
 	            createStatement = Database.getInstance().getConnection().prepareStatement(SELECT_QUERY);
 	        }

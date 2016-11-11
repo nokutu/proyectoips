@@ -44,9 +44,6 @@ public class AdministratorMainScreen extends JPanel implements MainScreen {
         centerPanel = new AvailabilityPane(true, 0, this);
         add(centerPanel, BorderLayout.CENTER);
 
-        // TODO añadir el panel de Tony a center y los listeners que llamen a
-        // setRightPanel
-
         JButton btnCurrentBooks = new JButton("Listar reservas en uso");
         btnCurrentBooks.addActionListener(e -> new CurrentViewDialog(MainWindow.getInstance()).setVisible(true));
         upperPanel.add(btnCurrentBooks, c);

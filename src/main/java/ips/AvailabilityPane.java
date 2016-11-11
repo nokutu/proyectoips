@@ -109,7 +109,7 @@ public class AvailabilityPane extends JPanel {
 
   private void addRows(int instalacion) {
     try {
-      bookings = Availability.Select(instalacion);
+      bookings = Availability.select(instalacion);
     } catch (SQLException e) {
       System.out.println("Error en el método addrows de AvailabilityPane");
       e.printStackTrace();

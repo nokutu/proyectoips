@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
  */
 public class PayPastDebtsDialog extends JDialog {
 
-    private JList<String> bookList = new JList();
+    private JList<String> bookList = new JList<>();
 
-    private List<Facility> facilitiesList = new ArrayList();
+    private List<Facility> facilitiesList = new ArrayList<>();
     private List<FacilityBooking> selectedByFacilitysList;
 
     private JLabel assistanceLabel = new JLabel("");
@@ -38,7 +38,6 @@ public class PayPastDebtsDialog extends JDialog {
         createLeftPanel();
         createCenterPanel();
         createBottomPanel();
-
 
         setMinimumSize(new Dimension(620, 320));
         setVisible(true);

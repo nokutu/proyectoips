@@ -49,6 +49,7 @@ public class FacilityBooking implements DatabaseItem {
 	private String state;
 
 	private Facility lazyFacility;
+	private Member lazyMember;
 
 	/**
 	 * Simple constructor. Entrance, abandon and state are set to default
@@ -279,10 +280,27 @@ public class FacilityBooking implements DatabaseItem {
 			if (ofb.isPresent()) {
 				lazyFacility = ofb.get();
 			} else {
-				throw new IllegalStateException("No FacilityBooking found for selected ActivityBooking");
+				throw new IllegalStateException("No FacilityBooking found for selected FacilityBooking");
 			}
 		}
 		return lazyFacility;
+	}
+
+	public Member getMember() {
+		if (memberId == 0) {
+			return null;
+		}
+		if (lazyMember == null) {
+			Optional<Member> om = Database.getInstance().getMembers().parallelStream()
+					.filter(m -> m.getMemberId() == memberId)
+					.findAny();
+			if (om.isPresent()) {
+				lazyMember = om.get();
+			} else {
+				throw new IllegalStateException("Member id of the FacilityBooking not found");
+			}
+		}
+		return lazyMember;
 	}
 
 	public void setState(String state) {

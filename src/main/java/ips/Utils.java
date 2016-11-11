@@ -41,13 +41,13 @@ public class Utils {
     }
 
     /**
-     * @return la reserva(s) ya existente(s) en el lapso de tiempo 
+     * @return la reserva(s) ya existente(n) en el lapso de tiempo
      * @see Utils#isFacilityFree
      */
     public synchronized static List<FacilityBooking> getBookingsAt(Facility facility, Timestamp timeStart, Timestamp timeEnd) {
-        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings();
         List<FacilityBooking> result = new ArrayList<>();
-        for (FacilityBooking fb : bookings) {
+
+        for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
             if (fb.getFacilityId() == facility.getFacilityId() && areSameDay(fb.getTimeStart(), timeStart)
                     && fb.getState().equals(FacilityBooking.STATE_VALID)) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
@@ -59,7 +59,7 @@ public class Utils {
         }
         return result;
     }
-    
+
     /**
      * Checks if a given member has any other reservation during the given time
      * range.
@@ -70,10 +70,7 @@ public class Utils {
      * @return true if the facility is free; false otherwise.
      */
     public static boolean isMemberFree(Member member, Timestamp timeStart, Timestamp timeEnd) {
-        List<FacilityBooking> bookings = Database.getInstance().getFacilityBookings().stream()
-                .filter(fb -> fb.getState().equals(FacilityBooking.STATE_VALID))
-                .collect(Collectors.toList());
-        for (FacilityBooking fb : bookings) {
+        for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
             if (fb.getMemberId() == member.getMemberId() && areSameDay(fb.getTimeStart(), timeStart)
                     && fb.getState().equals(FacilityBooking.STATE_VALID)) {
                 if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
@@ -127,6 +124,9 @@ public class Utils {
         return c.getTime();
     }
 
+    /**
+     * Extracts the date from a given time. It means that returns exactly the beginning of that day.
+     */
     public static Date getDateFromTime(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
@@ -159,14 +159,12 @@ public class Utils {
             try {
                 thisFee.create();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } finally {
             try {
                 pago.create();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
