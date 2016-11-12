@@ -1,5 +1,6 @@
 package ips.database;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,12 @@ import java.util.stream.Collectors;
  */
 public class Monitor implements DatabaseItem {
 
+	private final static String CREATE_QUERY = "INSERT INTO monitor VALUES (?, ?)";
+	
 	private int monitorId;
 	private String name;
+	
+	private static PreparedStatement createStatement;
 
 	public Monitor(int monitorId, String name) {
 		this.monitorId = monitorId;
@@ -20,7 +25,14 @@ public class Monitor implements DatabaseItem {
 
 	@Override
 	public void create() throws SQLException {
-		throw new UnsupportedOperationException();
+		 if (createStatement == null) {
+	            createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
+	        }
+
+	        createStatement.setInt(1, monitorId);
+	        createStatement.setString(2, name);
+
+	        createStatement.execute();
 	}
 
 	@Override
@@ -38,6 +50,14 @@ public class Monitor implements DatabaseItem {
 	
 	public String toString(){
 		return name;
+	}
+
+	public void setMonitorId(int monitorId) {
+		this.monitorId = monitorId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public List<ActivityBooking> getActivityBookings() {

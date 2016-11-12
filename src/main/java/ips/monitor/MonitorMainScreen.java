@@ -184,6 +184,8 @@ public class MonitorMainScreen extends JPanel {
 
 				JCheckBox chk = new JCheckBox(member.getMemberName());
 				chk.setSelected(am.isAssistance());
+				if(am.getFacilityBooking().getTimeStart().after(Utils.getCurrentTime())||am.getFacilityBooking().getTimeEnd().before(Utils.getCurrentTime()))
+					chk.setEnabled(false);
 				chk.addActionListener(l -> {
 					am.setAssistance(chk.isSelected());
 					try {

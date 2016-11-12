@@ -129,7 +129,7 @@ public class CurrentViewDialog extends JDialog {
                         btnStartUse.setEnabled(true);
                     }
 
-                    if (book.getAbandon() != null) {
+                    if (book.getAbandon() != null||book.getEntrance()==null) {
                         btnEndUse.setEnabled(false);
                     } else {
                         btnEndUse.setEnabled(true);
