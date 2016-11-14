@@ -292,6 +292,12 @@ public class AdministratorBookPanel extends JPanel {
                 errors += "El socio ya tiene una reserva en esta franja de tiempo.\n";
                 valid = false;
             }
+            
+            if (!Utils.isMemberActivityFree(member, fb.getTimeStart(), fb.getTimeEnd())) {
+                errors += "El socio está apuntado a una actividad en esta franja de tiempo.\n";
+                valid = false;
+            }
+            
 
             Facility facility = fb.getFacility();
             if (facility != null && !Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {

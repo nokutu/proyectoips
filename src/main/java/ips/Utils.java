@@ -82,6 +82,20 @@ public class Utils {
         }
         return true;
     }
+    
+    public static boolean isMemberActivityFree(Member member, Timestamp timeStart, Timestamp timeEnd) {
+        for (ActivityMember am : Database.getInstance().getActivityMembers()) {
+        	FacilityBooking fb = am.getFacilityBooking();
+            if (am.getMemberId() == member.getMemberId() && areSameDay(fb.getTimeStart(), timeStart)) {
+                if (timeStart.before(fb.getTimeStart()) && timeEnd.after(fb.getTimeStart())
+                        || timeStart.before(fb.getTimeEnd()) && timeEnd.after(fb.getTimeEnd())
+                        || timeStart.equals(fb.getTimeStart()) || timeEnd.equals(fb.getTimeEnd())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public static Date addHourToDay(Date day, int hour) {
         return new Date(day.getTime() + hour * 1000 * 3600);
