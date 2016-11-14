@@ -36,8 +36,8 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private JComboBox<String> sessions;
 	// private List<ActivityBooking> activityBookingsList;
 
-	public AdministratorActivitiesDialog() {
-		super(MainWindow.getInstance(), true);
+	public AdministratorActivitiesDialog(JDialog owner) {
+		super(owner, true);
 
 		setLayout(new BorderLayout());
 
@@ -48,7 +48,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 		setMinimumSize(new Dimension(320, 180));
 		pack();
-		setLocationRelativeTo(MainWindow.getInstance());
+		setLocationRelativeTo(owner);
 	}
 
 	private void createRightPanel() {

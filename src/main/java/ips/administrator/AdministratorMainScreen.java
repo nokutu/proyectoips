@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,12 +86,6 @@ public class AdministratorMainScreen extends JPanel implements MainScreen {
         c.gridx = 0;
         c.gridy++;
 
-        JButton btnasistencia = new JButton("Mostrar faltas de asistencia");
-        btnasistencia.addActionListener(e -> new AssistanceDialog().setVisible(true));
-        upperPanel.add(btnasistencia, c);
-
-        c.gridx++;
-
         JButton btnFeeUpdater = new JButton("Actualizar Tarifas");
         btnFeeUpdater.addActionListener(e -> FeeUpdater.update());
         upperPanel.add(btnFeeUpdater, c);
@@ -105,9 +98,9 @@ public class AdministratorMainScreen extends JPanel implements MainScreen {
 
 		c.gridx++;*/
 
-        JButton activitiesButton = new JButton("Ver actividades");
-        activitiesButton.addActionListener(l -> new AdministratorActivitiesDialog().setVisible(true));
-        upperPanel.add(activitiesButton, c);
+        JButton manageActivities = new JButton("Gestión de actividades");
+        manageActivities.addActionListener(l -> new AdministratorActivitiesManagementDialog().setVisible(true));
+        upperPanel.add(manageActivities, c);
 
         setRightPanel(new AdministratorBookPanel());
     }

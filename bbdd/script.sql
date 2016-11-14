@@ -18,6 +18,7 @@ CREATE TABLE activity (
     activity_id INTEGER NOT NULL,
     activity_name VARCHAR(32) NOT NULL,
     assistant_limit INTEGER,
+    deleted BOOLEAN,
     PRIMARY KEY(activity_id)
 );
 

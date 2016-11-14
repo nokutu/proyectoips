@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
  */
 public class Activity implements DatabaseItem {
 
-    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?, ?)";
-    private final static String UPDATE_QUERY = "";
+    private final static String CREATE_QUERY = "INSERT INTO activity VALUES (?, ?, ?, ?)";
+    private final static String UPDATE_QUERY = "UPDATE activity SET deleted = ? WHERE activity_id = ?";
 
     private static PreparedStatement createStatement;
     private static PreparedStatement updateStatement;
@@ -21,8 +21,13 @@ public class Activity implements DatabaseItem {
     private int assistantLimit;
 
     private List<ActivityBooking> lazyActivityBookings;
+    private boolean deleted;
 
     public Activity(int activityId, String activityName, int assistantLimit) {
+        this(activityId, activityName, assistantLimit, false);
+    }
+
+    public Activity(int activityId, String activityName, int assistantLimit, boolean deleted) {
         this.activityId = activityId;
         this.activityName = activityName;
         this.assistantLimit = assistantLimit;
@@ -37,6 +42,7 @@ public class Activity implements DatabaseItem {
         createStatement.setInt(1, activityId);
         createStatement.setString(2, activityName);
         createStatement.setInt(3, assistantLimit);
+        createStatement.setBoolean(4, deleted);
 
         createStatement.execute();
     }
@@ -55,7 +61,14 @@ public class Activity implements DatabaseItem {
 
     @Override
     public void update() throws SQLException {
-        // TODO
+        if (updateStatement == null) {
+            updateStatement = Database.getInstance().getConnection().prepareStatement(UPDATE_QUERY);
+        }
+
+        updateStatement.setBoolean(1, deleted);
+        updateStatement.setInt(2, activityId);
+
+        updateStatement.execute();
     }
 
     public List<ActivityBooking> getActivityBookings() {
@@ -63,5 +76,13 @@ public class Activity implements DatabaseItem {
             lazyActivityBookings = Database.getInstance().getActivityBookings().stream().filter(ab -> ab.getActivityId() == activityId).collect(Collectors.toList());
         }
         return lazyActivityBookings;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

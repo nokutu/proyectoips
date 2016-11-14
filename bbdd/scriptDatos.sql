@@ -58,17 +58,17 @@ INSERT INTO facility VALUES (12, 5,'Sala de badminton');
 
 ------ CREACION DE ACTIVIDADES (ID, NOMBRE, LIMITE, MONITOR) ------
 
-INSERT INTO activity VALUES (1, 'Taller de Cocina', 15);
-INSERT INTO activity VALUES (2, 'Taller de Manualidades', 15);
-INSERT INTO activity VALUES (3, 'Clases de Natacion', 20);
-INSERT INTO activity VALUES (4, 'Clases de Yoga', 30);
-INSERT INTO activity VALUES (5, 'Iniciacion al Tenis', 15);
-INSERT INTO activity VALUES (6, 'Concurso de Badminton', 30);
-INSERT INTO activity VALUES (7, 'Clases de Canto', 20);
-INSERT INTO activity VALUES (8, 'Clases de Natacion 2', 20);
-INSERT INTO activity VALUES (9, 'Clases de Yoga 2', 30);
-INSERT INTO activity VALUES (10, 'Iniciacion al Tenis 2', 15);
-INSERT INTO activity VALUES (11, 'Clases de Canto 2', 20);
+INSERT INTO activity VALUES (1, 'Taller de Cocina', 15, false);
+INSERT INTO activity VALUES (2, 'Taller de Manualidades', 15, false);
+INSERT INTO activity VALUES (3, 'Clases de Natacion', 20, false);
+INSERT INTO activity VALUES (4, 'Clases de Yoga', 30, false);
+INSERT INTO activity VALUES (5, 'Iniciacion al Tenis', 15, false);
+INSERT INTO activity VALUES (6, 'Concurso de Badminton', 30, false);
+INSERT INTO activity VALUES (7, 'Clases de Canto', 20, false);
+INSERT INTO activity VALUES (8, 'Clases de Natacion 2', 20, false);
+INSERT INTO activity VALUES (9, 'Clases de Yoga 2', 30, false);
+INSERT INTO activity VALUES (10, 'Iniciacion al Tenis 2', 15, false);
+INSERT INTO activity VALUES (11, 'Clases de Canto 2', 20, false);
 
 
 ------ CREACION DE RESERVAS ------

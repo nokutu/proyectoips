@@ -29,8 +29,8 @@ public class AssistanceDialog extends JDialog {
     private JComboBox<String> activities;
     private JComboBox<String> sessions;
 
-    public AssistanceDialog() {
-        super(MainWindow.getInstance(), true);
+    public AssistanceDialog(JDialog owner) {
+        super(owner, true);
 
         setLayout(new BorderLayout());
 
@@ -40,7 +40,7 @@ public class AssistanceDialog extends JDialog {
 
         setMinimumSize(new Dimension(320, 180));
         pack();
-        setLocationRelativeTo(MainWindow.getInstance());
+        setLocationRelativeTo(owner);
     }
 
 
