@@ -211,6 +211,23 @@ public class FacilityBooking implements DatabaseItem {
 	public void setFacilityId(int facilityId) {
 		this.facilityId = facilityId;
 	}
+	
+
+	public String getCancellationCause() {
+		return cancellationCause;
+	}
+
+	public void setCancellationCause(String cancellationCause) {
+		this.cancellationCause = cancellationCause;
+	}
+
+	public Timestamp getCancellationDate() {
+		return cancellationDate;
+	}
+
+	public void setCancellationDate(Timestamp cancellationDate) {
+		this.cancellationDate = cancellationDate;
+	}
 
 	/**
 	 * @return a string representation of the whole class
@@ -244,9 +261,14 @@ public class FacilityBooking implements DatabaseItem {
 			break;
 		case STATE_ANNULLED:
 			linea += "Estado: Anulada \n";
+			linea += "Cancelada por la administracion \n ";
+			linea += "Causa de la cancelacion: "+this.getCancellationCause()+ " \n";
+			linea += "Fecha de la cancelacion: "+this.getCancellationDate().toString()+ " \n";
 			break;
 		case STATE_CANCELLED:
 			linea += "Estado: Cancelada \n";
+			linea += "Cancelada por el usuario \n ";
+			linea += "Fecha de la cancelacion: "+this.getCancellationDate().toString()+ " \n";
 			break;
 		default:
 			break;
