@@ -116,7 +116,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 					.collect(Collectors.toList());
 			sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
-			.forEach(sessionsModel::addElement);
+					.forEach(sessionsModel::addElement);
 			sessions.setModel(sessionsModel);
 
 			if (sessions.getModel().getSize() > 0) {
@@ -175,7 +175,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 		bottomPanel.add(new JLabel("Socios apuntados:"));
 		bottomPanel.add(assistanceLabel);
 
-		addMember.addActionListener(l -> { //MARK marca de localizacion
+		addMember.addActionListener(l -> {
 			try {// primero objenemos el numero del socio
 
 				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
@@ -198,27 +198,50 @@ public class AdministratorActivitiesDialog extends JDialog {
 				int numeroMaximoApuntados = activityOptional.get().getAssistantLimit();
 				int numeroActualApuntados = assistantsOptional.isPresent() ? assistantsOptional.get() : 0;
 
-				ActivityMember newActivityMember = new ActivityMember(activityId, facilityBooking.getFacilityBookingId(),
-						memberId);
+				ActivityMember newActivityMember = new ActivityMember(activityId,
+						facilityBooking.getFacilityBookingId(), memberId);
 				// CONDICIONES PARA AÑADIR:
-				// COMO ADMIN: cupo no lleno Y no ha empezado la actividad aun
+				// COMO ADMIN: 24 horas antes Y num socios apuntados no exceda
+				// maximo posible Y no este ya en otra reserva o actividad
 				if (numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
-				else if (!Utils.getCurrentTime().before(facilityBooking.getTimeStart())) {
+				else if (!Utils.getCurrentTime().before(Utils.addHourToDay(facilityBooking.getTimeStart(), 24))) {
 					JOptionPane.showMessageDialog(getThis(),
-							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
+							"Error, Un socio solo puede apuntarse a una actividad 24 horas antes de su inicio", // TODO
+																												// probar
 							"Error", JOptionPane.ERROR_MESSAGE, null);
+					if (Database.getInstance().getFacilityBookings().stream()
+							.filter(fb -> (fb.getMemberId() == newActivityMember.getMemberId()
+									&& (fb.getTimeStart().after(newActivityMember.getFacilityBooking().getTimeStart())
+											|| fb.getTimeStart()
+													.equals(newActivityMember.getFacilityBooking().getTimeStart()))))
+							.findAny().isPresent()) {
+						JOptionPane.showMessageDialog(getThis(),
+								"Error, El socio ya tiene una reserva para ese momento",
+								"Error", JOptionPane.ERROR_MESSAGE, null);
+
+					}
+					if (Database.getInstance().getActivityMembers().stream()
+							.filter(am -> (am.getMemberId() == newActivityMember.getMemberId()
+									&& (am.getFacilityBooking().getTimeStart().after(newActivityMember.getFacilityBooking().getTimeStart())
+											|| am.getFacilityBooking().getTimeStart()
+													.equals(newActivityMember.getFacilityBooking().getTimeStart()))))
+							.findAny().isPresent()) {
+						JOptionPane.showMessageDialog(getThis(),
+								"Error, El socio ya tiene una reserva para ese momento",
+								"Error", JOptionPane.ERROR_MESSAGE, null);
+
+					}
 				} else {
 					Optional<ActivityMember> a = Database.getInstance().getActivityMembers().stream()
-							.filter(am->am.isDeleted() && am.equals(newActivityMember)).findAny();
-					if(a.isPresent()){
-						ActivityMember b=a.get();
+							.filter(am -> am.isDeleted() && am.equals(newActivityMember)).findAny();
+					if (a.isPresent()) {
+						ActivityMember b = a.get();
 						b.setDeleted(false);
 						b.update();
-					}
-					else{
+					} else {
 						newActivityMember.create(); // peta aqui, sqlEx
 						Database.getInstance().getActivityMembers().add(newActivityMember);
 					}
@@ -227,9 +250,9 @@ public class AdministratorActivitiesDialog extends JDialog {
 				}
 
 			} catch (SQLException sql) {
-					JOptionPane.showMessageDialog(getThis(),
-							"Error, la transacción no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad", "Error",
-							JOptionPane.ERROR_MESSAGE, null);
+				JOptionPane.showMessageDialog(getThis(),
+						"Error, la transacción no se ha llevado a cabo\nEl socio ya está en la lista de apuntados a la atividad",
+						"Error", JOptionPane.ERROR_MESSAGE, null);
 				return;
 			} catch (NumberFormatException ex1) {
 				JOptionPane.showMessageDialog(this, "Por favor, introduzca un número de socio");
@@ -267,7 +290,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private Optional<Integer> getAssistantsOptional() {
 		return Database.getInstance().getActivityMembers().parallelStream()
 				.filter(am -> am.getActivityId() == getSelectedActivity().getActivityId() && !am.isDeleted() && am
-				.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
+						.getFacilityBookingId() == sessionsList.get(sessions.getSelectedIndex()).getFacilityBookingId())
 				.map(am -> am.isAssistance() ? 1 : 0).reduce(Integer::sum);
 	}
 
