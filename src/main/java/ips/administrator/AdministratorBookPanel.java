@@ -153,7 +153,7 @@ public class AdministratorBookPanel extends JPanel {
 
         recursive.setEnabled(false);
         recursive.addActionListener((l) -> endDateChooser.setEnabled(recursive.isSelected()));
-        form.addLine(recursive);
+        form.addLine(recursive, true);
 
         form.addLine(new JLabel("Fecha fin repetici\u00F3n:"), endDateChooser);
 

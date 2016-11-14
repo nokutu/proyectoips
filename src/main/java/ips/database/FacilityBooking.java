@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public class FacilityBooking implements DatabaseItem {
 
-	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facilitybooking_id=?";
 
 	public final static String PAYMENT_CASH = "Cash";
@@ -133,18 +133,19 @@ public class FacilityBooking implements DatabaseItem {
 		createStatement.setString(6, paymentMethod);
 		createStatement.setBoolean(7, paid);
 		if (entrance != null) {
-			createStatement.setTimestamp(9, new Timestamp(entrance.getTime()));
+			createStatement.setTimestamp(8, new Timestamp(entrance.getTime()));
 		} else {
-			createStatement.setTimestamp(9, null);
+			createStatement.setTimestamp(8, null);
 		}
 
 		if (abandon != null) {
-			createStatement.setTimestamp(10, new Timestamp(abandon.getTime()));
+			createStatement.setTimestamp(9, new Timestamp(abandon.getTime()));
 		} else {
-			createStatement.setTimestamp(10, null);
+			createStatement.setTimestamp(9, null);
 		}
-
-		createStatement.setString(11, state);
+		createStatement.setString(10, state);
+		createStatement.setString(11, cancellationCause);
+		createStatement.setTimestamp(12, cancellationDate);
 
 		createStatement.execute();
 	}
