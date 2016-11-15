@@ -1,6 +1,8 @@
-package ips.administrator;
+package ips.administrator.activities;
 
 import ips.MainWindow;
+import ips.administrator.AssistanceDialog;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -26,6 +28,12 @@ public class AdministratorActivitiesManagementDialog extends JDialog {
         c.gridy = 0;
         c.insets = new Insets(10, 20, 10, 20);
 
+        JButton createActivity = new JButton("Crear una actividad");
+        createActivity.addActionListener(l -> new AdministratorActivityCreatorDialog(this).setVisible(true));
+        content.add(createActivity, c);
+
+        c.gridy++;
+        
         JButton deleteActivities = new JButton("Cancelar actividades");
         deleteActivities.addActionListener(l -> new AdministratorActivityCancelDialog(this).setVisible(true));
         content.add(deleteActivities, c);

@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.activities;
 
 import ips.database.Activity;
 import ips.database.Database;

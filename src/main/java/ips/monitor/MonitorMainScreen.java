@@ -70,7 +70,7 @@ public class MonitorMainScreen extends JPanel {
 		monitorIDComboBox.setModel(monitorsModel);
 		monitorIDComboBox.setSelectedIndex(0);
 		monitorID = ((Monitor) monitorIDComboBox.getSelectedItem()).getMonitorId();
-		// refreshLeftCombos(); //MARK
+		// refreshLeftCombos(); 
 		monitorIDComboBox.addActionListener(l -> {
 			monitorID = ((Monitor) monitorIDComboBox.getSelectedItem()).getMonitorId();
 			refreshLeftCombos();
@@ -156,7 +156,7 @@ public class MonitorMainScreen extends JPanel {
 			if (sessions.getModel().getSize() > 0) {
 				sessions.setSelectedIndex(0);
 			}
-			refreshCentralPanelList(); // TODO poner esto y aqui pero en el de activity??
+			refreshCentralPanelList(); 
 			refreshAssistanceCount();
 		});
 		activities.setSelectedIndex(0);
@@ -243,13 +243,16 @@ public class MonitorMainScreen extends JPanel {
 				ActivityMember newActivityMember = new ActivityMember(activityId,
 						facilityBooking.getFacilityBookingId(), memberId);
 				// CONDICIONES PARA AÑADIR:
-				// COMO MONITOR: cupo no lleno Y entre 5 minutos antes de
-				// empezar y 10 despues de haberlo hecho
+				// COMO MONITOR: 24 horas antes Y num socios apuntados no exceda
+				// el maximo posible Y no esté ya en otra reserva o actividad
 				if (numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
-				else if (!Utils.getCurrentTime().before(facilityBooking.getTimeStart())) {
+				else if (!
+						Utils.getCurrentTime().after(facilityBooking.getTimeStart())
+						|| Utils.getCurrentTime().before(facilityBooking.getTimeStart())
+						) {
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
 							"Error", JOptionPane.ERROR_MESSAGE, null);

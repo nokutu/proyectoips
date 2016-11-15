@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.bookings;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

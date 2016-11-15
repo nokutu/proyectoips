@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.debts;
 
 import ips.MainWindow;
 import ips.Utils;

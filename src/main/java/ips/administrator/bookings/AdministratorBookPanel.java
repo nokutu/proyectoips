@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.bookings;
 
 import com.toedter.calendar.JDateChooser;
 import ips.Utils;

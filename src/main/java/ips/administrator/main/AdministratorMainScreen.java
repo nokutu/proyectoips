@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.main;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -9,6 +9,11 @@ import ips.FeeUpdater;
 import ips.MainScreen;
 import ips.MainWindow;
 import ips.Utils;
+import ips.administrator.CurrentViewDialog;
+import ips.administrator.activities.AdministratorActivitiesManagementDialog;
+import ips.administrator.bookings.AdministratorBookPanel;
+import ips.administrator.debts.PayCurrentDebt;
+import ips.administrator.debts.PayPastDebtsDialog;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 

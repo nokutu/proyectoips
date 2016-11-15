@@ -1,6 +1,7 @@
 package ips.administrator;
 
 
+import ips.administrator.bookings.AdministratorBookingCancelDialog;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import javax.swing.*;

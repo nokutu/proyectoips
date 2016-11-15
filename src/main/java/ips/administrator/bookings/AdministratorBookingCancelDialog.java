@@ -1,4 +1,4 @@
-package ips.administrator;
+package ips.administrator.bookings;
 
 import ips.MainWindow;
 import ips.Utils;

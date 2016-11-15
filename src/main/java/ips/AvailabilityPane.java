@@ -1,7 +1,7 @@
 package ips;
 
-import ips.administrator.AdministratorBookPanel;
 import ips.administrator.DetailsDialog;
+import ips.administrator.bookings.AdministratorBookPanel;
 import ips.database.*;
 import ips.member.MemberBookPanel;
 import ips.member.MemberBookingCancelDialog;

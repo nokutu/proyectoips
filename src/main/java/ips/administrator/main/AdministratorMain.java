@@ -1,8 +1,11 @@
-package ips.administrator;
+package ips.administrator.main;
 
 import ips.AvailabilityPane;
 import ips.FeeUpdater;
 import ips.MainWindow;
+import ips.administrator.CurrentViewDialog;
+import ips.administrator.debts.PayCurrentDebt;
+import ips.administrator.debts.PayDebtsDialog;
 import ips.database.Database;
 
 import javax.swing.JButton;

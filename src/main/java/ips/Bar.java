@@ -1,8 +1,7 @@
 package ips;
 
-import ips.administrator.AdministratorMain;
-import ips.administrator.AdministratorMainScreen;
-
+import ips.administrator.main.AdministratorMain;
+import ips.administrator.main.AdministratorMainScreen;
 import ips.member.MemberMainScreen;
 import ips.monitor.MonitorMainScreen;
 import ips.monitor.MonitorMainScreen;
