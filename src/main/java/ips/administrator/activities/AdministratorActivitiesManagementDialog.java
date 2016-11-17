@@ -50,6 +50,12 @@ public class AdministratorActivitiesManagementDialog extends JDialog {
         btnasistencia.addActionListener(e -> new AssistanceDialog(this).setVisible(true));
         add(btnasistencia, c);
 
+        c.gridy++;
+
+        JButton btnbooking = new JButton("Reservar para actividades");
+        btnbooking.addActionListener(l -> new AdministratorActivitiesBookingDialog(this).setVisible(true));
+        add(btnbooking, c);
+
         pack();
         setLocationRelativeTo(MainWindow.getInstance());
     }

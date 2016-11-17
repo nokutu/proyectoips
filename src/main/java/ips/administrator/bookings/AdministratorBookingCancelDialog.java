@@ -1,7 +1,7 @@
 package ips.administrator.bookings;
 
 import ips.MainWindow;
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.database.FeeItem;

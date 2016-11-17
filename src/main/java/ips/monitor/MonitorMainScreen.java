@@ -1,7 +1,6 @@
 package ips.monitor;
 
-import ips.MainWindow;
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by nokutu on 25/10/2016.

@@ -78,6 +78,12 @@ public class Activity implements DatabaseItem {
         return lazyActivityBookings;
     }
 
+    public static List<Activity> getValidActivities() {
+        return Database.getInstance().getActivities().stream()
+                .filter(a -> !a.isDeleted())
+                .collect(Collectors.toList());
+    }
+
     public boolean isDeleted() {
         return deleted;
     }

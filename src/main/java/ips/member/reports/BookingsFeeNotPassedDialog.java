@@ -1,11 +1,11 @@
 package ips.member.reports;
 
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.member.MemberMainScreen;
-import javax.swing.*;
 
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.text.DateFormat;
@@ -61,7 +61,7 @@ public class BookingsFeeNotPassedDialog extends JDialog {
     private void addWeek(boolean up) {
         Calendar c = Calendar.getInstance();
         c.setTime(currentWeek);
-        c.roll(Calendar.WEEK_OF_YEAR, up);
+        c.add(Calendar.WEEK_OF_YEAR, up ? 1 : -1);
 
         if (c.getTime().after(new Date())) {
             currentWeek = c.getTime();
@@ -70,15 +70,7 @@ public class BookingsFeeNotPassedDialog extends JDialog {
     }
 
     private void setDefaultWeek() {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.set(Calendar.DAY_OF_WEEK, 0);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-
-        currentWeek = c.getTime();
+        currentWeek = Utils.getCurrentWeek();
         refreshList();
     }
 
@@ -101,7 +93,7 @@ public class BookingsFeeNotPassedDialog extends JDialog {
     private Date getNextWeek() {
         Calendar c = Calendar.getInstance();
         c.setTime(currentWeek);
-        c.roll(Calendar.WEEK_OF_YEAR, true);
+        c.add(Calendar.WEEK_OF_YEAR, 1);
         return c.getTime();
     }
 }

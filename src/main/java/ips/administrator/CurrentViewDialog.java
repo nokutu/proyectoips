@@ -1,6 +1,6 @@
 package ips.administrator;
 
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 
@@ -8,15 +8,11 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;

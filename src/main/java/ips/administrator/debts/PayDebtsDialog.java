@@ -1,7 +1,7 @@
 package ips.administrator.debts;
 
 import com.toedter.calendar.JDateChooser;
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.gui.Form;
@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class PayDebtsDialog extends JDialog {

@@ -8,7 +8,7 @@ import ips.AvailabilityPane;
 import ips.FeeUpdater;
 import ips.MainScreen;
 import ips.MainWindow;
-import ips.Utils;
+import ips.utils.Utils;
 import ips.administrator.CurrentViewDialog;
 import ips.administrator.activities.AdministratorActivitiesManagementDialog;
 import ips.administrator.bookings.AdministratorBookPanel;

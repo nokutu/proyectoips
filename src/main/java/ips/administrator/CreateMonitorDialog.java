@@ -6,29 +6,17 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.border.BevelBorder;
 
-import com.toedter.calendar.JDateChooser;
-
-import ips.Utils;
 import ips.database.Database;
-import ips.database.Facility;
-import ips.database.FacilityBooking;
 import ips.database.Monitor;
 import ips.gui.Form;
 

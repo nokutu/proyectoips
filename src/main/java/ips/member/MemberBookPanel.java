@@ -1,7 +1,8 @@
 package ips.member;
 
 import com.toedter.calendar.JDateChooser;
-import ips.Utils;
+import ips.utils.BookingUtils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;
@@ -116,7 +117,7 @@ public class MemberBookPanel extends JPanel {
     private void confirm(ActionEvent actionEvent) {
         FacilityBooking fb = createBooking();
 
-        if (checkValid(fb) & fb != null) {
+        if (BookingUtils.checkValidMember(fb, false, form::setError) & fb != null) {
             Database.getInstance().getFacilityBookings().add(fb);
             try {
                 fb.create();
@@ -144,59 +145,5 @@ public class MemberBookPanel extends JPanel {
         } catch (NumberFormatException e) {
             return null;
         }
-    }
-
-    private boolean checkValid(FacilityBooking fb) {
-        boolean valid = true;
-        String errors = "\n";
-
-        if (fb != null) {
-            if (fb.getTimeStart().before(Utils.getCurrentTime())) {
-                valid = false;
-                errors += "No puedes reservar para el pasado.\n";
-            } else if (fb.getTimeStart().after(Utils.addHourToDay(Utils.getCurrentTime(), 24 * 15))) {
-                valid = false;
-                errors += "Solo puedes reservar hasta 15 días en adelante.\n";
-            }
-            if (fb.getTimeStart().before(Utils.addHourToDay(Utils.getCurrentTime(), 1))) {
-                valid = false;
-                errors += "Tienes que reservar con una hora de antelaci\u00F3n.\n";
-            }
-            if (fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() > 2 * 3600 * 1000 ||
-                    fb.getTimeEnd().getTime() - fb.getTimeStart().getTime() <= 0) {
-                // More than 2 hours
-                valid = false;
-                errors += "Un socio solo puedo reservar un máximo de 2 horas.\nEl tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
-            }
-
-            Member member = Member.get(fb.getMemberId());
-            if (member == null) {
-                // Member not valid
-                errors += "Id de miembro no válida.\n";
-                valid = false;
-            } else if (!Utils.isMemberFree(member, fb.getTimeStart(), fb.getTimeEnd())) {
-                errors += "Ya tienes una reserva en esta franja de tiempo.\n";
-                valid = false;
-            }
-
-            Facility facility = fb.getFacility();
-            assert facility != null;
-
-            if (valid && !Utils.isFacilityFree(facility, fb.getTimeStart(), fb.getTimeEnd())) {
-                // Facility not free
-                valid = false;
-                errors += "La instalaci\u00F3n está ocupada en la horas seleccionadas.\n";
-            }
-        } else {
-            errors += "Por favor, rellena todos los campos.\n";
-            valid = false;
-        }
-
-        if (!valid) {
-            form.setError(errors);
-            setSize(getWidth(), getPreferredSize().height);
-        }
-
-        return valid;
     }
 }

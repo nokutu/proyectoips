@@ -1,4 +1,4 @@
-package ips;
+package ips.utils;
 
 import ips.database.*;
 
@@ -135,6 +135,13 @@ public class Utils {
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
+        return c.getTime();
+    }
+
+    public static Date getCurrentWeek() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(getCurrentDate());
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         return c.getTime();
     }
 

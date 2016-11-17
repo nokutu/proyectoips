@@ -1,6 +1,6 @@
 package ips.administrator.debts;
 
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.Facility;
 import ips.database.FacilityBooking;

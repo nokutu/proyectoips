@@ -1,7 +1,7 @@
 package ips.member;
 
 import ips.MainWindow;
-import ips.Utils;
+import ips.utils.Utils;
 import ips.database.Activity;
 import ips.database.ActivityBooking;
 import ips.database.ActivityMember;
