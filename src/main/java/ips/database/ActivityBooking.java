@@ -16,7 +16,6 @@ public class ActivityBooking implements DatabaseItem {
     private int facilityBookingId;
 
     private static PreparedStatement createStatement;
-    private Date bookingTimeStart;
     private int monitorId;
 
     private FacilityBooking lazyFacilityBooking;

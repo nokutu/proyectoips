@@ -24,8 +24,6 @@ public class FacilityBooking implements DatabaseItem {
 
 	private static Map<String, String> TRANSLATIONS;
 
-	private static int MAX_ID = 0;
-
 	private static PreparedStatement createStatement;
 	private static PreparedStatement updateStatement;
 
@@ -62,7 +60,7 @@ public class FacilityBooking implements DatabaseItem {
 
 	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
 			boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause, Timestamp cancellationDate) {
-		this(MAX_ID + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, entrance, abandon, state, cancellationCause, cancellationDate);
+		this(getId() + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, entrance, abandon, state, cancellationCause, cancellationDate);
 	}
 
 	public FacilityBooking(int facilityBookingId, int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
@@ -79,8 +77,6 @@ public class FacilityBooking implements DatabaseItem {
 		this.state = state;
 		this.cancellationCause = cancellationCause;
 		this.cancellationDate = cancellationDate;
-
-		MAX_ID = Math.max(MAX_ID, facilityBookingId);
 	}
 
 	public int getFacilityBookingId() {
@@ -332,5 +328,17 @@ public class FacilityBooking implements DatabaseItem {
 
 	public static String translate(String string) {
 		return TRANSLATIONS.get(string);
+	}
+
+	private static int getId() {
+		Optional<Integer> maxId = Database.getInstance().getFacilityBookings()
+				.parallelStream()
+				.map(FacilityBooking::getFacilityBookingId)
+				.max(Integer::compare);
+		if (maxId.isPresent()) {
+			return maxId.get();
+		} else {
+			return 0;
+		}
 	}
 }

@@ -13,6 +13,12 @@ import java.util.function.Consumer;
  */
 public class BookingUtils {
 
+    /**
+     * @param fb
+     * @param errorOutput A lambda expression that receives a String. It receives a String with the errores that
+     *                    must be showed to the user.
+     * @return true if the reservation is valid; false otherwise.
+     */
     public static boolean checkValidCenter(FacilityBooking fb, Consumer<String> errorOutput) {
         boolean valid = true;
         String errors = "";
@@ -24,8 +30,14 @@ public class BookingUtils {
             throw new IllegalStateException("La instalaci\u00F3n tiene que existir");
         }
 
+        // No se puede reservar para el pasado.
+        if (fb.getTimeStart().before(Utils.getCurrentTime())) {
+            valid = false;
+            errors += "No puedes reservar para el pasado.\n";
+        }
+
         // invalided de los spinners
-        if (fb.getTimeEnd().before(fb.getTimeStart()) || fb.getTimeStart().before(Utils.getCurrentDate())) {
+        if (fb.getTimeEnd().before(fb.getTimeStart())) {
             errors += "El tiempo de finalizaci\u00F3n debe ser posterior al de inicio.\n";
             valid = false;
         }
@@ -45,6 +57,13 @@ public class BookingUtils {
         return valid;
     }
 
+    /**
+     * @param fb
+     * @param isAdmin
+     * @param errorOutput A lambda expression that receives a String. It receives a String with the errores that
+     *                    must be showed to the user.
+     * @return true if the reservation is valid; false otherwise.
+     */
     public static boolean checkValidMember(FacilityBooking fb, boolean isAdmin, Consumer<String> errorOutput) {
         boolean valid = true;
         String errors = "";
