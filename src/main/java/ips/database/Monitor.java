@@ -68,7 +68,7 @@ public class Monitor implements DatabaseItem {
 
 	public List<Activity> getActivities() {
 		return Database.getInstance().getActivities().stream()
-				.filter(a -> a.getActivityBookings().stream().filter(ab -> ab.getMonitorId() == monitorId).findAny().isPresent())
+				.filter(a -> a.getActivityBookings().stream().filter(ab -> ab.getMonitorId() == monitorId).findAny().isPresent()&&!a.isDeleted())
 				.collect(Collectors.toList());
 	}
 
