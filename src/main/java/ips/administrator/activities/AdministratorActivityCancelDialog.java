@@ -59,17 +59,24 @@ public class AdministratorActivityCancelDialog extends JDialog {
         
         c.insets = new Insets(10, 20, 10, 20);
         option1.setText("Eliminar reservas futuras");
+        option1.addActionListener(l->{
+        	if(option1.isSelected())
+        		desdeFecha.setEnabled(false);
+        	else
+        		desdeFecha.setEnabled(true);
+        });
         content.add(option1,c);
+        
 
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
 
         c.insets = new Insets(10, 20, 10, 20);
         content.add(getDesdeFecha(),c);
         
 
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
 
 //        GridBagConstraints d = new GridBagConstraints();
 //		d.insets = new Insets(0, 0, 0, 5);
@@ -80,7 +87,7 @@ public class AdministratorActivityCancelDialog extends JDialog {
         
         
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
 
         c.gridwidth = 2;
         c.insets = new Insets(10, 20, 10, 20);
@@ -165,9 +172,15 @@ public class AdministratorActivityCancelDialog extends JDialog {
 	        desdeFecha.setSelected(false);
 	        desdeFecha.addActionListener(l->{
 	        	if(desdeFecha.isSelected())
+	        	{
 	        		getDateSelecter().setEnabled(true);
+	        		option1.setEnabled(false);
+	        	}
 	        	else
+	        	{
 	        		getDateSelecter().setEnabled(false);
+	        		option1.setEnabled(true);
+	        	}
 	        });
 		}
 		return desdeFecha;
