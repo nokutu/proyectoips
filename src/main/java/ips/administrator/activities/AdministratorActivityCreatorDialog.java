@@ -1,9 +1,13 @@
 package ips.administrator.activities;
 
+import ips.MainWindow;
+import ips.administrator.main.AdministratorMainScreen;
 import ips.database.Activity;
 import ips.database.Database;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,9 +22,9 @@ import java.awt.LayoutManager;
 public class AdministratorActivityCreatorDialog extends JDialog {
 
 	private JTextField textFieldNombreActividad;
-	private JCheckBox chckbxAsignarAMonitor;
-	private JLabel lblNumeroDelMonitor;
-	private JTextField textFieldMonitorId;
+	// private JCheckBox chckbxAsignarAMonitor;
+	// private JLabel lblNumeroDelMonitor;
+	// private JTextField textFieldMonitorId;
 	private JCheckBox chckbxAsignarLimitePlazas;
 	private JSpinner spinnerLimiteDePlazas;
 	private JButton btnCrearActividad;
@@ -77,21 +81,17 @@ public class AdministratorActivityCreatorDialog extends JDialog {
 		gbc_textFieldNombreActividad.gridy = 0;
 		content.add(getTextFieldNombreActividad(), gbc_textFieldNombreActividad);
 
-		c.anchor = GridBagConstraints.WEST;
-		c.insets = new Insets(0, 0, 5, 5);
-		c.gridx = 0;
-		c.gridy = 1;
-		content.add(getChckbxAsignarAMonitor(), c);
-
-		c.insets = new Insets(0, 0, 5, 5);
-		c.gridx = 1;
-		c.gridy = 1;
-		content.add(getLblNumeroDelMonitor(), c);
-
-		c.insets = new Insets(0, 0, 5, 0);
-		c.gridx = 2;
-		c.gridy = 1;
-		content.add(getTextFieldMonitorId(), c);
+		/*
+		 * c.anchor = GridBagConstraints.WEST; c.insets = new Insets(0, 0, 5,
+		 * 5); c.gridx = 0; c.gridy = 1; content.add(getChckbxAsignarAMonitor(),
+		 * c);
+		 * 
+		 * c.insets = new Insets(0, 0, 5, 5); c.gridx = 1; c.gridy = 1;
+		 * content.add(getLblNumeroDelMonitor(), c);
+		 * 
+		 * c.insets = new Insets(0, 0, 5, 0); c.gridx = 2; c.gridy = 1;
+		 * content.add(getTextFieldMonitorId(), c);
+		 */
 
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(0, 0, 5, 5);
@@ -124,46 +124,35 @@ public class AdministratorActivityCreatorDialog extends JDialog {
 		return textFieldNombreActividad;
 	}
 
-	private JCheckBox getChckbxAsignarAMonitor() {
-		if (chckbxAsignarAMonitor == null) {
-			chckbxAsignarAMonitor = new JCheckBox("Asignar a Monitor");
-			chckbxAsignarAMonitor.setSelected(true);
-			chckbxAsignarAMonitor.addActionListener(l -> {
-				if (!chckbxAsignarAMonitor.isSelected()) {
-					textFieldMonitorId.setEnabled(false);
-					textFieldMonitorId.setEnabled(false);
-				} else {
-					lblNumeroDelMonitor.setEnabled(true);
-					textFieldMonitorId.setEnabled(true);
-				}
-			});
-		}
-		return chckbxAsignarAMonitor;
-	}
-
-	private JLabel getLblNumeroDelMonitor() {
-		if (lblNumeroDelMonitor == null) {
-			lblNumeroDelMonitor = new JLabel("numero del Monitor:");
-		}
-		return lblNumeroDelMonitor;
-	}
-
-	private JTextField getTextFieldMonitorId() {
-		if (textFieldMonitorId == null) {
-			textFieldMonitorId = new JTextField();
-			textFieldMonitorId.setColumns(10);
-		}
-		return textFieldMonitorId;
-	}
+	/*
+	 * private JCheckBox getChckbxAsignarAMonitor() { if (chckbxAsignarAMonitor
+	 * == null) { chckbxAsignarAMonitor = new JCheckBox("Asignar a Monitor");
+	 * chckbxAsignarAMonitor.setSelected(true);
+	 * chckbxAsignarAMonitor.addActionListener(l -> { if
+	 * (!chckbxAsignarAMonitor.isSelected()) {
+	 * textFieldMonitorId.setEnabled(false);
+	 * textFieldMonitorId.setEnabled(false); } else {
+	 * lblNumeroDelMonitor.setEnabled(true);
+	 * textFieldMonitorId.setEnabled(true); } }); } return
+	 * chckbxAsignarAMonitor; }
+	 * 
+	 * private JLabel getLblNumeroDelMonitor() { if (lblNumeroDelMonitor ==
+	 * null) { lblNumeroDelMonitor = new JLabel("numero del Monitor:"); } return
+	 * lblNumeroDelMonitor; }
+	 * 
+	 * private JTextField getTextFieldMonitorId() { if (textFieldMonitorId ==
+	 * null) { textFieldMonitorId = new JTextField();
+	 * textFieldMonitorId.setColumns(10); } return textFieldMonitorId; }
+	 */
 
 	private JCheckBox getChckbxAsignarLimitePlazas() {
 		if (chckbxAsignarLimitePlazas == null) {
 			chckbxAsignarLimitePlazas = new JCheckBox("Asignar Limite de Plazas");
 			chckbxAsignarLimitePlazas.addActionListener(l -> {
 				if (!chckbxAsignarLimitePlazas.isSelected())
-					spinnerLimiteDePlazas.setEnabled(false);
+					getSpinnerLimiteDePlazas().setEnabled(false);
 				else
-					spinnerLimiteDePlazas.setEnabled(true);
+					getSpinnerLimiteDePlazas().setEnabled(true);
 			});
 		}
 		return chckbxAsignarLimitePlazas;
@@ -174,6 +163,12 @@ public class AdministratorActivityCreatorDialog extends JDialog {
 		if (spinnerLimiteDePlazas == null) {
 			spinnerLimiteDePlazas = new JSpinner();
 			spinnerLimiteDePlazas.setEnabled(false);
+			spinnerLimiteDePlazas.setValue(new Integer(1));
+			SpinnerNumberModel snm = new SpinnerNumberModel();
+			snm.setValue(new Integer(1));
+			snm.setMinimum(1);
+//			snm.setMaximum(Integer.MAX_VALUE);
+			spinnerLimiteDePlazas.setModel(snm);
 
 		}
 		return spinnerLimiteDePlazas;
@@ -182,6 +177,31 @@ public class AdministratorActivityCreatorDialog extends JDialog {
 	private JButton getBtnCrearActividad() {
 		if (btnCrearActividad == null) {
 			btnCrearActividad = new JButton("Crear la Actividad");
+			btnCrearActividad.addActionListener(l -> {
+				//verificar datos
+				if (textFieldNombreActividad.getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "Es obligatorio asignar un nombre a la actividad");
+				} else {
+					Activity newActivity = new Activity(Database.getInstance().getActivities().size()+1,
+							textFieldNombreActividad.getText(), chckbxAsignarLimitePlazas.isSelected()
+									? Integer.parseInt(getSpinnerLimiteDePlazas().getValue().toString()) : -1);
+					try {
+						newActivity.create();
+						Database.getInstance().getActivities().add(newActivity);
+//						((MainWindow)this.getParent().getParent()).revalidate();
+//						((MainWindow)this.getParent().getParent()).repaint();
+						// actualizar los componentes de la ventana principal (XXX)
+						for(Component c:((MainWindow)this.getParent().getParent()).getComponents()){c.revalidate();c.repaint();}
+
+						dispose();
+					} catch (SQLException ex) {
+						//ex.printStackTrace();
+						JOptionPane.showMessageDialog(this,
+								"Error al crear la actividad: ya existe otra con ese nombre");
+					}
+				}
+				
+			});
 		}
 		return btnCrearActividad;
 	}

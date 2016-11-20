@@ -13,14 +13,14 @@ import java.util.Optional;
 public class FacilityBooking implements DatabaseItem {
 
 	private final static String CREATE_QUERY = "INSERT INTO facilitybooking VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, facilitybooking_deleted=?, entrance=?, abandon=?, state=? WHERE facilitybooking_id=?";
+	private final static String UPDATE_QUERY = "UPDATE facilitybooking SET payment_method=?, paid=?, entrance=?, abandon=?, state=? WHERE facilitybooking_id=?";
 
 	public final static String PAYMENT_CASH = "Cash";
 	public final static String PAYMENT_FEE = "Fee";
 
 	public static final String STATE_VALID = "Valid";
 	public static final String STATE_ANNULLED = "Annulled";
-	public static final String STATE_CANCELLED = "Cancelled";
+	public static final String STATE_CANCELLED = "Canceled";
 
 	private static Map<String, String> TRANSLATIONS;
 
@@ -155,19 +155,19 @@ public class FacilityBooking implements DatabaseItem {
 		updateStatement.setBoolean(2, paid);
 
 		if (entrance != null) {
-			updateStatement.setTimestamp(4, new Timestamp(entrance.getTime()));
+			updateStatement.setTimestamp(3, new Timestamp(entrance.getTime()));
+		} else {
+			updateStatement.setTimestamp(3, null);
+		}
+		if (abandon != null) {
+			updateStatement.setTimestamp(4, new Timestamp(abandon.getTime()));
 		} else {
 			updateStatement.setTimestamp(4, null);
 		}
-		if (abandon != null) {
-			updateStatement.setTimestamp(5, new Timestamp(abandon.getTime()));
-		} else {
-			updateStatement.setTimestamp(5, null);
-		}
 
-		updateStatement.setString(6, state);
+		updateStatement.setString(5, state);
 
-		updateStatement.setInt(7, facilityBookingId);
+		updateStatement.setInt(6, facilityBookingId);
 
 
 		updateStatement.execute();

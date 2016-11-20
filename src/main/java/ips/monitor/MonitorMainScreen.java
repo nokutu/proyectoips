@@ -241,18 +241,15 @@ public class MonitorMainScreen extends JPanel {
 				ActivityMember newActivityMember = new ActivityMember(activityId,
 						facilityBooking.getFacilityBookingId(), memberId);
 				// CONDICIONES PARA AÑADIR:
-				// COMO MONITOR: 24 horas antes Y num socios apuntados no exceda
+				// COMO MONITOR: desde 5 minutos antes Y num socios apuntados no exceda
 				// el maximo posible Y no esté ya en otra reserva o actividad
 				if (numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
-				else if (!
-						Utils.getCurrentTime().after(facilityBooking.getTimeStart())
-						|| Utils.getCurrentTime().before(facilityBooking.getTimeStart())
-						) {
+				else if (Utils.getCurrentTime().before(Utils.addMinutesToHour(facilityBooking.getTimeStart(), -5))) {
 					JOptionPane.showMessageDialog(getThis(),
-							"Error, la transaccion no se puede llevar a cabo porque la actividad ya está en curso",
+							"Error, Solo se puede apuntar a partir de los 5 minutos antes de comenzar la clase",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				} else {
 					newActivityMember.create(); // peta aqui, sqlEx
