@@ -54,6 +54,10 @@ public class AdministratorActivityCancelDialog extends JDialog {
 
         content.add(activities, c);
         
+        c.gridx = 0;
+        c.gridy = 1;
+        
+        c.insets = new Insets(10, 20, 10, 20);
         option1.setText("Eliminar reservas futuras");
         content.add(option1,c);
 
@@ -132,9 +136,14 @@ public class AdministratorActivityCancelDialog extends JDialog {
         		FacilityBooking f = ac.getFacilityBooking();
         		if(f.getTimeStart().after(Utils.getCurrentTime()))
         		{
-        		
-        			f.setCancellationCause("Cancelacion debido a la cancelacion de la actividad a impartir en esta reserva");
+        			f.setState(FacilityBooking.STATE_CANCELLED);
+        			f.setCancellationCause("la actividad " + activity.getActivityName()+ " ha sido cancelada ");
         			f.setCancellationDate(new Timestamp(Utils.getCurrentTime().getTime()));
+        			try{
+        				f.update();
+        			}catch(SQLException ex){
+        				ex.printStackTrace();
+        			}
         		}
         	}
         }

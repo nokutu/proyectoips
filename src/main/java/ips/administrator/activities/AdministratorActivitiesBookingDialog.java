@@ -29,7 +29,8 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     private static final int LINE_TIME_START = 4;
     public static final int LINE_TIME_END = 5;
     private static final int LINE_END_DATE = 6;
-    private static final int LINE_ERROR_PANEL = 7;
+    private static final int LINE_OPTIONS = 7;
+    private static final int LINE_ERROR_PANEL = 8;
 
     private JComboBox<String> activities;
     private JDateChooser endDate;
@@ -40,6 +41,9 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     private JComboBox<String> monitors;
 
     private JCheckBox[] weekChk;
+    
+    private JCheckBox chooseMonitor;
+    private JCheckBox chooseHours;
 
     public AdministratorActivitiesBookingDialog(JDialog owner) {
         super(owner, true);
@@ -80,6 +84,23 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
             c.gridx++;
         }
     }
+    
+    private void addOptionChecks(JPanel center, GridBagConstraints c)
+    {
+    	c.gridwidth = 2;
+        c.gridy = LINE_OPTIONS;
+        
+        chooseHours= new JCheckBox("Elegir horario para cada dia de la semana");
+        chooseMonitor=new JCheckBox("Elegir monitor para cada dia de la semana");
+        
+        chooseHours.setSelected(false);
+        chooseMonitor.setSelected(false);
+        
+        center.add(chooseHours, c);
+        c.gridx++;
+        center.add(chooseMonitor, c);
+    }
+    
 
     private void addActivities(JPanel center, GridBagConstraints c) {
         c.gridwidth = 7;
