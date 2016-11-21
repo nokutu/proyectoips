@@ -72,10 +72,10 @@ CREATE TABLE fee (
 
 CREATE TABLE feeitem (
     feeitem_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    fee_member_id INTEGER NOT NULL,
+    feeitem_amount DOUBLE,
     feeitem_concept VARCHAR(64),
 	fee_month DATE NOT NULL,
-    fee_member_id INTEGER NOT NULL,
-    feeitem_amount NUMBER,
 	CONSTRAINT fk_FEE_ITEM FOREIGN KEY(fee_month, fee_member_id) REFERENCES FEE(fee_month, fee_member_id)
 );
 
