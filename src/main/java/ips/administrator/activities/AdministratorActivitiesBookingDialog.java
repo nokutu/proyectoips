@@ -24,10 +24,10 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
             "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"
     };
     private static final int LINE_FACILITIES = 1;
-    private static final int LINE_MONITORS = 2;
-    private static final int LINE_WEEK_CHK = 3;
-    private static final int LINE_TIME_START = 4;
-    public static final int LINE_TIME_END = 5;
+    private static final int LINE_MONITORS =5 ;
+    private static final int LINE_WEEK_CHK = 2;
+    private static final int LINE_TIME_START = 3;
+    public static final int LINE_TIME_END = 4;
     private static final int LINE_END_DATE = 6;
     private static final int LINE_OPTIONS = 7;
     private static final int LINE_ERROR_PANEL = 9;
@@ -41,6 +41,9 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     private JComboBox<String> monitors;
 
     private JCheckBox[] weekChk;
+    private JSpinner[] weekStart;
+    private JSpinner[] weekEnd;
+    private JComboBox[] weekMonitor;
     
     private JCheckBox chooseMonitor;
     private JCheckBox chooseHours;
@@ -77,6 +80,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     private void addWeekCheckboxes(JPanel center, GridBagConstraints c) {
         c.gridwidth = 1;
         c.gridy = LINE_WEEK_CHK;
+        c.gridx = 1;
 
         weekChk = new JCheckBox[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
@@ -91,20 +95,22 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     	
         c.gridy = LINE_OPTIONS;
         
-        chooseHours= new JCheckBox("Elegir horario para cada dia de la semana");
-        chooseMonitor=new JCheckBox("Elegir monitor para cada dia de la semana");
+        chooseHours= new JCheckBox("Fijar mismas horas");
+        chooseMonitor=new JCheckBox("Fijar mismos monitores");
         
         chooseHours.setSelected(false);
         chooseMonitor.setSelected(false);
         
+        c.gridwidth = 4;
         center.add(chooseHours, c);
-        c.gridy++;
+        c.gridx=4;
+    	c.gridwidth = 4;
         center.add(chooseMonitor, c);
     }
     
 
     private void addActivities(JPanel center, GridBagConstraints c) {
-        c.gridwidth = 7;
+        c.gridwidth = 4;
 
         JPanel activitiesPanel = new JPanel();
         center.add(activitiesPanel, c);
@@ -120,8 +126,9 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     }
 
     private DefaultComboBoxModel<String> addFacilities(JPanel center, GridBagConstraints c) {
-        c.gridy = LINE_FACILITIES;
-
+        //c.gridy = LINE_FACILITIES;
+    	c.gridx=4;
+    	c.gridwidth = 4;
         JPanel facilitiesPanel = new JPanel();
         center.add(facilitiesPanel, c);
 
@@ -138,11 +145,13 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
     private void addMonitors(JPanel center, GridBagConstraints c) {
         c.gridy = LINE_MONITORS;
+        c.gridx=0;
+        c.gridwidth = 1;
 
         JPanel monitorPanel = new JPanel();
         center.add(monitorPanel, c);
 
-        monitorPanel.add(new JLabel("Instalación:"), c);
+        monitorPanel.add(new JLabel("Monitor:"), c);
         monitors = new JComboBox<>();
         DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
         Database.getInstance().getMonitors().stream()
@@ -150,28 +159,50 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
                 .forEach(monitorsModel::addElement);
         monitors.setModel(monitorsModel);
         monitorPanel.add(monitors);
+        weekStart = new JSpinner[DAYS.length];
+        for (int i = 0; i < DAYS.length; i++) {
+            weekStart[i] = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+            center.add(weekStart[i], c);
+            c.gridx++;
+        }
+
     }
 
     private void addTimeSpinners(JPanel center, GridBagConstraints c) {
-        c.gridx = 0;
+    	c.gridwidth = 1;
         c.gridy = LINE_TIME_START;
-        c.gridwidth = 7;
+        c.gridx = 0;
 
         JPanel timeStartPanel = new JPanel();
         center.add(timeStartPanel, c);
         timeStartPanel.add(new JLabel("Hora inicio:"));
-        timeStart = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-        timeStartPanel.add(timeStart);
+        //timeStart = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+        c.gridx = 1;
+        //timeStartPanel.add(timeStart);
+        weekStart = new JSpinner[DAYS.length];
+        for (int i = 0; i < DAYS.length; i++) {
+            weekStart[i] = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+            center.add(weekStart[i], c);
+            c.gridx++;
+        }
 
-        c.gridx = 0;
+        c.gridwidth = 1;
         c.gridy = LINE_TIME_END;
-        c.gridwidth = 7;
+        c.gridx = 0;
 
         JPanel timeEndPanel = new JPanel();
         center.add(timeEndPanel, c);
         timeEndPanel.add(new JLabel("Hora fin:"));
-        timeEnd = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-        timeEndPanel.add(timeEnd);
+       // timeEnd = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+       // timeEndPanel.add(timeEnd);
+        c.gridx = 1;
+        
+        weekEnd = new JSpinner[DAYS.length];
+        for (int i = 0; i < DAYS.length; i++) {
+            weekEnd[i] = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+            center.add(weekEnd[i], c);
+            c.gridx++;
+        }
     }
 
     private void addEndDateChooser(JPanel center, GridBagConstraints c) {
