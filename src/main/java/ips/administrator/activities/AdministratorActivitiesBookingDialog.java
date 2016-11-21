@@ -4,11 +4,11 @@ import com.toedter.calendar.JDateChooser;
 import ips.database.*;
 import ips.utils.BookingUtils;
 import ips.utils.Utils;
-
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
 import java.awt.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,15 +24,16 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
             "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"
     };
     private static final int LINE_FACILITIES = 1;
-    private static final int LINE_MONITORS =5 ;
+    private static final int LINE_MONITORS = 5;
     private static final int LINE_WEEK_CHK = 2;
     private static final int LINE_TIME_START = 3;
     public static final int LINE_TIME_END = 4;
-    private static final int LINE_END_DATE = 6;
+    private static final int LINE_DATE_RANGE = 6;
     private static final int LINE_OPTIONS = 7;
     private static final int LINE_ERROR_PANEL = 9;
 
     private JComboBox<String> activities;
+    private JDateChooser startDate;
     private JDateChooser endDate;
     private JComboBox<String> facilities;
     private JSpinner timeStart;
@@ -44,7 +45,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     private JSpinner[] weekStart;
     private JSpinner[] weekEnd;
     private JComboBox[] weekMonitor;
-    
+
     private JCheckBox chooseMonitor;
     private JCheckBox chooseHours;
 
@@ -68,8 +69,8 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         addWeekCheckboxes(center, c);
 
         addTimeSpinners(center, c);
-        addEndDateChooser(center, c);
-        addOptionChecks(center,c);
+        addDateRangeChooser(center, c);
+        addOptionChecks(center, c);
         addErrorPanel(center, c);
         addBottomPanel(content);
 
@@ -89,25 +90,24 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
             c.gridx++;
         }
     }
-    
-    private void addOptionChecks(JPanel center, GridBagConstraints c)
-    {
-    	
+
+    private void addOptionChecks(JPanel center, GridBagConstraints c) {
         c.gridy = LINE_OPTIONS;
-        
-        chooseHours= new JCheckBox("Fijar mismas horas");
-        chooseMonitor=new JCheckBox("Fijar mismos monitores");
-        
+        c.gridx = 0;
+
+        chooseHours = new JCheckBox("Fijar mismas horas");
+        chooseMonitor = new JCheckBox("Fijar mismos monitores");
+
         chooseHours.setSelected(false);
         chooseMonitor.setSelected(false);
-        
+
         c.gridwidth = 4;
         center.add(chooseHours, c);
-        c.gridx=4;
-    	c.gridwidth = 4;
+        c.gridx = 4;
+        c.gridwidth = 4;
         center.add(chooseMonitor, c);
     }
-    
+
 
     private void addActivities(JPanel center, GridBagConstraints c) {
         c.gridwidth = 4;
@@ -127,8 +127,8 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
     private DefaultComboBoxModel<String> addFacilities(JPanel center, GridBagConstraints c) {
         //c.gridy = LINE_FACILITIES;
-    	c.gridx=4;
-    	c.gridwidth = 4;
+        c.gridx = 4;
+        c.gridwidth = 4;
         JPanel facilitiesPanel = new JPanel();
         center.add(facilitiesPanel, c);
 
@@ -145,7 +145,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
     private void addMonitors(JPanel center, GridBagConstraints c) {
         c.gridy = LINE_MONITORS;
-        c.gridx=0;
+        c.gridx = 0;
         c.gridwidth = 1;
 
         JPanel monitorPanel = new JPanel();
@@ -169,7 +169,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
     }
 
     private void addTimeSpinners(JPanel center, GridBagConstraints c) {
-    	c.gridwidth = 1;
+        c.gridwidth = 1;
         c.gridy = LINE_TIME_START;
         c.gridx = 0;
 
@@ -193,10 +193,10 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         JPanel timeEndPanel = new JPanel();
         center.add(timeEndPanel, c);
         timeEndPanel.add(new JLabel("Hora fin:"));
-       // timeEnd = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-       // timeEndPanel.add(timeEnd);
+        // timeEnd = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+        // timeEndPanel.add(timeEnd);
         c.gridx = 1;
-        
+
         weekEnd = new JSpinner[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
             weekEnd[i] = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
@@ -205,18 +205,30 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         }
     }
 
-    private void addEndDateChooser(JPanel center, GridBagConstraints c) {
+    private void addDateRangeChooser(JPanel center, GridBagConstraints c) {
         c.gridx = 0;
-        c.gridy = LINE_END_DATE;
-        c.gridwidth = 7;
+        c.gridy = LINE_DATE_RANGE;
+        c.gridwidth = 4;
+
+        JPanel startDatePanel = new JPanel();
+        center.add(startDatePanel, c);
+
+        startDatePanel.add(new JLabel("Fecha de inicio:"));
+        startDate = new JDateChooser("dd/MM/yyyy", "", '_');
+        Dimension d = startDate.getPreferredSize();
+        d.width += 5;
+        startDate.setPreferredSize(d);
+        startDate.setDate(Utils.getCurrentDate());
+        startDatePanel.add(startDate);
+
+        c.gridx = 4;
+        c.gridwidth = 4;
 
         JPanel endDatePanel = new JPanel();
         center.add(endDatePanel, c);
 
         endDatePanel.add(new JLabel("Fecha de fin:"));
         endDate = new JDateChooser("dd/MM/yyyy", "", '_');
-        Dimension d = endDate.getPreferredSize();
-        d.width += 5;
         endDate.setPreferredSize(d);
         endDate.setDate(Utils.getCurrentDate());
         endDatePanel.add(endDate);
@@ -253,7 +265,11 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         Activity activity = Activity.getValidActivities().get(activities.getSelectedIndex());
         Facility facility = Database.getInstance().getFacilities().get(facilities.getSelectedIndex());
 
-        Date week = Utils.getCurrentWeek();
+        Date week = startDate.getDate();
+        Calendar c = Calendar.getInstance();
+        c.setTime(week);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        week = c.getTime();
 
         int amountCreated = 0;
 
@@ -261,7 +277,6 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
             for (int i = 0; i < weekChk.length; i++) {
                 if (weekChk[i].isSelected()) {
-                    Calendar c = Calendar.getInstance();
                     c.setTime(week);
                     c.add(Calendar.DAY_OF_WEEK, i);
 
@@ -270,7 +285,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
                             new Timestamp(Utils.addHourToDay(c.getTime(), (Integer) timeEnd.getValue()).getTime()),
                             "Fee", true);
 
-                    if (fb.getTimeStart().after(Utils.getCurrentTime()) && BookingUtils.checkValidCenter(fb, errorPanel::setText)) {
+                    if (fb.getTimeStart().after(startDate.getDate()) && BookingUtils.checkValidCenter(fb, errorPanel::setText)) {
                         Monitor monitor = Database.getInstance().getMonitors().get(monitors.getSelectedIndex());
                         ActivityBooking ab = new ActivityBooking(activity.getActivityId(), fb.getFacilityBookingId(), monitor.getMonitorId());
                         try {
@@ -282,14 +297,13 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-                    } else if (amountCreated > 0){
+                    } else if (amountCreated > 0) {
                         pack();
                         return;
                     }
                 }
             }
 
-            Calendar c = Calendar.getInstance();
             c.setTime(week);
             c.add(Calendar.WEEK_OF_YEAR, 1);
             week = c.getTime();
