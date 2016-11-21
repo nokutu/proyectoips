@@ -101,13 +101,13 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEE);
         while (rs.next()) {
-            fees.add(new Fee(rs.getInt("fee_member_id"), rs.getDate("fee_month"), rs.getDouble("fee_base")));
+            fees.add(new Fee(rs.getInt("fee_member_id"), rs.getTimestamp("fee_month"), rs.getDouble("fee_base")));
         }
 
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEEITEM);
         while (rs.next()) {
-            feeItems.add(new FeeItem(rs.getInt("feeitem_amount"), getFeeByMember(rs.getInt("fee_member_id"), rs.getInt("month"))));
+            feeItems.add(new FeeItem(rs.getInt(2), rs.getTimestamp(3), rs.getDouble(4), rs.getString(5)));
         }
 
         s = conn.createStatement();

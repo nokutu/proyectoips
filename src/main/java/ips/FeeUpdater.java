@@ -60,7 +60,7 @@ public class FeeUpdater {
 																			// diciembre
 
 		for (FacilityBooking pago : Database.getInstance().getFacilityBookings()) {
-			try {
+			/*try {
 				pago.toString();
 			} catch (Exception ex) {
 				
@@ -110,7 +110,7 @@ public class FeeUpdater {
 						}
 					}
 				} // end if month filter
-			} // end main if
+			} // end main if*/
 		} // end for
 		return sociosDeBajaConPagosPendientes;
 	}

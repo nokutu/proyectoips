@@ -1,6 +1,7 @@
 package ips.administrator.bookings;
 
 import ips.MainWindow;
+import ips.database.Fee;
 import ips.utils.Utils;
 import ips.database.Database;
 import ips.database.FacilityBooking;
@@ -44,16 +45,16 @@ public class AdministratorBookingCancelDialog {
 				if (isRequieredPayment()) { // cobrar el pago
 					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargar\u00E1 el pago a la cuota del socio",
 							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
-                    //TODO ver esto
 
+					//TODO crear el pago.
 
-					FeeItem newFeeItem = new FeeItem(
+					/*FeeItem newFeeItem = new FeeItem(
 							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
 							Database.getInstance().getFeeByMember(booking.getMemberId(), new Date().getMonth()));
 
 					Utils.addFeeItem(newFeeItem, new java.sql.Date(new Date().getTime()), booking.getMemberId());
 
-					booking.setPayed(true);
+					booking.setPayed(true);*/
 
 				}
                 booking.setState(FacilityBooking.STATE_ANNULLED);

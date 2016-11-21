@@ -145,6 +145,14 @@ public class Utils {
         return c.getTime();
     }
 
+    public static Date getCurrentMonth() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(getCurrentDate());
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        //c.add(Calendar.MONTH, 1);
+        return c.getTime();
+    }
+
     /**
      * Extracts the date from a given time. It means that returns exactly the beginning of that day.
      */
@@ -166,7 +174,7 @@ public class Utils {
      * @param month
      * @param member_id
      */
-    public static void addFeeItem(FeeItem pago, java.sql.Date month, int member_id) {
+    /*public static void addFeeItem(FeeItem pago, java.sql.Date month, int member_id) {
         Fee thisFee = null;
         try {
             thisFee = Database.getInstance().getFeeByMember(member_id, month.getMonth());
@@ -189,5 +197,5 @@ public class Utils {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
