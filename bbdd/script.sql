@@ -3,8 +3,8 @@
 DROP TABLE IF EXISTS facilityBooking;
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS facility;
-DROP TABLE IF EXISTS fee;
 DROP TABLE IF EXISTS feeItem;
+DROP TABLE IF EXISTS fee;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS activitybooking;
 DROP TABLE IF EXISTS activitymember;
@@ -74,7 +74,7 @@ CREATE TABLE feeitem (
     feeitem_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     fee_member_id INTEGER NOT NULL,
     feeitem_amount DOUBLE,
-    feeitem_concept VARCHAR(64),
+    feeitem_concept VARCHAR(128),
 	fee_month DATE NOT NULL,
 	CONSTRAINT fk_FEE_ITEM FOREIGN KEY(fee_month, fee_member_id) REFERENCES FEE(fee_month, fee_member_id)
 );

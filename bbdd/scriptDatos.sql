@@ -4,8 +4,8 @@
 DELETE FROM facilityBooking;
 DELETE FROM member;
 DELETE FROM facility;
-DELETE FROM fee;
 DELETE FROM feeItem;
+DELETE FROM fee;
 DELETE FROM activity;
 DELETE FROM activitybooking;
 DELETE FROM activitymember;

@@ -149,7 +149,7 @@ public class Utils {
         Calendar c = Calendar.getInstance();
         c.setTime(getCurrentDate());
         c.set(Calendar.DAY_OF_MONTH, 1);
-        //c.add(Calendar.MONTH, 1);
+        //c.add(Calendar.MONTH, 1); // 0 es enenero, 11 diciembre
         return c.getTime();
     }
 

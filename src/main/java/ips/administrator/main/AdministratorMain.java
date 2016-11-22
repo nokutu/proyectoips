@@ -76,9 +76,7 @@ public class AdministratorMain extends JPanel {
 	private JButton getBtnFeeUpdater() {
 		if (btnFeeUpdater == null) {
 			btnFeeUpdater = new JButton("Update Fees");
-			btnFeeUpdater.addActionListener(e -> {
-				FeeUpdater.update();
-			});
+			btnFeeUpdater.addActionListener( e -> new FeeUpdater() );
 		}
 		return btnFeeUpdater;
 	}

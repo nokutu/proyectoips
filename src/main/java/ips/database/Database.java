@@ -107,7 +107,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_FEEITEM);
         while (rs.next()) {
-            feeItems.add(new FeeItem(rs.getInt(2), rs.getTimestamp(3), rs.getDouble(4), rs.getString(5)));
+            feeItems.add(new FeeItem(rs.getInt(2), rs.getTimestamp(5), rs.getDouble(3), rs.getString(4)));
         }
 
         s = conn.createStatement();

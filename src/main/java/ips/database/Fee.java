@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by nokutu on 03/10/2016.
@@ -62,10 +64,25 @@ public class Fee implements DatabaseItem {
         return month;
     }
 
-    public static Fee getOrCreate(Member member, Date month) {
-        // TODO
-        return null;
-    }
+	public static Fee getOrCreate(Member member, Timestamp month) {
+		Fee theFee;
+		Object[] fees = Database.getInstance().getFees().stream()
+				.filter(f -> f.getMonth().equals(month) && f.getMemberId() == member.getMemberId()).toArray();
+		if (fees.length>0) { // si ya hay fee de ese mes
+			theFee = (Fee)fees[0];//findFirst().get();
+		} else { // si no hay fee de ese mes se crea
+			theFee = new Fee(member.getMemberId(), month);
+			try {
+				theFee.create();
+				Database.getInstance().getFees().add(theFee);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		//fees.close();
+		return theFee;
+
+	}
 
     public void addFeeItem(double amount, String concept) {
         FeeItem fi = new FeeItem(member_id, month, amount, concept);

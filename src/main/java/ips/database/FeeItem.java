@@ -14,7 +14,7 @@ public class FeeItem implements DatabaseItem {
 
     private static PreparedStatement createStatement;
 
-    private int feeItemId;
+    //private int feeItemId;
     private int memberId;
     private Timestamp month;
     // Represents cents
@@ -47,6 +47,7 @@ public class FeeItem implements DatabaseItem {
     @Override
     public void update() {
         // TODO
+    	throw new UnsupportedOperationException();
     }
 
 }
