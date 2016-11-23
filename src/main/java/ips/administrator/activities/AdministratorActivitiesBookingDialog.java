@@ -193,16 +193,17 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
         monitorPanel.add(new JLabel("Monitor:"), c);
         // monitors = new JComboBox<>();
-        DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
-        Database.getInstance().getMonitors().stream()
-                .map(Monitor::getName)
-                .forEach(monitorsModel::addElement);
+        
         // monitors.setModel(monitorsModel);
         // monitorPanel.add(monitors);
         c.gridx = 1;
         weekMonitor = new JComboBox[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
             JComboBox monitor = new JComboBox<>();
+            DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
+            Database.getInstance().getMonitors().stream()
+                .map(Monitor::getName)
+                .forEach(monitorsModel::addElement);
             monitor.setModel(monitorsModel);
             monitor.setEnabled(false);
             monitor.addActionListener(l ->
