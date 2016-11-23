@@ -4,13 +4,12 @@ import com.toedter.calendar.JDateChooser;
 import ips.database.*;
 import ips.utils.BookingUtils;
 import ips.utils.Utils;
+
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -86,24 +85,21 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
         weekChk = new JCheckBox[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
-        	JCheckBox weekBox = new JCheckBox(DAYS[i]);
-        	int aux=i;
-        	weekBox.addActionListener(l->{
-        		
-        		if(weekBox.isSelected())
-        		{
-        			weekStart[aux].setEnabled(true);
-        			weekEnd[aux].setEnabled(true);
-        			weekMonitor[aux].setEnabled(true);
-        		}
-        		else
-        		{
-        			weekStart[aux].setEnabled(false);
-        			weekEnd[aux].setEnabled(false);
-        			weekMonitor[aux].setEnabled(false);
-        		}
-        		
-        	});
+            JCheckBox weekBox = new JCheckBox(DAYS[i]);
+            int aux = i;
+            weekBox.addActionListener(l -> {
+
+                if (weekBox.isSelected()) {
+                    weekStart[aux].setEnabled(true);
+                    weekEnd[aux].setEnabled(true);
+                    weekMonitor[aux].setEnabled(true);
+                } else {
+                    weekStart[aux].setEnabled(false);
+                    weekEnd[aux].setEnabled(false);
+                    weekMonitor[aux].setEnabled(false);
+                }
+
+            });
             weekChk[i] = weekBox;
             center.add(weekChk[i], c);
             c.gridx++;
@@ -118,37 +114,32 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         chooseMonitor = new JCheckBox("Fijar mismos monitores");
 
         chooseHours.setSelected(false);
-        
-        chooseHours.addActionListener(l->
-    	{
-    		if(chooseHours.isSelected())
-    		{
-    			for(JSpinner box: weekStart)
-    			{
-    				box.setValue(0);
-    			}
-    			
-    			for(JSpinner box: weekEnd)
-    			{
-    				box.setValue(0);
-    			}
-    			
-    			
-    		}
-    	});
+
+        chooseHours.addActionListener(l ->
+        {
+            if (chooseHours.isSelected()) {
+                for (JSpinner box : weekStart) {
+                    box.setValue(0);
+                }
+
+                for (JSpinner box : weekEnd) {
+                    box.setValue(0);
+                }
+
+
+            }
+        });
         chooseMonitor.setSelected(false);
-        
-        chooseMonitor.addActionListener(l->
-        	{
-        		if(chooseMonitor.isSelected())
-        		{
-        			for(JComboBox box: weekMonitor)
-        			{
-        				box.setSelectedIndex(0);
-        			}
-        		}
-        	});
-        
+
+        chooseMonitor.addActionListener(l ->
+        {
+            if (chooseMonitor.isSelected()) {
+                for (JComboBox box : weekMonitor) {
+                    box.setSelectedIndex(0);
+                }
+            }
+        });
+
 
         c.gridwidth = 4;
         center.add(chooseHours, c);
@@ -201,29 +192,27 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         center.add(monitorPanel, c);
 
         monitorPanel.add(new JLabel("Monitor:"), c);
-       // monitors = new JComboBox<>();
+        // monitors = new JComboBox<>();
         DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
         Database.getInstance().getMonitors().stream()
                 .map(Monitor::getName)
                 .forEach(monitorsModel::addElement);
-       // monitors.setModel(monitorsModel);
-      // monitorPanel.add(monitors);
+        // monitors.setModel(monitorsModel);
+        // monitorPanel.add(monitors);
         c.gridx = 1;
         weekMonitor = new JComboBox[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
-        	JComboBox monitor = new JComboBox<>();
-        	monitor.setModel(monitorsModel);
-        	monitor.setEnabled(false);
-        	monitor.addActionListener(l->
-        	{
-        		if(chooseMonitor.isSelected())
-        		{
-        			for(JComboBox box: weekMonitor)
-        			{
-        				box.setSelectedIndex(monitor.getSelectedIndex());
-        			}
-        		}
-        	});
+            JComboBox monitor = new JComboBox<>();
+            monitor.setModel(monitorsModel);
+            monitor.setEnabled(false);
+            monitor.addActionListener(l ->
+            {
+                if (chooseMonitor.isSelected()) {
+                    for (JComboBox box : weekMonitor) {
+                        box.setSelectedIndex(monitor.getSelectedIndex());
+                    }
+                }
+            });
             weekMonitor[i] = monitor;
             center.add(weekMonitor[i], c);
             c.gridx++;
@@ -244,18 +233,16 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         //timeStartPanel.add(timeStart);
         weekStart = new JSpinner[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
-        	JSpinner spin = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-        	spin.addChangeListener(l->
-        	{
-        		if(chooseHours.isSelected())
-        		{
-        			for(JSpinner start: weekStart)
-        			{
-        				start.setValue(spin.getValue());
-        			}
-        		}
-        	});
-        	spin.setEnabled(false);
+            JSpinner spin = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+            spin.addChangeListener(l ->
+            {
+                if (chooseHours.isSelected()) {
+                    for (JSpinner start : weekStart) {
+                        start.setValue(spin.getValue());
+                    }
+                }
+            });
+            spin.setEnabled(false);
             weekStart[i] = spin;
             center.add(weekStart[i], c);
             c.gridx++;
@@ -274,25 +261,23 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
 
         weekEnd = new JSpinner[DAYS.length];
         for (int i = 0; i < DAYS.length; i++) {
-        	JSpinner spin = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-        	spin.addChangeListener(l->
-        	{
-        		if(chooseHours.isSelected())
-        		{
-        			for(JSpinner end: weekEnd)
-        			{
-        				end.setValue(spin.getValue());
-        			}
-        		}
-        	});
-        	spin.setEnabled(false);
+            JSpinner spin = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
+            spin.addChangeListener(l ->
+            {
+                if (chooseHours.isSelected()) {
+                    for (JSpinner end : weekEnd) {
+                        end.setValue(spin.getValue());
+                    }
+                }
+            });
+            spin.setEnabled(false);
             weekEnd[i] = spin;
             center.add(weekEnd[i], c);
             c.gridx++;
         }
     }
-    
-   
+
+
     private void addDateRangeChooser(JPanel center, GridBagConstraints c) {
         c.gridx = 0;
         c.gridy = LINE_DATE_RANGE;
@@ -301,7 +286,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         JPanel startDatePanel = new JPanel();
         center.add(startDatePanel, c);
 
-        startDatePanel.add(new JLabel("Fecha de inicio:"));
+        startDatePanel.add(new JLabel("Fecha de inicio (inclusive):"));
         startDate = new JDateChooser("dd/MM/yyyy", "", '_');
         Dimension d = startDate.getPreferredSize();
         d.width += 5;
@@ -315,7 +300,7 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
         JPanel endDatePanel = new JPanel();
         center.add(endDatePanel, c);
 
-        endDatePanel.add(new JLabel("Fecha de fin:"));
+        endDatePanel.add(new JLabel("Fecha de fin (no inclusive):"));
         endDate = new JDateChooser("dd/MM/yyyy", "", '_');
         endDate.setPreferredSize(d);
         endDate.setDate(Utils.getCurrentDate());
@@ -373,17 +358,20 @@ public class AdministratorActivitiesBookingDialog extends JDialog {
                             new Timestamp(Utils.addHourToDay(c.getTime(), (Integer) weekEnd[i].getValue()).getTime()),
                             "Fee", true);
 
-                    if (fb.getTimeStart().after(startDate.getDate()) && BookingUtils.checkValidCenter(fb, errorPanel::setText)) {
-                        Monitor monitor = Database.getInstance().getMonitors().get(weekMonitor[i].getSelectedIndex());
-                        ActivityBooking ab = new ActivityBooking(activity.getActivityId(), fb.getFacilityBookingId(), monitor.getMonitorId());
-                        try {
-                            fb.create();
-                            ab.create();
-                            Database.getInstance().getFacilityBookings().add(fb);
-                            Database.getInstance().getActivityBookings().add(ab);
-                            amountCreated++;
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+                    if (fb.getTimeStart().after(startDate.getDate()) &&
+                            BookingUtils.checkValidCenter(fb, errorPanel::setText)) {
+                        if (fb.getTimeEnd().before(endDate.getDate())) {
+                            Monitor monitor = Database.getInstance().getMonitors().get(weekMonitor[i].getSelectedIndex());
+                            ActivityBooking ab = new ActivityBooking(activity.getActivityId(), fb.getFacilityBookingId(), monitor.getMonitorId());
+                            try {
+                                fb.create();
+                                ab.create();
+                                Database.getInstance().getFacilityBookings().add(fb);
+                                Database.getInstance().getActivityBookings().add(ab);
+                                amountCreated++;
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else if (amountCreated > 0) {
                         pack();
