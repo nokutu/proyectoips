@@ -18,6 +18,7 @@ public class DetailsDialog extends JPanel {
     private JPanel panelSur;
     private JButton btnCancelarEstaReserva;
     private JComboBox<String> bookingsBox;
+    private String detallesActividad = null;
 
     public DetailsDialog(FacilityBooking book) {
         setLayout(new BorderLayout());
@@ -29,6 +30,16 @@ public class DetailsDialog extends JPanel {
         add(getPanelSur(), BorderLayout.SOUTH);
     }
 
+    public DetailsDialog(FacilityBooking book, String detallesActividad){
+    	this.detallesActividad = detallesActividad;
+    	setLayout(new BorderLayout());
+        this.book = book;
+        if (book == null) {
+            add(getBookingsBox(), BorderLayout.WEST);
+        }
+        add(getScrollPane(), BorderLayout.CENTER);
+        add(getPanelSur(), BorderLayout.SOUTH);
+    }
 
     private JScrollPane getScrollPane() {
         if (scrollPane == null) {
@@ -41,8 +52,11 @@ public class DetailsDialog extends JPanel {
     private JTextArea getTextDescription() {
         if (textDescription == null) {
             textDescription = new JTextArea();
-            if (book != null)
+            if (book != null){
                 textDescription.setText(book.toStringFull());
+                if(detallesActividad!= null) 
+                	textDescription.setText(book.toStringFull()+detallesActividad);
+            }
             else
                 textDescription.setText("Seleccione una reserva");
         }
