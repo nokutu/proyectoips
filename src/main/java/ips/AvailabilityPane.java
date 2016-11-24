@@ -135,27 +135,25 @@ public class AvailabilityPane extends JPanel {
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-
 		rowPanel.add(
 				new JLabel("" + new SimpleDateFormat("EEEE dd/MM", new Locale("es", "ES")).format(date.getTime())));
 		for (int i = 0; i < 24; i++) {
 			date = calendar.getTime();
 			long now = date.getTime();
 			int facilityBookId = 0;
-
 			JButton botonAux = new JButton("Libre");
 			botonAux.setBackground(Color.white);
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
 					facilityBookId = booking.getBookingId();
-					botonAux = setColor(booking);
+					Activity ac = Availability.ActividadesEnReserva(facilityBookId);
+					botonAux = setColor(booking, ac != null);
 					break;
 				}
 			}
 			JButton finalBotonAux = botonAux;
 			int idaux = facilityBookId;
 			botonAux.addActionListener(e -> {
-
 				if (finalBotonAux.getText().equals("Libre")) {
 					long oneHour = now + 3600000;
 					Facility esta = null;
@@ -171,10 +169,13 @@ public class AvailabilityPane extends JPanel {
 						MS.setRightPanel(new MemberBookPanel(esta, new Timestamp(now), new Timestamp(oneHour)));
 					}
 				} else {
-
 					for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
 						if (fb.getFacilityBookingId() == idaux) {
-							MS.setRightPanel(new DetailsDialog(fb));
+							Activity ac = Availability.ActividadesEnReserva(idaux);
+							if(ac != null)
+								MS.setRightPanel(new DetailsDialog(fb, "Actividad: " + ac.getActivityName()));
+							else 
+								MS.setRightPanel(new DetailsDialog(fb));
 						}
 					}
 				}
@@ -202,7 +203,7 @@ public class AvailabilityPane extends JPanel {
 			addRows(instalacion);
 	}
 
-	private JButton setColor(Booking booking) {
+	private JButton setColor(Booking booking, boolean hayReserva) {
 		JButton boton = new JButton("No Disponible");
 		boton.setBackground(Color.RED);
 		if (admin) {
@@ -210,8 +211,11 @@ public class AvailabilityPane extends JPanel {
 			if (booking.getUserName() != null)
 				user = booking.getUserName();
 			boton.setText(user);
-			if (booking.getUserID() == 0)
+			if (booking.getUserID() == 0){
 				boton.setBackground(Color.ORANGE);
+				if(hayReserva)
+					boton.setBackground(Color.MAGENTA);
+			}
 			else
 				boton.setBackground(Color.BLUE);
 		} else {
@@ -221,6 +225,11 @@ public class AvailabilityPane extends JPanel {
 			} else {
 				boton.setBackground(Color.BLUE);
 				boton.setEnabled(false);
+				if (booking.getUserID() == 0 && hayReserva){
+					boton.setEnabled(true);
+					boton.setBackground(Color.MAGENTA);
+					boton.setText("Actividad");
+				}
 			}
 		}
 		if (!admin) {
