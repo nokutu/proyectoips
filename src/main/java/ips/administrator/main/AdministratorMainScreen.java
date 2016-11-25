@@ -5,13 +5,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ips.AvailabilityPane;
-import ips.FeeUpdater;
 import ips.MainScreen;
 import ips.MainWindow;
 import ips.utils.Utils;
 import ips.administrator.CurrentViewDialog;
 import ips.administrator.activities.AdministratorActivitiesManagementDialog;
 import ips.administrator.bookings.AdministratorBookPanel;
+import ips.administrator.debts.FeeUpdater;
 import ips.administrator.debts.PayCurrentDebt;
 import ips.administrator.debts.PayPastDebtsDialog;
 import ips.database.Database;

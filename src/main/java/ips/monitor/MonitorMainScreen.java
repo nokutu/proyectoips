@@ -243,7 +243,7 @@ public class MonitorMainScreen extends JPanel {
 				// CONDICIONES PARA AÑADIR:
 				// COMO MONITOR: desde 5 minutos antes Y num socios apuntados no exceda
 				// el maximo posible Y no esté ya en otra reserva o actividad
-				if (numeroActualApuntados >= numeroMaximoApuntados)
+				if (numeroMaximoApuntados!=-1 && numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
 							"Error", JOptionPane.ERROR_MESSAGE, null);

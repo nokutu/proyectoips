@@ -11,8 +11,12 @@ import ips.database.FacilityBooking;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +30,7 @@ public class MemberActivitiesDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<ActivityBooking> activityBookings;
+	//private List<ActivityBooking> activityBookings;
 	private JList<String> activitiesList;
 	JComboBox<String> activitiesComboBox;
 	private List<ActivityMember> activityMembers;
@@ -34,6 +38,7 @@ public class MemberActivitiesDialog extends JDialog {
 	private JComboBox<String> sessions;
 	private List<ActivityBooking> sessionsList;
 	private DefaultComboBoxModel<String> sessionsModel;
+	private List<Integer> activitiesInComboboxList= new ArrayList<Integer>();
 
 	public MemberActivitiesDialog() {
 		super(MainWindow.getInstance(), true);
@@ -68,7 +73,20 @@ public class MemberActivitiesDialog extends JDialog {
 
 		activitiesComboBox = new JComboBox<>();
 		DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-		Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		//MARK
+		String query = "SELECT distinct activity.activity_id, activity_name from activity,activitybooking,facilitybooking where activity.activity_id=activitybooking.activity_id and facilitybooking.facilitybooking_id=activitybooking.facilitybooking_id and deleted=false and state='Valid'  and current_timestamp() between DATEADD('HOUR',-24, time_start) and  DATEADD('HOUR',-1,time_start) order by activity_id asc;";
+		try {
+			Statement st = Database.getInstance().getConnection().createStatement();
+			ResultSet rs = st.executeQuery(query);
+			
+			while(rs.next()){
+				activitiesModel.addElement(rs.getString("activity_name"));
+				activitiesInComboboxList.add(rs.getInt("activity_id"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		activitiesComboBox.setModel(activitiesModel);
 		leftPanel.add(activitiesComboBox, c);
 
@@ -105,8 +123,7 @@ public class MemberActivitiesDialog extends JDialog {
 				int memberId = MemberMainScreen.userID;
 
 				// segundo obtenemos la actividad
-				int activityId = Database.getInstance().getActivities().get(activitiesComboBox.getSelectedIndex())
-						.getActivityId();
+				int activityId = activitiesInComboboxList.get(activitiesComboBox.getSelectedIndex());
 				// tercero obtenemos la facilitybooking
 				FacilityBooking facilityBooking = sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking();
 				// cuarto obtenemos el numero actual de invitados y el maximo
@@ -120,7 +137,7 @@ public class MemberActivitiesDialog extends JDialog {
 				// CONDICIONES PARA AÑADIR:
 				// COMO SOCIO: cupo no lleno Y entre 24 horas antes de
 				// empezar y 1 hora despues de la hora de hacerlo
-				if (numeroActualApuntados >= numeroMaximoApuntados)
+				if (numeroMaximoApuntados!=-1 && numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(), "Lo sentimos, la actividad no tiene mas plazas libres",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
 				else if (Utils.getCurrentTime().before(Utils.addHourToDay(facilityBooking.getTimeStart(), -24))) {
@@ -142,7 +159,7 @@ public class MemberActivitiesDialog extends JDialog {
 				JOptionPane.showMessageDialog(getThis(),
 						"Error, la transaccion no se ha llevado a cabo\nUd. ya está apuntado a la atividad selecccionada",
 						"Error", JOptionPane.ERROR_MESSAGE, null);
-				sql.printStackTrace();
+				//sql.printStackTrace();
 				return;
 			}
 
@@ -150,12 +167,16 @@ public class MemberActivitiesDialog extends JDialog {
 
 		leftPanel.add(join, c);
 	}
-	private void updateSessions(){
+	private void updateSessions(){//MARK
 		sessionsModel = new DefaultComboBoxModel<>();
-		sessionsList = Database.getInstance()
-				.getActivityBookings().stream().filter(ab -> ab.getActivityId() == Database.getInstance()
-						.getActivities().get(activitiesComboBox.getSelectedIndex()).getActivityId())
-				.collect(Collectors.toList());
+		sessionsList = Database.getInstance().getActivityBookings().stream().filter(ab -> {
+			Date hora_actual = new Date();
+			Date hora_inicio = ab.getFacilityBooking().getTimeStart();
+
+			return ab.getActivityId() == getSelectedActivity().getActivityId()
+					&& hora_actual.after(Utils.addHourToDay(hora_inicio, -24))
+					&& hora_actual.before(Utils.addHourToDay(hora_inicio, -1));
+		}).collect(Collectors.toList());
 		sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
 				.forEach(sessionsModel::addElement);
 		sessions.setModel(sessionsModel);
@@ -166,7 +187,7 @@ public class MemberActivitiesDialog extends JDialog {
 	}
 
 	private Activity getSelectedActivity() {
-		return Database.getInstance().getActivities().get(activitiesComboBox.getSelectedIndex());
+		return (Activity) Database.getInstance().getActivities().stream().filter(a -> a.getActivityId()==activitiesInComboboxList.get(activitiesComboBox.getSelectedIndex())).toArray()[0];
 	}
 
 	private Optional<Integer> getAssistantsOptional() {

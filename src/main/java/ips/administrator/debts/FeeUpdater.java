@@ -1,4 +1,4 @@
-package ips;
+package ips.administrator.debts;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import ips.MainWindow;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.database.Fee;

@@ -11,6 +11,7 @@ import java.awt.event.FocusEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -108,11 +109,22 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 		sessions = new JComboBox<>();
 		activities.addActionListener(l -> {
+			
 			memberList.removeAll();
 			DefaultComboBoxModel<String> sessionsModel = new DefaultComboBoxModel<>();
-			sessionsList = Database.getInstance().getActivityBookings().stream()
+			
+			/*sessionsList = Database.getInstance().getActivityBookings().stream()
 					.filter(ab -> ab.getActivityId() == getSelectedActivity().getActivityId())
 					.collect(Collectors.toList());
+			*/
+			sessionsList = Database.getInstance().getActivityBookings().stream().filter(ab -> {
+				Date hora_actual = new Date();
+				Date hora_inicio = ab.getFacilityBooking().getTimeStart();
+
+				return ab.getActivityId() == getSelectedActivity().getActivityId()
+						&& hora_actual.before(hora_inicio);
+			}).collect(Collectors.toList());
+			
 			sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
 					.forEach(sessionsModel::addElement);
 			sessions.setModel(sessionsModel);
@@ -120,6 +132,8 @@ public class AdministratorActivitiesDialog extends JDialog {
 			if (sessions.getModel().getSize() > 0) {
 				sessions.setSelectedIndex(0);
 			}
+			if(sessions.getSelectedIndex()==-1)addMember.setEnabled(false);
+			else addMember.setEnabled(true);
 			refreshAssistanceCount();
 		});
 		activities.setSelectedIndex(0);
@@ -174,6 +188,11 @@ public class AdministratorActivitiesDialog extends JDialog {
 		bottomPanel.add(assistanceLabel);
 
 		addMember.addActionListener(l -> {
+			if(sessions.getSelectedIndex()==-1){
+				JOptionPane.showMessageDialog(this, "No hay sesiones disponibles");
+				return;
+			}
+				
 			try {// primero objenemos el numero del socio
 
 				int memberId = Integer.valueOf(addMemberTextField.getText()); // peta
@@ -201,7 +220,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 				// CONDICIONES PARA AÑADIR:
 				// COMO ADMIN: 24 horas antes Y num socios apuntados no exceda
 				// maximo posible Y no este ya en otra reserva o actividad
-				if (numeroActualApuntados >= numeroMaximoApuntados)
+				if (numeroMaximoApuntados!=-1 && numeroActualApuntados >= numeroMaximoApuntados)
 					JOptionPane.showMessageDialog(getThis(),
 							"Error, la transaccion no se puede llevar a cabo porque la actividad ya esta completa de socios",
 							"Error", JOptionPane.ERROR_MESSAGE, null);
@@ -298,16 +317,24 @@ public class AdministratorActivitiesDialog extends JDialog {
 	}
 
 	private void refreshAssistanceCount() {
+		if(sessions.getSelectedIndex()==-1){
+			assistanceLabel.setText("-");
+			return;
+		}
 		Optional<Integer> assistantsOptional = getAssistantsOptional();
 		Optional<Activity> activityOptional = getActivityOptional();
 		if (activityOptional.isPresent()) {
 			if (assistantsOptional.isPresent()) {
 				// n assistants
-				assistanceLabel.setText(assistantsOptional.get() + "/" + activityOptional.get().getAssistantLimit());
+				assistanceLabel.setText(assistantsOptional.get() + (activityOptional.get().getAssistantLimit()==-1?
+						" (sin limitede plazas)"
+						: "/" + activityOptional.get().getAssistantLimit()));
 				addMember.setEnabled(assistantsOptional.get() < activityOptional.get().getAssistantLimit());
 			} else {
 				// 0 assistants
-				assistanceLabel.setText("0/" + activityOptional.get().getAssistantLimit());
+				assistanceLabel.setText("0/" + (activityOptional.get().getAssistantLimit()==-1?
+						" (sin limitede plazas)"
+						: "/" + activityOptional.get().getAssistantLimit()));
 				addMember.setEnabled(true);
 			}
 		} else {
@@ -315,6 +342,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 			assistanceLabel.setText("");
 			addMember.setEnabled(false);
 		}
+		pack();
 	}
 
 	private Activity getSelectedActivity() {
