@@ -9,7 +9,9 @@ import ips.database.FeeItem;
 
 import javax.swing.JOptionPane;
 
+import java.awt.Window;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -35,38 +37,47 @@ public class AdministratorBookingCancelDialog {
 			if (booking.getMemberId() == 0) {// ADMIN BOOKING (we identify the
 												// admin bookings by the 0
 												// member id)
-				booking.setState(FacilityBooking.STATE_CANCELLED);
+				booking.setState(FacilityBooking.STATE_ANNULLED);
+				booking.setCancellationDate(new Timestamp(new Date().getTime()));
+
 				try {
 					booking.update();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			} else { // MEMBER BOOKING
+				String cancellationCause = JOptionPane.showInputDialog(MainWindow.getInstance(),
+						"¿Cual es el motivo de la cancelacion?");
+				booking.setCancellationCause(cancellationCause);
+				booking.setCancellationDate(new Timestamp(new Date().getTime()));
+				booking.setState(FacilityBooking.STATE_CANCELLED);
+
 				if (isRequieredPayment()) { // cobrar el pago
-					r = JOptionPane.showOptionDialog(MainWindow.getInstance(), "Se cargar\u00E1 el pago a la cuota del socio",
-							"Aviso", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+					r = JOptionPane.showOptionDialog(MainWindow.getInstance(),
+							"Se cargar\u00E1 el pago a la cuota del socio", "Aviso", JOptionPane.DEFAULT_OPTION,
+							JOptionPane.WARNING_MESSAGE, null, null, null);
 
-					//TODO crear el pago.
+					booking.setPayed(true); // payed
+					try {
+						booking.update();
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					}
 
-					/*FeeItem newFeeItem = new FeeItem(
-							Database.getInstance().getFacilityById(booking.getFacilityId()).getPrice(),
-							Database.getInstance().getFeeByMember(booking.getMemberId(), new Date().getMonth()));
+					Fee theFee = Fee.getOrCreate(booking.getMember(), new Timestamp(Utils.getCurrentDate().getTime()));
+					double cost = booking.getFacility().getPrice();
 
-					Utils.addFeeItem(newFeeItem, new java.sql.Date(new Date().getTime()), booking.getMemberId());
+					assert theFee.getMemberId() == booking.getMemberId();
 
-					booking.setPayed(true);*/
-
-				}
-                booking.setState(FacilityBooking.STATE_ANNULLED);
-                // TODO preguntar la causa de la cancelación
-                try {
-					booking.update();
-				} catch (SQLException e) {
-					e.printStackTrace();
+					theFee.addFeeItem(cost, "Pago por cancelacion");
+				} else {
+					try {
+						booking.update();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		} else {
-			// nothing, is just an emphatic else
 		}
 	}
 
