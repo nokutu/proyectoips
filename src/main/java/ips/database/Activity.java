@@ -23,14 +23,15 @@ public class Activity implements DatabaseItem {
     private List<ActivityBooking> lazyActivityBookings;
     private boolean deleted;
 
-    public Activity(int activityId, String activityName, int assistantLimit) {
+    /*public Activity(int activityId, String activityName, int assistantLimit) {
         this(activityId, activityName, assistantLimit, false);
-    }
+    }*/
 
     public Activity(int activityId, String activityName, int assistantLimit, boolean deleted) {
         this.activityId = activityId;
         this.activityName = activityName;
         this.assistantLimit = assistantLimit;
+        this.deleted=deleted;
     }
 
     @Override

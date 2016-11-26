@@ -48,7 +48,7 @@ public class Availability {
 			createStatement.setInt(1, idReserva);
 			ResultSet rs = createStatement.executeQuery();
 			while (rs.next()) {
-				actividad = new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3));
+				actividad = new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3),false);
 			}
 		} catch (SQLException e) {
 			System.out.println("Error en Availability -> ActividadesEnReserva");

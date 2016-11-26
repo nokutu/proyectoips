@@ -1,7 +1,9 @@
 package ips.database;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -344,5 +346,43 @@ public class FacilityBooking implements DatabaseItem {
 		} else {
 			return 0;
 		}
+	}
+
+	public boolean isActivityBooking() {
+		return Database.getInstance().getActivityBookings().stream().filter(ab -> ab.getFacilityBookingId()==this.facilityBookingId).toArray().length>0;
+	}
+	
+	public boolean isAnyActivityBooking(){
+		String query="SELECT * FROM activity, activitybooking where activity.activity_id=activitybooking.activity_id and activity.activity_id=?";
+	
+		try {
+			PreparedStatement pst = Database.getInstance().getConnection().prepareStatement(query);
+			int activity_id=getActivityId();
+			assert activity_id!=-1;
+			pst.setInt(1, activity_id);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next())
+				return true;
+			else return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+	public int getActivityId() {
+		String query = "select activity_id from activitybooking,facilitybooking where facilitybooking.facilitybooking_id=activitybooking.facilitybooking_id and activitybooking.facilitybooking_id=? and state='Valid'";
+		try {
+			PreparedStatement pst = Database.getInstance().getConnection().prepareStatement(query);
+			pst.setInt(1, this.facilityBookingId);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next())
+				return rs.getInt("activity_id");
+			return -1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+
 	}
 }

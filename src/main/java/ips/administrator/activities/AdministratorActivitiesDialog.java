@@ -26,6 +26,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	private List<ActivityBooking> sessionsList;
 	private List<Member> membersInSession;
 	private List<ActivityMember> activityMembersInSession;
+	private List<Activity> activitiesInComboboxList=new ArrayList<>();
 	private List<JCheckBox> activityMembersInSessionChk;
 
 	private JLabel assistanceLabel = new JLabel("");
@@ -96,7 +97,10 @@ public class AdministratorActivitiesDialog extends JDialog {
 
 		activities = new JComboBox<>();
 		DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-		Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+		Database.getInstance().getActivities().stream().filter(a->!a.isDeleted()).forEach(a ->{
+			activitiesInComboboxList.add(a);
+			activitiesModel.addElement(a.getActivityName());
+		});
 		activities.setModel(activitiesModel);
 		leftPanel.add(activities, c);
 
@@ -205,7 +209,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 					return;
 				}
 				// segundo obtenemos la actividad
-				int activityId = Database.getInstance().getActivities().get(activities.getSelectedIndex())
+				int activityId = activitiesInComboboxList.get(activities.getSelectedIndex())
 						.getActivityId();
 				// tercero obtenemos la facilitybooking
 				FacilityBooking facilityBooking = sessionsList.get(sessions.getSelectedIndex()).getFacilityBooking();
@@ -346,7 +350,7 @@ public class AdministratorActivitiesDialog extends JDialog {
 	}
 
 	private Activity getSelectedActivity() {
-		return Database.getInstance().getActivities().get(activities.getSelectedIndex());
+		return activitiesInComboboxList.get(activities.getSelectedIndex());
 	}
 
 	private class CheckBoxList extends JPanel {

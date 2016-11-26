@@ -184,7 +184,7 @@ public class AdministratorActivityCreatorDialog extends JDialog {
 				} else {
 					Activity newActivity = new Activity(Database.getInstance().getActivities().size()+1,
 							textFieldNombreActividad.getText(), chckbxAsignarLimitePlazas.isSelected()
-									? Integer.parseInt(getSpinnerLimiteDePlazas().getValue().toString()) : -1);
+									? Integer.parseInt(getSpinnerLimiteDePlazas().getValue().toString()) : -1,false);
 					try {
 						newActivity.create();
 						Database.getInstance().getActivities().add(newActivity);

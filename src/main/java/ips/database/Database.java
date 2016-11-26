@@ -113,7 +113,7 @@ public class Database {
         s = conn.createStatement();
         rs = s.executeQuery(QUERY_ACTIVITY);
         while (rs.next()) {
-            activities.add(new Activity(rs.getInt(1), rs.getString(2), rs.getInt(3)));
+            activities.add(new Activity(rs.getInt("activity_id"), rs.getString("activity_name"), rs.getInt("assistant_limit"), rs.getBoolean("deleted")));
         }
 
         s = conn.createStatement();

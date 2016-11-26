@@ -3,6 +3,7 @@ package ips.administrator.bookings;
 import ips.MainWindow;
 import ips.database.Fee;
 import ips.utils.Utils;
+import ips.database.Activity;
 import ips.database.Database;
 import ips.database.FacilityBooking;
 import ips.database.FeeItem;
@@ -38,12 +39,33 @@ public class AdministratorBookingCancelDialog {
 												// admin bookings by the 0
 												// member id)
 				booking.setState(FacilityBooking.STATE_ANNULLED);
-				booking.setCancellationDate(new Timestamp(new Date().getTime()));
-
+				booking.setCancellationDate(new Timestamp(new Date().getTime()));	
+				
+				Activity activity=null;
+				if(booking.isActivityBooking() && booking.isAnyActivityBooking()){
+					activity = ((Activity)
+							(Database.getInstance().getActivities().stream().filter(a -> a.getActivityId()==booking.getActivityId() )
+									.toArray()[0]
+							));
+				}
 				try {
 					booking.update();
 				} catch (SQLException e) {
 					e.printStackTrace();
+				}
+				if(booking.isActivityBooking() && !booking.isAnyActivityBooking()){
+					assert activity!=null;
+					assert activity.getActivityId()!=-1;
+					int option=JOptionPane.showConfirmDialog(MainWindow.getInstance(),"Se han cancelado todas las reservas asociadas a la actividad "+activity.getActivityName()+" ¿Desa cancelar la actividad?");
+					if(option==JOptionPane.YES_OPTION){
+						activity.setDeleted(true);
+						try{
+							activity.update();
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			} else { // MEMBER BOOKING
 				String cancellationCause = JOptionPane.showInputDialog(MainWindow.getInstance(),
