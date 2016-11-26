@@ -34,25 +34,32 @@ public class PaymentsDetailsPanel extends JPanel {
 			System.out.println("Error en el constructor de PaymentDetailsPanel");
 			e.printStackTrace();
 		}
-		
+
 		int anio = 0;
 		String mes = null;
 		int duracion = 0;
-
+		int total = 0;
 		for (Booking booking : bookings) {
 			Date d = new Date(booking.getTimeStart().getTime());
 			Date e = new Date(booking.getTimeEnd().getTime() - booking.getTimeStart().getTime());
 			duracion = Integer.parseInt(new SimpleDateFormat("HH").format(e.getTime()));
 			duracion -= 1;
-			if(anio == 0 || anio != Integer.parseInt(new SimpleDateFormat("YYYY").format(d.getTime()))){
+			if (anio == 0 || anio != Integer.parseInt(new SimpleDateFormat("YYYY").format(d.getTime()))) {
 				anio = Integer.parseInt(new SimpleDateFormat("YYYY").format(d.getTime()));
-				model.addElement(""+anio);
+				model.addElement("" + anio);
 			}
-			if(mes == null || !mes.equals(new SimpleDateFormat("MMMM").format(d.getTime()))){
+			if (mes == null || !mes.equals(new SimpleDateFormat("MMMM").format(d.getTime()))) {
+				if (total != 0) {
+					model.addElement("TOTAL " + mes + " " + total + "€");
+					total = 0;
+				}
 				mes = new SimpleDateFormat("MMMM").format(d.getTime());
-				model.addElement("        "+mes);
+				model.addElement(""+mes);
 			}
-			model.addElement("            Instalación: " + booking.getFacilityName() + " Fecha: " + new SimpleDateFormat("dd/MM/YYYY HH:mm").format(d.getTime()) + " Duración: " +duracion+" horas" + " Total: " +duracion * booking.getPricePerHour() + "€" );
+			model.addElement("Instalación: " + booking.getFacilityName() + " Fecha: "
+					+ new SimpleDateFormat("dd/MM/YYYY HH:mm").format(d.getTime()) + " Duración: " + duracion + " horas"
+					+ " Total: " + duracion * booking.getPricePerHour() + "€");
+			total += duracion * booking.getPricePerHour();
 		}
 		add(pane, BorderLayout.CENTER);
 		repaint();
