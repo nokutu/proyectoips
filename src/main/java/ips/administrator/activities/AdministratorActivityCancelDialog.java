@@ -92,7 +92,7 @@ public class AdministratorActivityCancelDialog extends JDialog {
         c.gridwidth = 2;
         c.insets = new Insets(10, 20, 10, 20);
 
-        JButton cancel = new JButton("Cancelar");
+        JButton cancel = new JButton("Cancelar la Actividad");
         cancel.addActionListener(l -> {
             int res = JOptionPane.showConfirmDialog(this, "¿Estás seguro de querer cancelar la actividad?", "", JOptionPane.YES_NO_OPTION);
 

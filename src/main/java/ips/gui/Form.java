@@ -101,7 +101,7 @@ public class Form {
      * @param b             the JComboBox
      * @param returnContent true to return the content; false to return the index
      */
-    public void addLine(Component a, JComboBox<String> b, boolean returnContent) {
+    public void addLine(Component a, JComboBox<?> b, boolean returnContent) {
         doAddLine(a, b);
         if (returnContent) {
             values.add(() -> b.getModel().getSelectedItem().toString());

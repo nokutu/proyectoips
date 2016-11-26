@@ -92,4 +92,8 @@ public class Activity implements DatabaseItem {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+    
+    public String toString(){
+    	return this.activityName;
+    }
 }

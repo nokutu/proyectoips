@@ -166,7 +166,7 @@ public class AdministratorBookPanel extends JPanel {
         });
 
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-        Database.getInstance().getActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
+        Database.getInstance().getActivities().stream().filter(a->!a.isDeleted()).forEach(a -> activitiesModel.addElement(a.getActivityName()));
         activities.setModel(activitiesModel);
 
         DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();

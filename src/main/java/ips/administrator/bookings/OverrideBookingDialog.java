@@ -15,6 +15,7 @@ import ips.database.FacilityBooking;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.sql.SQLException;
 import java.util.List;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -86,6 +87,11 @@ public class OverrideBookingDialog extends JDialog {
 							fb.setState(FacilityBooking.STATE_ANNULLED);
 
 							// TODO preguntar por la causa
+						}
+						try {
+							fb.update();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
 						}
 						//fb.cancel(); // cancelamos todas las reservas...
 					}

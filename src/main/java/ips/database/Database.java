@@ -200,6 +200,13 @@ public class Database {
         throw new RuntimeException("Do not exists");
     }
 
+    public FacilityBooking getFacilityBookingById(int fbId){
+    	return facilityBookings.stream().filter(fb->fb.getFacilityBookingId()==fbId).findFirst().get();
+    }
+    
+    public Activity getActivityById(int activity_id){
+    	return activities.stream().filter(a->a.getActivityId()==activity_id).findFirst().get();
+    }
 
     /**
      * @param id   facility_id
