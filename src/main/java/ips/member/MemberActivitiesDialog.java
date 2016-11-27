@@ -168,6 +168,7 @@ public class MemberActivitiesDialog extends JDialog {
 		leftPanel.add(join, c);
 	}
 	private void updateSessions(){//MARK
+		if(activitiesComboBox.getSelectedIndex()!=-1){
 		sessionsModel = new DefaultComboBoxModel<>();
 		sessionsList = Database.getInstance().getActivityBookings().stream().filter(ab -> {
 			Date hora_actual = new Date();
@@ -180,6 +181,7 @@ public class MemberActivitiesDialog extends JDialog {
 		sessionsList.stream().map(ab -> new SimpleDateFormat().format(ab.getFacilityBooking().getTimeStart()))
 				.forEach(sessionsModel::addElement);
 		sessions.setModel(sessionsModel);
+		}
 	}
 
 	private Component getThis() {
@@ -187,7 +189,11 @@ public class MemberActivitiesDialog extends JDialog {
 	}
 
 	private Activity getSelectedActivity() {
-		return (Activity) Database.getInstance().getActivities().stream().filter(a -> a.getActivityId()==activitiesInComboboxList.get(activitiesComboBox.getSelectedIndex())).toArray()[0];
+		if(activitiesComboBox.getSelectedIndex()==-1) return null;
+		 Object[] array = Database.getInstance().getActivities().stream().filter(a -> a.getActivityId()==activitiesInComboboxList.get(activitiesComboBox.getSelectedIndex())).toArray();
+		 if(array.length>0)
+		 return (Activity)array[0];
+		 else return null;
 	}
 
 	private Optional<Integer> getAssistantsOptional() {

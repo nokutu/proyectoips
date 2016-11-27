@@ -1,3 +1,6 @@
+SELECT * FROM FACILITYBOOKING where state='Valid' and paid=false and member_id<>0
+
+select * from feeitem
 
 ------ VACIAR TABLAS ------
 
@@ -27,6 +30,8 @@ INSERT INTO member VALUES (10, 'Julio',true);
 INSERT INTO member VALUES (11, 'Julia',true);
 INSERT INTO member VALUES (12, 'Mario',true);
 INSERT INTO member VALUES (13, 'Maria',true);
+INSERT INTO member VALUES (14, 'Eugenio',false);
+INSERT INTO member VALUES (15, 'Eugenia',false);
 
 
 ------ CREACION DE MONITORES ------
