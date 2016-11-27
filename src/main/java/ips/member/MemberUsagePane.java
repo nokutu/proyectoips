@@ -163,9 +163,9 @@ public class MemberUsagePane extends JPanel {
 		switch (booking.getState()) {
 		case FacilityBooking.STATE_VALID:
 			if (booking.getTimeStart().after(new Timestamp(System.currentTimeMillis())))
-				btnNot.setBackground(Color.GREEN);
+				btnNot.setBackground(new Color(0, 255, 60)); //verde
 			else
-				btnNot.setBackground(Color.BLUE);
+				btnNot.setBackground(new Color(0, 180, 255)); //cian
 			break;
 		case FacilityBooking.STATE_ANNULLED:
 			btnNot.setBackground(Color.GRAY);
@@ -182,7 +182,7 @@ public class MemberUsagePane extends JPanel {
 	private JButton setboton(AdminActitivies ac) {
 		JButton btnNot = new JButton(ac.ac.getActivityName());
 		btnNot.setEnabled(true);
-		btnNot.setBackground(Color.MAGENTA);
+		btnNot.setBackground(new Color(234, 255, 0)); //amarillo
 		return btnNot;
 	}
 }
