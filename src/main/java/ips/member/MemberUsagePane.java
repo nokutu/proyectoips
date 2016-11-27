@@ -2,6 +2,7 @@ package ips.member;
 
 import ips.MainScreen;
 import ips.administrator.DetailsDialog;
+import ips.database.AdminActitivies;
 import ips.database.Booking;
 import ips.database.Database;
 import ips.database.FacilityBooking;
@@ -22,6 +23,7 @@ import java.util.Locale;
 public class MemberUsagePane extends JPanel {
 	private JLabel lblWeek;
 	ArrayList<Booking> bookings;
+	ArrayList<AdminActitivies> adminActitivies;
 	private int weeksFromNow = 0;
 	JButton btnNext = new JButton(">");
 	JButton btnPrevious = new JButton("<");
@@ -71,6 +73,7 @@ public class MemberUsagePane extends JPanel {
 	private void addRows(int idUser) {
 		try {
 			bookings = MemberUsage.select(idUser);
+			adminActitivies = MemberUsage.getAdminActitivies(idUser);
 		} catch (SQLException e) {
 			System.out.println("Error en el método addrows de MemberUsagePane");
 			e.printStackTrace();
@@ -103,9 +106,11 @@ public class MemberUsagePane extends JPanel {
 			long now = date.getTime();
 			JButton botonAux = new JButton("No hay reservas");
 			botonAux.setEnabled(false);
+			boolean ocupado = false;
 			for (Booking booking : bookings) {
 				if (now >= booking.getTimeStart().getTime() && now < booking.getTimeEnd().getTime()) {
 					botonAux = setboton(booking);
+					ocupado = true;
 					botonAux.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
@@ -118,6 +123,25 @@ public class MemberUsagePane extends JPanel {
 						}
 					});
 					break;
+				}
+			}
+			if(!ocupado){
+				for (AdminActitivies ac : adminActitivies) {
+					if (now >= ac.fb.getTimeStart().getTime() && now < ac.fb.getTimeEnd().getTime()) {
+						botonAux = setboton(ac);
+						botonAux.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
+									if (fb.getFacilityBookingId() == ac.fb.getFacilityBookingId()) {
+										MS.setRightPanel(new DetailsDialog(fb));
+										repaint();
+										revalidate();
+									}
+								}
+							}
+						});
+						break;
+					}
 				}
 			}
 			rowPanel.add(botonAux);
@@ -157,6 +181,13 @@ public class MemberUsagePane extends JPanel {
 		default:
 			break;
 		}
+		return btnNot;
+	}
+	
+	private JButton setboton(AdminActitivies ac) {
+		JButton btnNot = new JButton(ac.ac.getActivityName());
+		btnNot.setEnabled(true);
+		btnNot.setBackground(Color.MAGENTA);
 		return btnNot;
 	}
 }

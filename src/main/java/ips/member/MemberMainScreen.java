@@ -74,7 +74,7 @@ public class MemberMainScreen extends JPanel implements MainScreen{
         });
         upperPanel.add(availabilityButton);
 
-        JButton myBookingsButton = new JButton("Mis reservas");
+        JButton myBookingsButton = new JButton("Mi agenda");
         myBookingsButton.addActionListener(l -> {
             if (userID != 0) {
             	vaciar();
