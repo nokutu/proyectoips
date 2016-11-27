@@ -11,17 +11,21 @@ public class MemberUsage {
 
 	private static PreparedStatement createStatement;
 
-	public static ArrayList<Booking> select(int idUser) throws SQLException {
-		if (createStatement == null) {
+	public static ArrayList<Booking> select(int idUser) {
+		ArrayList<Booking> bookings = null;
+		try {
 			createStatement = Database.getInstance().getConnection().prepareStatement(SELECT_QUERY);
-		}
-		createStatement.setInt(1, idUser);
+			createStatement.setInt(1, idUser);
 
-		ResultSet rs = createStatement.executeQuery();
-		ArrayList<Booking> bookings = new ArrayList<Booking>();
-		while (rs.next()) {
-			bookings.add(new Booking(rs.getInt(5), idUser, rs.getString(4), rs.getString(2), rs.getTimestamp(8),
-					rs.getTimestamp(9), rs.getString(10)));
+			ResultSet rs = createStatement.executeQuery();
+			bookings = new ArrayList<Booking>();
+			while (rs.next()) {
+				bookings.add(new Booking(rs.getInt(5), idUser, rs.getString(4), rs.getString(2), rs.getTimestamp(8),
+						rs.getTimestamp(9), rs.getString(10)));
+			}
+		} catch (SQLException e) {
+			System.out.println("Error en MemberUsage -> Select");
+			e.printStackTrace();
 		}
 		return bookings;
 	}
@@ -40,7 +44,7 @@ public class MemberUsage {
 				adminActivities.add(new AdminActitivies(ac, fb));
 			}
 		} catch (SQLException e) {
-			System.out.println("Error en Availability -> getAdminActitivies");
+			System.out.println("Error en MemberUsage -> getAdminActitivies");
 			e.printStackTrace();
 		}
 		return adminActivities;

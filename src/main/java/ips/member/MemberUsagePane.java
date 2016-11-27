@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,13 +70,8 @@ public class MemberUsagePane extends JPanel {
 	}
 
 	private void addRows(int idUser) {
-		try {
-			bookings = MemberUsage.select(idUser);
-			adminActitivies = MemberUsage.getAdminActitivies(idUser);
-		} catch (SQLException e) {
-			System.out.println("Error en el método addrows de MemberUsagePane");
-			e.printStackTrace();
-		}
+		bookings = MemberUsage.select(idUser);
+		adminActitivies = MemberUsage.getAdminActitivies(idUser);
 		centralWeekPanel.removeAll();
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, (weeksFromNow * 7));
@@ -125,7 +119,7 @@ public class MemberUsagePane extends JPanel {
 					break;
 				}
 			}
-			if(!ocupado){
+			if (!ocupado) {
 				for (AdminActitivies ac : adminActitivies) {
 					if (now >= ac.fb.getTimeStart().getTime() && now < ac.fb.getTimeEnd().getTime()) {
 						botonAux = setboton(ac);
@@ -133,7 +127,8 @@ public class MemberUsagePane extends JPanel {
 							public void actionPerformed(ActionEvent e) {
 								for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
 									if (fb.getFacilityBookingId() == ac.fb.getFacilityBookingId()) {
-										MS.setRightPanel(new DetailsDialog(fb,"Actividad: " + ac.ac.getActivityName()));
+										MS.setRightPanel(
+												new DetailsDialog(fb, "Actividad: " + ac.ac.getActivityName()));
 										repaint();
 										revalidate();
 									}
@@ -183,7 +178,7 @@ public class MemberUsagePane extends JPanel {
 		}
 		return btnNot;
 	}
-	
+
 	private JButton setboton(AdminActitivies ac) {
 		JButton btnNot = new JButton(ac.ac.getActivityName());
 		btnNot.setEnabled(true);
