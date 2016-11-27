@@ -242,11 +242,11 @@ public class AvailabilityPane extends JPanel {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
 		Date date = calendar.getTime();
-		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime())
-				+ ". Hasta: ";
+		String week = "Desde: " + new SimpleDateFormat("dd MMMM YYYY", new Locale("es", "ES")).format(date.getTime())
+				+ " - Hasta: ";
 		calendar.add(Calendar.DATE, +6);
 		date = calendar.getTime();
-		week += new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime());
+		week += new SimpleDateFormat("dd MMMM YYYY", new Locale("es", "ES")).format(date.getTime());
 		lblWeek.setText(week);
 	}
 
