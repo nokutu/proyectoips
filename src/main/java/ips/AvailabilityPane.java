@@ -67,6 +67,17 @@ public class AvailabilityPane extends JPanel {
 			}
 		});
 		weekPane.add(btnNext);
+		
+		JButton hoy = new JButton("Hoy");
+		hoy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				weeksFromNow = 0;
+				setWeek();
+				nextPreviousButtons();
+			}
+		});
+		
+		weekPane.add(hoy);
 
 		JScrollPane buttonScrollPane = new JScrollPane();
 		add(buttonScrollPane, BorderLayout.WEST);
@@ -122,25 +133,32 @@ public class AvailabilityPane extends JPanel {
 		    }
 		});
 		
+			
 		buttonPane.add(new JLabel("Leyenda de colores:"));
-		JButton verde = new JButton("Tus reservas");
+		
+		JLabel verde = new JLabel("Tus reservas");
 		verde.setBackground(new Color(0, 255, 60));
+		verde.setOpaque(true);
 		buttonPane.add(verde);
 		
-		JButton cyan = new JButton("Otros usuarios");
+		JLabel cyan = new JLabel("Otros usuarios");
 		cyan.setBackground(new Color(0, 180, 255));
+		cyan.setOpaque(true);
 		buttonPane.add(cyan);
 		
-		JButton rojo = new JButton("Reservas anuladas");
+		JLabel rojo = new JLabel("Reservas anuladas");
 		rojo.setBackground(new Color(255, 0, 0));
+		rojo.setOpaque(true);
 		buttonPane.add(rojo);
 		
-		JButton gris = new JButton("Reservas canceladas");
+		JLabel gris = new JLabel("Reservas canceladas");
 		gris.setBackground(Color.GRAY);
+		gris.setOpaque(true);
 		buttonPane.add(gris);
 		
-		JButton amarillo = new JButton("Reservas con actividades");
+		JLabel amarillo = new JLabel("Reservas con actividades");
 		amarillo.setBackground(new Color(234, 255, 0));
+		amarillo.setOpaque(true);
 		buttonPane.add(amarillo);
 
 		buttonScrollPane.setViewportView(buttonPane);

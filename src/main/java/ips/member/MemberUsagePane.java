@@ -59,6 +59,17 @@ public class MemberUsagePane extends JPanel {
 			}
 		});
 		weekPane.add(btnNext);
+		
+		JButton hoy = new JButton("Hoy");
+		hoy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				weeksFromNow = 0;
+				setWeek();
+				addRows(idUser);
+			}
+		});
+		
+		weekPane.add(hoy);
 
 		JPanel centralPane = new JPanel();
 		add(centralPane, BorderLayout.CENTER);
