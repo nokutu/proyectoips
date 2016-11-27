@@ -91,7 +91,7 @@ public class AdministratorMainScreen extends JPanel implements MainScreen {
         c.gridx = 0;
         c.gridy++;
 
-        JButton btnFeeUpdater = new JButton("Actualizar Tarifas");
+        JButton btnFeeUpdater = new JButton("Solventar Deudas");
         btnFeeUpdater.addActionListener(e -> new FeeUpdater() );
         upperPanel.add(btnFeeUpdater, c);
 

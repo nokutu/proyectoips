@@ -25,6 +25,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.GridLayout;
 
 /**
  * <p>
@@ -68,30 +69,13 @@ public class FeeUpdater extends JDialog {
 	private JScrollPane scrollPane_west;
 	private JTextArea textArea_west;
 	private JTextArea textArea_east;
+	private JPanel panel;
 
 	public FeeUpdater() {
 
 		update();
-
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0, 1.0 };
-		gridBagLayout.rowWeights = new double[] { 1.0, 0.5 };
-		getContentPane().setLayout(gridBagLayout);
-		GridBagConstraints gbc_scrollPane_west = new GridBagConstraints();
-		gbc_scrollPane_west.gridwidth = 2;
-		gbc_scrollPane_west.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane_west.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_west.gridx = 0;
-		gbc_scrollPane_west.gridy = 0;
-		getContentPane().add(getScrollPane_west(), gbc_scrollPane_west);
-		GridBagConstraints gbc_scrollPane_east = new GridBagConstraints();
-		gbc_scrollPane_east.gridwidth = 2;
-		gbc_scrollPane_east.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_east.gridx = 0;
-		gbc_scrollPane_east.gridy = 1;
-		getContentPane().add(getScrollPane_east(), gbc_scrollPane_east);
+		getContentPane().setLayout(new BorderLayout(0, 0));
+		getContentPane().add(getPanel());
 
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setLocationRelativeTo(MainWindow.getInstance());
@@ -125,7 +109,9 @@ public class FeeUpdater extends JDialog {
 
 		for (FacilityBooking pago : pagosPendientes) {
 			// try { pago.toString(); } catch (Exception ex) { }
-			if (pago.getPaymentMethod().equals("Fee")
+			
+			// TODO: eliminar ==null al asegurarse.
+			if (pago.getPaymentMethod()==null || pago.getPaymentMethod().equals("Fee")
 					|| (pago.getPaymentMethod().equals("Cash") && pago.getTimeStart().before(now))) {
 				// si no borrada ni pagada o si ya ha pasado la hora pero el
 				// socio no ha pagado, se le cobra
@@ -216,5 +202,15 @@ public class FeeUpdater extends JDialog {
 			textArea_east = new JTextArea();
 		}
 		return textArea_east;
+	}
+	private JPanel getPanel() {
+		if (panel == null) {
+			panel = new JPanel();
+			panel.setLayout(new GridLayout(0, 2, 0, 0));
+					
+			panel.add(getScrollPane_east());
+			panel.add(getScrollPane_west());
+		}
+		return panel;
 	}
 }
