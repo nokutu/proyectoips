@@ -159,8 +159,7 @@ public class AdministratorActivityCancelDialog extends JDialog {
 
 	private void refreshActivities() {
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
-        activityList = Database.getInstance().getActivities().stream()
-                .filter(a -> !a.isDeleted())
+        activityList = Activity.getValidActivities().stream()
                 .collect(Collectors.toList());
         activityList.stream().map(Activity::getActivityName).forEach(activitiesModel::addElement);
         activities.setModel(activitiesModel);

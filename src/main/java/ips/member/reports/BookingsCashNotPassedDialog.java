@@ -63,7 +63,7 @@ public class BookingsCashNotPassedDialog extends JDialog {
         c.setTime(currentWeek);
         c.add(Calendar.WEEK_OF_YEAR, up ? 1 : -1);
 
-        if (c.getTime().after(new Date())) {
+        if (c.getTime().after(new Date()) || currentWeek.after(new Date())) {
             currentWeek = c.getTime();
             refreshList();
         }
@@ -77,12 +77,14 @@ public class BookingsCashNotPassedDialog extends JDialog {
     private void refreshList() {
         String text = Database.getInstance().getFacilityBookings().stream()
                 .filter(fb -> fb.getTimeStart().after(currentWeek) && fb.getTimeStart().before(getNextWeek()) &&
-                        fb.getTimeStart().after(new Date()))
+                        fb.getTimeStart().after(new Date()) && fb.getState().equals(FacilityBooking.STATE_VALID))
                 .filter(fb -> fb.getMemberId() == MemberMainScreen.userID &&
                         fb.getTimeStart().after(Utils.getCurrentTime()) &&
                         fb.getPaymentMethod().equals(FacilityBooking.PAYMENT_CASH))
-                .sorted((a, b) -> a.getFacility().getFacilityId() - b.getFacility().getFacilityId())
-                .map(fb -> fb.getFacility().getFacilityName() + " - " + new SimpleDateFormat().format(fb.getTimeStart()) + "\n")
+                .sorted((a, b) -> {
+                    int dif = a.getFacility().getFacilityId() - b.getFacility().getFacilityId();
+                    return dif == 0 ? (int) (a.getTimeStart().getTime() - b.getTimeStart().getTime()) : dif;
+                })                .map(fb -> fb.getFacility().getFacilityName() + " - " + new SimpleDateFormat().format(fb.getTimeStart()) + "\n")
                 .reduce("", String::concat);
         center.setText(text);
 

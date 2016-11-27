@@ -167,6 +167,7 @@ public class AdministratorBookPanel extends JPanel {
 
         DefaultComboBoxModel<String> activitiesModel = new DefaultComboBoxModel<>();
         Database.getInstance().getActivities().stream().filter(a->!a.isDeleted()).forEach(a -> activitiesModel.addElement(a.getActivityName()));
+        Activity.getValidActivities().forEach(a -> activitiesModel.addElement(a.getActivityName()));
         activities.setModel(activitiesModel);
 
         DefaultComboBoxModel<String> monitorsModel = new DefaultComboBoxModel<>();
@@ -221,7 +222,7 @@ public class AdministratorBookPanel extends JPanel {
                 for (FacilityBooking fb : bookings) {
                     if (Boolean.parseBoolean(form.getResults().get(ASSIGN_TO_ACTIVITY))) {
                         ActivityBooking ab = new ActivityBooking(
-                                Database.getInstance().getActivities().get(Integer.parseInt(form.getResults().get(ACTIVITY_POS))).getActivityId(),
+                                Activity.getValidActivities().get(Integer.parseInt(form.getResults().get(ACTIVITY_POS))).getActivityId(),
                                 fb.getFacilityBookingId(), monitorId);
                         Database.getInstance().getActivityBookings().add(ab);
                         ab.create();
