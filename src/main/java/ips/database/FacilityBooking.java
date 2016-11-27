@@ -61,12 +61,15 @@ public class FacilityBooking implements DatabaseItem {
 	}
 
 	public FacilityBooking(int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
-			boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause, Timestamp cancellationDate) {
-		this(getId() + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, entrance, abandon, state, cancellationCause, cancellationDate);
+			boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause,
+			Timestamp cancellationDate) {
+		this(getId() + 1, facilityId, memberId, timeStart, timeEnd, paymentMethod, paid, entrance, abandon, state,
+				cancellationCause, cancellationDate);
 	}
 
-	public FacilityBooking(int facilityBookingId, int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd, String paymentMethod,
-						   boolean paid, Timestamp entrance, Timestamp abandon, String state, String cancellationCause, Timestamp cancellationDate) {
+	public FacilityBooking(int facilityBookingId, int facilityId, int memberId, Timestamp timeStart, Timestamp timeEnd,
+			String paymentMethod, boolean paid, Timestamp entrance, Timestamp abandon, String state,
+			String cancellationCause, Timestamp cancellationDate) {
 		this.facilityBookingId = facilityBookingId;
 		this.setTimeStart(timeStart);
 		this.setTimeEnd(timeEnd);
@@ -175,7 +178,6 @@ public class FacilityBooking implements DatabaseItem {
 
 		updateStatement.setInt(8, facilityBookingId);
 
-
 		updateStatement.execute();
 	}
 
@@ -214,7 +216,6 @@ public class FacilityBooking implements DatabaseItem {
 	public void setFacilityId(int facilityId) {
 		this.facilityId = facilityId;
 	}
-	
 
 	public String getCancellationCause() {
 		return cancellationCause;
@@ -238,26 +239,22 @@ public class FacilityBooking implements DatabaseItem {
 	public String toStringFull() {
 		String linea = "Instalacion: " + this.getFacility().getFacilityName() + " \n ";
 		linea += "ID de la instalacion: " + this.getFacility().getFacilityId() + " \n ";
-		if(this.getMemberId()!=0)
-		{
-		linea += "IDSocio: " + Integer.toString(this.getMemberId()) + " \n ";
-		linea += "Socio: " + Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n ";
+		if (this.getMemberId() != 0) {
+			linea += "IDSocio: " + Integer.toString(this.getMemberId()) + " \n ";
+			linea += "Socio: " + Database.getInstance().getMemberById(this.getMemberId()).getMemberName() + " \n ";
+		} else {
+			linea += "Reservado para la administracion  \n ";
 		}
-		else
-		{
-		linea += "Reservado para la administracion  \n ";	
-		}
-		
+
 		linea += "Inicio: " + this.getTimeStart().toString() + " \n ";
 		linea += "Final: " + this.getTimeEnd().toString() + " \n ";
-		linea += "Metodo de pago: " + this.getPaymentMethod() + " \n ";
-		if(this.isPaid())
-		{
-			linea += "Sin pagar \n ";
+		if (this.getMemberId() != 0) {
+			linea += "Metodo de pago: " + this.getPaymentMethod() + " \n ";
+			if (this.isPaid()) {
+				linea += "Sin pagar \n ";
+			} else
+				linea += "Pagada \n ";
 		}
-		else
-			linea += "Pagada \n ";
-		
 		switch (this.state) {
 		case STATE_VALID:
 			linea += "Estado: Válida \n";
@@ -265,13 +262,14 @@ public class FacilityBooking implements DatabaseItem {
 		case STATE_ANNULLED:
 			linea += "Estado: Anulada \n";
 			linea += "Cancelada por la administracion \n ";
-			linea += "Causa de la cancelacion: "+this.getCancellationCause()+ " \n";
-			linea += "Fecha de la cancelacion: "+this.getCancellationDate().toString()+ " \n";
+			linea += "Causa de la cancelacion: " + this.getCancellationCause() + " \n";
+			linea += "Fecha de la cancelacion: " + this.getCancellationDate().toString() + " \n";
 			break;
 		case STATE_CANCELLED:
 			linea += "Estado: Cancelada \n";
 			linea += "Cancelada por el usuario \n ";
-			linea += "Fecha de la cancelacion: "+this.getCancellationDate().toString()+ " \n";
+			if (this.getCancellationDate() != null)
+				linea += "Fecha de la cancelacion: " + this.getCancellationDate().toString() + " \n";
 			break;
 		default:
 			break;
@@ -286,14 +284,11 @@ public class FacilityBooking implements DatabaseItem {
 		String s = "";
 		String name = "";
 		s += "Instalacion: " + Database.getInstance().getFacilityById(getFacilityId()).getFacilityName();
-		if(this.getMemberId()==0)
-		{
+		if (this.getMemberId() == 0) {
 			s += ", por la administracion \n";
-		}
-		else
-		{
-		name = Database.getInstance().getMemberById(this.getMemberId()).getMemberName();
-		s += ", por el socio: " + name + " \n";
+		} else {
+			name = Database.getInstance().getMemberById(this.getMemberId()).getMemberName();
+			s += ", por el socio: " + name + " \n";
 		}
 		return s;
 	}
@@ -317,8 +312,7 @@ public class FacilityBooking implements DatabaseItem {
 		}
 		if (lazyMember == null) {
 			Optional<Member> om = Database.getInstance().getMembers().parallelStream()
-					.filter(m -> m.getMemberId() == memberId)
-					.findAny();
+					.filter(m -> m.getMemberId() == memberId).findAny();
 			if (om.isPresent()) {
 				lazyMember = om.get();
 			} else {
@@ -337,10 +331,8 @@ public class FacilityBooking implements DatabaseItem {
 	}
 
 	private static int getId() {
-		Optional<Integer> maxId = Database.getInstance().getFacilityBookings()
-				.parallelStream()
-				.map(FacilityBooking::getFacilityBookingId)
-				.max(Integer::compare);
+		Optional<Integer> maxId = Database.getInstance().getFacilityBookings().parallelStream()
+				.map(FacilityBooking::getFacilityBookingId).max(Integer::compare);
 		if (maxId.isPresent()) {
 			return maxId.get();
 		} else {
@@ -349,34 +341,37 @@ public class FacilityBooking implements DatabaseItem {
 	}
 
 	public boolean isActivityBooking() {
-		return Database.getInstance().getActivityBookings().stream().filter(ab -> ab.getFacilityBookingId()==this.facilityBookingId).toArray().length>0;
+		return Database.getInstance().getActivityBookings().stream()
+				.filter(ab -> ab.getFacilityBookingId() == this.facilityBookingId).toArray().length > 0;
 	}
-	
-	public boolean isAnyActivityBooking(){
-		String query="SELECT * FROM activity, activitybooking where activity.activity_id=activitybooking.activity_id and activity.activity_id=?";
-	
+
+	public boolean isAnyActivityBooking() {
+		String query = "SELECT * FROM activity, activitybooking where activity.activity_id=activitybooking.activity_id and activity.activity_id=?";
+
 		try {
 			PreparedStatement pst = Database.getInstance().getConnection().prepareStatement(query);
-			int activity_id=getActivityId();
-			assert activity_id!=-1;
+			int activity_id = getActivityId();
+			assert activity_id != -1;
 			pst.setInt(1, activity_id);
 			ResultSet rs = pst.executeQuery();
-			if(rs.next())
+			if (rs.next())
 				return true;
-			else return false;
+			else
+				return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
-		
+
 	}
+
 	public int getActivityId() {
 		String query = "select activity_id from activitybooking,facilitybooking where facilitybooking.facilitybooking_id=activitybooking.facilitybooking_id and activitybooking.facilitybooking_id=? and state='Valid'";
 		try {
 			PreparedStatement pst = Database.getInstance().getConnection().prepareStatement(query);
 			pst.setInt(1, this.facilityBookingId);
 			ResultSet rs = pst.executeQuery();
-			if(rs.next())
+			if (rs.next())
 				return rs.getInt("activity_id");
 			return -1;
 		} catch (SQLException e) {
