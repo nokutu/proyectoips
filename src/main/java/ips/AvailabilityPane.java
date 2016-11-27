@@ -124,24 +124,24 @@ public class AvailabilityPane extends JPanel {
 		
 		buttonPane.add(new JLabel("Leyenda de colores:"));
 		JButton verde = new JButton("Tus reservas");
-		verde.setBackground(Color.GREEN);
+		verde.setBackground(new Color(0, 255, 60));
 		buttonPane.add(verde);
 		
 		JButton cyan = new JButton("Otros usuarios");
-		cyan.setBackground(Color.CYAN);
+		cyan.setBackground(new Color(0, 180, 255));
 		buttonPane.add(cyan);
 		
 		JButton rojo = new JButton("Reservas anuladas");
-		rojo.setBackground(Color.RED);
+		rojo.setBackground(new Color(255, 0, 0));
 		buttonPane.add(rojo);
 		
 		JButton gris = new JButton("Reservas canceladas");
 		gris.setBackground(Color.GRAY);
 		buttonPane.add(gris);
 		
-		JButton magenta = new JButton("Reservas con actividades");
-		magenta.setBackground(Color.MAGENTA);
-		buttonPane.add(magenta);
+		JButton amarillo = new JButton("Reservas con actividades");
+		amarillo.setBackground(new Color(234, 255, 0));
+		buttonPane.add(amarillo);
 
 		buttonScrollPane.setViewportView(buttonPane);
 	}
@@ -246,32 +246,44 @@ public class AvailabilityPane extends JPanel {
 				user = booking.getUserName();
 			boton.setText(user);
 			if (booking.getUserID() == 0){
-				boton.setBackground(Color.GREEN);
+				boton.setBackground(new Color(0, 255, 60)); //verde
 				if(ac != null){
-					boton.setBackground(Color.MAGENTA);
+					boton.setBackground(new Color(234, 255, 0)); //amarillo
 					boton.setText(ac.getActivityName());
 				}
+				if(booking.getState().equals("Annulled"))
+					boton.setBackground(Color.RED);
+				if(booking.getState().equals("Canceled"))
+					boton.setBackground(Color.GRAY);
 			}
 			else
-				boton.setBackground(Color.CYAN);
+				boton.setBackground(new Color(0, 180, 255)); //cian
 		} else {
 			if (booking.getUserID() == userID) {
 				boton.setText(booking.getUserName());
-				boton.setBackground(Color.GREEN);
+				boton.setBackground(new Color(0, 255, 60)); //verde
+				if(booking.getState().equals("Annulled"))
+					boton.setBackground(Color.RED);
+				if(booking.getState().equals("Canceled"))
+					boton.setBackground(Color.GRAY);
 			} else {
-				boton.setBackground(Color.CYAN);
+				boton.setBackground(new Color(0, 180, 255)); //cian
 				boton.setEnabled(false);
 				if (booking.getUserID() == 0 && ac != null){
 					boton.setEnabled(true);
-					boton.setBackground(Color.MAGENTA);
+					boton.setBackground(new Color(234, 255, 0)); //amarillo
 					boton.setText(ac.getActivityName());
+					if(booking.getState().equals("Annulled"))
+						boton.setBackground(Color.RED);
+					if(booking.getState().equals("Canceled"))
+						boton.setBackground(Color.GRAY);
 				}
 			}
 		}
-		if(booking.getState().equals("Annulled"))
-			boton.setBackground(Color.RED);
-		if(booking.getState().equals("Canceled"))
-			boton.setBackground(Color.GRAY);
+//		if(booking.getState().equals("Annulled"))
+//			boton.setBackground(Color.RED);
+//		if(booking.getState().equals("Canceled"))
+//			boton.setBackground(Color.GRAY);
 		if (!admin) {
 			boton.addActionListener(l -> {
 				Object[] result = Database.getInstance().getFacilityBookings().stream()
