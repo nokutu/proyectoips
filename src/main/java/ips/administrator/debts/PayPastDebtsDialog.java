@@ -136,7 +136,7 @@ public class PayPastDebtsDialog extends JDialog {
     }
 
     private void refreshCentralPanelList() {
-        refreshArrays();
+        
         bookList.removeAll();
         selectedByFacilitysList = new ArrayList<>();
         DefaultListModel<String> d = new DefaultListModel<>();
@@ -149,7 +149,7 @@ public class PayPastDebtsDialog extends JDialog {
                 bookList.setModel(d);
             }
         }
-
+        refreshArrays();
         // Force the panel to refresh
         SwingUtilities.invokeLater(() -> {
             bookList.setVisible(false);
@@ -177,7 +177,9 @@ public class PayPastDebtsDialog extends JDialog {
             dispose();
         }
         facilitiesList.forEach(a -> facilitiesModel.addElement(a.getFacilityName()));
+        /*int i = facilities.getSelectedIndex();
         facilities.setModel(facilitiesModel);
+        facilities.setSelectedIndex(i);*/
     }
 
 
@@ -195,7 +197,9 @@ public class PayPastDebtsDialog extends JDialog {
     }
 
     private Facility getSelectedFacility() {
-        return facilitiesList.get(facilities.getSelectedIndex());
+    	int i = facilities.getSelectedIndex();
+         Facility f = facilitiesList.get(i);
+        return f;
     }
 
 

@@ -250,7 +250,7 @@ public class FacilityBooking implements DatabaseItem {
 		linea += "Final: " + this.getTimeEnd().toString() + " \n ";
 		if (this.getMemberId() != 0) {
 			linea += "Metodo de pago: " + this.getPaymentMethod() + " \n ";
-			if (this.isPaid()) {
+			if (!this.isPaid()) {
 				linea += "Sin pagar \n ";
 			} else
 				linea += "Pagada \n ";
