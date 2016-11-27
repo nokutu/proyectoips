@@ -86,22 +86,62 @@ public class AvailabilityPane extends JPanel {
 		GridLayout gl_buttonPane = new GridLayout(14, 0);
 		buttonPane.setLayout(gl_buttonPane);
 
+		ArrayList<String> instalaciones = new ArrayList<String>();
 		facilities = Database.getInstance().getFacilities();
 		for (Facility facility : facilities) {
-			int a = facility.getFacilityId();
-			String b = facility.getFacilityName();
-			JButton botonAux = new JButton("Instalacion: " + b);
-			botonAux.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					instalacion = a;
-					lblFacility.setText("Horario de la instalacion: " + b);
-					addRows(a);
-					repaint();
-					revalidate();
-				}
-			});
-			buttonPane.add(botonAux);
+			instalaciones.add(facility.getFacilityName());
+//			int a = facility.getFacilityId();
+//			String b = facility.getFacilityName();
+//			JButton botonAux = new JButton("Instalacion: " + b);
+//			botonAux.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					instalacion = a;
+//					lblFacility.setText("Horario de la instalacion: " + b);
+//					addRows(a);
+//					repaint();
+//					revalidate();
+//				}
+//			});
+//			buttonPane.add(botonAux);
 		}
+		
+		JComboBox<String> jComboBox = new JComboBox<>();
+		jComboBox.setModel(new DefaultComboBoxModel(instalaciones.toArray()));
+		buttonPane.add(jComboBox);
+		jComboBox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	lblFacility.setText(jComboBox.getSelectedItem().toString());
+		    	for (Facility facility : facilities) {
+					if(facility.getFacilityName().equals(jComboBox.getSelectedItem().toString())){
+						instalacion = facility.getFacilityId();
+						addRows(instalacion);
+						repaint();
+						revalidate();
+					}
+				}
+		    }
+		});
+		
+		buttonPane.add(new JLabel("Leyenda de colores:"));
+		JButton verde = new JButton("Tus reservas");
+		verde.setBackground(Color.GREEN);
+		buttonPane.add(verde);
+		
+		JButton cyan = new JButton("Otros usuarios");
+		cyan.setBackground(Color.CYAN);
+		buttonPane.add(cyan);
+		
+		JButton rojo = new JButton("Reservas anuladas");
+		rojo.setBackground(Color.RED);
+		buttonPane.add(rojo);
+		
+		JButton gris = new JButton("Reservas canceladas");
+		gris.setBackground(Color.GRAY);
+		buttonPane.add(gris);
+		
+		JButton magenta = new JButton("Reservas con actividades");
+		magenta.setBackground(Color.MAGENTA);
+		buttonPane.add(magenta);
 
 		buttonScrollPane.setViewportView(buttonPane);
 	}
@@ -213,13 +253,13 @@ public class AvailabilityPane extends JPanel {
 				}
 			}
 			else
-				boton.setBackground(Color.BLUE);
+				boton.setBackground(Color.CYAN);
 		} else {
 			if (booking.getUserID() == userID) {
 				boton.setText(booking.getUserName());
 				boton.setBackground(Color.GREEN);
 			} else {
-				boton.setBackground(Color.BLUE);
+				boton.setBackground(Color.CYAN);
 				boton.setEnabled(false);
 				if (booking.getUserID() == 0 && ac != null){
 					boton.setEnabled(true);
