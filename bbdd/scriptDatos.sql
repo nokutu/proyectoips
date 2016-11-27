@@ -1,6 +1,3 @@
-SELECT * FROM FACILITYBOOKING where state='Valid' and paid=false and member_id<>0
-
-select * from feeitem
 
 ------ VACIAR TABLAS ------
 

@@ -170,6 +170,7 @@ public class MonitorMainScreen extends JPanel {
 						+" - "
 						+new SimpleDateFormat().format(rs.getTimestamp("time_end")));
 				lblPrximaActividad.setText("Actividad Actual:");
+				addMember.setEnabled(true);
 
 			} else {
 				PreparedStatement pst2;
@@ -184,12 +185,12 @@ public class MonitorMainScreen extends JPanel {
 							+" - "
 							+new SimpleDateFormat().format(rs2.getTimestamp("time_end")));
 					lblPrximaActividad.setText("Próxima actividad:");
-
+					addMember.setEnabled(true);
 				} else {
 					txtActividadnombre.setText("No hay ninguna actividad planificada");
 					txtFechaInicio.setText(" - ");
 					lblPrximaActividad.setText("Próxima actividad:");
-
+					addMember.setEnabled(false);
 				}
 			}
 		} catch (SQLException e) {
@@ -337,8 +338,35 @@ public class MonitorMainScreen extends JPanel {
 		return Database.getInstance().getActivities().parallelStream()
 				.filter(a -> a.getActivityId()==activity_id).findAny();
 	}
-
 	private void refreshAssistanceCount() {
+        if (txtFechaInicio.getText().equals(" - ")) {
+            assistanceLabel.setText("-");
+            return;
+        }
+        Optional<Integer> assistantsOptional = getAssistantsOptional();
+        Optional<Activity> activityOptional = getActivityOptional();
+        if (activityOptional.isPresent()) {
+            if (assistantsOptional.isPresent()) {
+                // n assistants
+                assistanceLabel.setText(assistantsOptional.get() + (activityOptional.get().getAssistantLimit() == -1 ?
+                        " (sin limitede plazas)"
+                        : "/" + activityOptional.get().getAssistantLimit()));
+                addMember.setEnabled(activityOptional.get().getAssistantLimit() == -1 || assistantsOptional.get() < activityOptional.get().getAssistantLimit());
+            } else {
+                // 0 assistants
+                assistanceLabel.setText("0" + (activityOptional.get().getAssistantLimit() == -1 ?
+                        " (sin limitede plazas)"
+                        : "/" + activityOptional.get().getAssistantLimit()));
+                addMember.setEnabled(true);
+            }
+        } else {
+            // no activity selected
+            assistanceLabel.setText("");
+            addMember.setEnabled(false);
+        }
+    }
+
+	/*private void refreshAssistanceCount() {
 		Optional<Integer> assistantsOptional = getAssistantsOptional();
 		Optional<Activity> activityOptional = getActivityOptional();
 		if (activityOptional.isPresent()) {
@@ -356,7 +384,7 @@ public class MonitorMainScreen extends JPanel {
 			assistanceLabel.setText("");
 			addMember.setEnabled(false);
 		}
-	}
+	}*/
 
 	private Activity getSelectedActivity() {
 		return Database.getInstance().getActivityById(activity_id);

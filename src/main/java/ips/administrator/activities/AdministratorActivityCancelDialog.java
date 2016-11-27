@@ -123,7 +123,7 @@ public class AdministratorActivityCancelDialog extends JDialog {
     		{
         		FacilityBooking f = ab.getFacilityBooking();
         		if(f.getTimeStart().after(dateSelecter.getDate())){
-        			f.setState(FacilityBooking.STATE_CANCELLED); // TODO confirmar si estado cancelado o anulado(?)
+        			f.setState(FacilityBooking.STATE_CANCELLED); 
 					f.setCancellationCause("la actividad " + activity.getActivityName()
 							+ " ha sido cancelada a partir de la fecha: " + dateSelecter.getDate().toString());
         			f.setCancellationDate(new Timestamp(Utils.getCurrentTime().getTime()));
