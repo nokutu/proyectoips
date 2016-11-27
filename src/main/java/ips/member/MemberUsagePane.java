@@ -133,7 +133,7 @@ public class MemberUsagePane extends JPanel {
 							public void actionPerformed(ActionEvent e) {
 								for (FacilityBooking fb : Database.getInstance().getFacilityBookings()) {
 									if (fb.getFacilityBookingId() == ac.fb.getFacilityBookingId()) {
-										MS.setRightPanel(new DetailsDialog(fb));
+										MS.setRightPanel(new DetailsDialog(fb,"Actividad: " + ac.ac.getActivityName()));
 										repaint();
 										revalidate();
 									}
