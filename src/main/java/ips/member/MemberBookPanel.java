@@ -109,7 +109,7 @@ public class MemberBookPanel extends JPanel {
         form.addLine(new JLabel("Instalaci\u00F3n:"), facilities, false);
 
         JComboBox<String> paymentCombo = new JComboBox<>();
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Efectivo", "Cuenta"});
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Efectivo", "Cuota"});
         paymentCombo.setModel(model);
         form.addLine(new JLabel("Método de pago:"), paymentCombo);
     }

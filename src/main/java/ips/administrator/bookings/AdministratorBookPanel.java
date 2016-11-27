@@ -145,7 +145,7 @@ public class AdministratorBookPanel extends JPanel {
         form.addLine(bookForCenter);
         form.addLine(new JLabel("ID de socio:"), idTextField);
 
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cuenta", "Efectivo"});
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new String[]{"Cuota", "Efectivo"});
         paymentCombo.setModel(model);
         form.addLine(new JLabel("M\u00E9todo de pago:"), paymentCombo);
 
