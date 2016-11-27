@@ -59,6 +59,17 @@ public class MemberUsagePane extends JPanel {
 			}
 		});
 		weekPane.add(btnNext);
+		
+		JButton hoy = new JButton("Hoy");
+		hoy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				weeksFromNow = 0;
+				setWeek();
+				addRows(idUser);
+			}
+		});
+		
+		weekPane.add(hoy);
 
 		JPanel centralPane = new JPanel();
 		add(centralPane, BorderLayout.CENTER);
@@ -149,11 +160,11 @@ public class MemberUsagePane extends JPanel {
 		calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, weeksFromNow * 7);
 		Date date = calendar.getTime();
-		String week = "Desde: " + new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime())
+		String week = "Desde: " + new SimpleDateFormat("dd MMMM YYYY", new Locale("es", "ES")).format(date.getTime())
 				+ ". Hasta: ";
 		calendar.add(Calendar.DATE, +6);
 		date = calendar.getTime();
-		week += new SimpleDateFormat("dd MMMM", new Locale("es", "ES")).format(date.getTime());
+		week += new SimpleDateFormat("dd MMMM YYYY", new Locale("es", "ES")).format(date.getTime());
 		lblWeek.setText(week);
 	}
 
