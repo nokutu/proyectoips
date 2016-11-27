@@ -20,7 +20,7 @@ public class Recibo {
 
     public void grabarRecibo() {
         try {
-            BufferedWriter fichero = new BufferedWriter(new FileWriter("files/" + nombreFichero + ".dat"));
+            BufferedWriter fichero = new BufferedWriter(new FileWriter(/*"files/" +*/ nombreFichero + ".dat"));
             String linea = done.toStringFull();
 
             Date date = new Date();
