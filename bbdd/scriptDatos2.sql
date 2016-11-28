@@ -76,12 +76,14 @@ INSERT INTO activity VALUES (11, 'Clases de Canto 2', 20, false);
 
 ------ CREACION DE RESERVAS ------
 /* *(FACILITYBOOKING_ID,FACILITY_ID,MEMBER_ID,TIME_START,TIME_END,PAYMENT_METHOD,PAID,FACILITYBOOKING_DELETED,ENTRANCE,ABANDON,STATE)* */
-
-INSERT INTO "FACILITYBOOKING"  VALUES (1,1,1,{ts '2016-11-12 18:00:00.0'},{ts '2016-11-12 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (2,2,1,{ts '2016-11-12 15:00:00.0'},{ts '2016-11-12 16:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (3,1,2,{ts '2016-11-13 10:00:00.0'},{ts '2016-11-13 12:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (4,1,0,{ts '2016-11-15 10:00:00.0'},{ts '2016-11-15 18:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (5,1,0,{ts '2016-11-15 19:00:00.0'},{ts '2016-11-15 20:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (1,1,1,{ts '2016-10-12 18:00:00.0'},{ts '2016-10-12 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (2,2,1,{ts '2016-10-12 15:00:00.0'},{ts '2016-10-12 16:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (3,1,2,{ts '2016-10-13 10:00:00.0'},{ts '2016-10-13 12:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (1,1,1,{ts '2016-11-12 18:00:00.0'},{ts '2016-11-12 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (2,2,1,{ts '2016-11-12 15:00:00.0'},{ts '2016-11-12 16:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (3,1,2,{ts '2016-11-13 10:00:00.0'},{ts '2016-11-13 12:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (4,1,0,{ts '2016-11-15 10:00:00.0'},{ts '2016-11-15 18:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (5,1,0,{ts '2016-11-15 19:00:00.0'},{ts '2016-11-15 20:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (6,8,0,{ts '2016-11-07 10:00:00.0'},{ts '2016-11-07 21:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (8,8,1,{ts '2016-11-08 02:00:00.0'},{ts '2016-11-08 03:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (9,8,2,{ts '2016-11-12 08:00:00.0'},{ts '2016-11-12 09:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
@@ -97,19 +99,19 @@ INSERT INTO "FACILITYBOOKING"  VALUES (18,5,6,{ts '2016-11-14 05:00:00.0'},{ts '
 INSERT INTO "FACILITYBOOKING"  VALUES (19,12,0,{ts '2016-11-11 04:00:00.0'},{ts '2016-11-11 08:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (20,8,0,{ts '2016-11-06 16:00:00.0'},{ts '2016-11-06 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (21,8,7,{ts '2016-11-08 10:00:00.0'},{ts '2016-11-08 11:00:00.0'},'Fee', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (22,5,8,{ts '2016-11-08 11:00:00.0'},{ts '2016-11-08 12:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (23,11,7,{ts '2016-11-08 12:00:00.0'},{ts '2016-11-08 13:00:00.0'},'Fee', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (24,7,3,{ts '2016-11-09 04:00:00.0'},{ts '2016-11-09 05:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (25,1,1,{ts '2016-11-12 18:00:00.0'},{ts '2016-11-12 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (22,5,8,{ts '2016-11-08 11:00:00.0'},{ts '2016-11-08 12:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (23,11,7,{ts '2016-11-08 12:00:00.0'},{ts '2016-11-08 13:00:00.0'},'Fee', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (24,7,3,{ts '2016-11-09 04:00:00.0'},{ts '2016-11-09 05:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (25,1,1,{ts '2016-11-12 18:00:00.0'},{ts '2016-11-12 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (26,2,1,{ts '2016-11-12 15:00:00.0'},{ts '2016-11-12 16:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (27,1,2,{ts '2016-11-13 10:00:00.0'},{ts '2016-11-13 12:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (28,1,0,{ts '2016-11-15 10:00:00.0'},{ts '2016-11-15 18:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (29,1,0,{ts '2016-11-15 19:00:00.0'},{ts '2016-11-15 20:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (30,8,0,{ts '2016-11-09 08:00:00.0'},{ts '2016-11-09 12:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (31,8,0,{ts '2016-11-11 17:00:00.0'},{ts '2016-11-11 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (32,8,0,{ts '2016-11-18 17:00:00.0'},{ts '2016-11-18 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (33,8,0,{ts '2016-11-25 17:00:00.0'},{ts '2016-11-25 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (34,8,0,{ts '2016-12-02 17:00:00.0'},{ts '2016-12-02 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (31,8,0,{ts '2016-11-11 17:00:00.0'},{ts '2016-11-11 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (32,8,0,{ts '2016-11-18 17:00:00.0'},{ts '2016-11-18 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (33,8,0,{ts '2016-11-25 17:00:00.0'},{ts '2016-11-25 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
+INSERT INTO "FACILITYBOOKING"  VALUES (34,8,0,{ts '2016-12-02 17:00:00.0'},{ts '2016-12-02 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (35,8,0,{ts '2016-12-09 17:00:00.0'},{ts '2016-12-09 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (36,8,0,{ts '2016-12-16 17:00:00.0'},{ts '2016-12-16 19:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (37,8,0,{ts '2016-11-09 17:00:00.0'},{ts '2016-11-09 21:00:00.0'},'Cash', 0, null,null,'Valid', null, null);
