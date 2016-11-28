@@ -76,9 +76,6 @@ INSERT INTO activity VALUES (11, 'Clases de Canto 2', 20, false);
 
 ------ CREACION DE RESERVAS ------
 /* *(FACILITYBOOKING_ID,FACILITY_ID,MEMBER_ID,TIME_START,TIME_END,PAYMENT_METHOD,PAID,FACILITYBOOKING_DELETED,ENTRANCE,ABANDON,STATE)* */
-INSERT INTO "FACILITYBOOKING"  VALUES (1,1,1,{ts '2016-10-12 18:00:00.0'},{ts '2016-10-12 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (2,2,1,{ts '2016-10-12 15:00:00.0'},{ts '2016-10-12 16:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
-INSERT INTO "FACILITYBOOKING"  VALUES (3,1,2,{ts '2016-10-13 10:00:00.0'},{ts '2016-10-13 12:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (1,1,1,{ts '2016-11-12 18:00:00.0'},{ts '2016-11-12 19:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (2,2,1,{ts '2016-11-12 15:00:00.0'},{ts '2016-11-12 16:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
 INSERT INTO "FACILITYBOOKING"  VALUES (3,1,2,{ts '2016-11-13 10:00:00.0'},{ts '2016-11-13 12:00:00.0'},'Cash', 1, null,null,'Valid', null, null);
