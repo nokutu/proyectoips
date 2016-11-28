@@ -56,7 +56,7 @@ public class PaymentsDetailsPanel extends JPanel {
 				mes = new SimpleDateFormat("MMMM").format(d.getTime());
 				model.addElement(""+mes);
 			}
-			model.addElement("Instalación: " + booking.getFacilityName() + " Fecha: "
+			model.addElement("►Instalación: " + booking.getFacilityName() + " Fecha: "
 					+ new SimpleDateFormat("dd/MM/YYYY HH:mm").format(d.getTime()) + " Duración: " + duracion + " horas"
 					+ " Total: " + duracion * booking.getPricePerHour() + "€");
 			total += duracion * booking.getPricePerHour();
