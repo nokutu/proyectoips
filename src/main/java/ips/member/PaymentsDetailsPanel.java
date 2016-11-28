@@ -61,6 +61,7 @@ public class PaymentsDetailsPanel extends JPanel {
 					+ " Total: " + duracion * booking.getPricePerHour() + "€");
 			total += duracion * booking.getPricePerHour();
 		}
+		model.addElement("TOTAL " + mes + " " + total + "€");
 		add(pane, BorderLayout.CENTER);
 		repaint();
 		revalidate();
