@@ -67,7 +67,7 @@ public class AvailabilityPane extends JPanel {
 			}
 		});
 		weekPane.add(btnNext);
-		
+
 		JButton hoy = new JButton("Hoy");
 		hoy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,7 +76,7 @@ public class AvailabilityPane extends JPanel {
 				nextPreviousButtons();
 			}
 		});
-		
+
 		weekPane.add(hoy);
 
 		JScrollPane buttonScrollPane = new JScrollPane();
@@ -101,61 +101,60 @@ public class AvailabilityPane extends JPanel {
 		facilities = Database.getInstance().getFacilities();
 		for (Facility facility : facilities) {
 			instalaciones.add(facility.getFacilityName());
-//			int a = facility.getFacilityId();
-//			String b = facility.getFacilityName();
-//			JButton botonAux = new JButton("Instalacion: " + b);
-//			botonAux.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					instalacion = a;
-//					lblFacility.setText("Horario de la instalacion: " + b);
-//					addRows(a);
-//					repaint();
-//					revalidate();
-//				}
-//			});
-//			buttonPane.add(botonAux);
+			// int a = facility.getFacilityId();
+			// String b = facility.getFacilityName();
+			// JButton botonAux = new JButton("Instalacion: " + b);
+			// botonAux.addActionListener(new ActionListener() {
+			// public void actionPerformed(ActionEvent e) {
+			// instalacion = a;
+			// lblFacility.setText("Horario de la instalacion: " + b);
+			// addRows(a);
+			// repaint();
+			// revalidate();
+			// }
+			// });
+			// buttonPane.add(botonAux);
 		}
-		
+
 		JComboBox<String> jComboBox = new JComboBox<>();
 		jComboBox.setModel(new DefaultComboBoxModel(instalaciones.toArray()));
 		buttonPane.add(jComboBox);
-		jComboBox.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		    	lblFacility.setText(jComboBox.getSelectedItem().toString());
-		    	for (Facility facility : facilities) {
-					if(facility.getFacilityName().equals(jComboBox.getSelectedItem().toString())){
+		jComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lblFacility.setText(jComboBox.getSelectedItem().toString());
+				for (Facility facility : facilities) {
+					if (facility.getFacilityName().equals(jComboBox.getSelectedItem().toString())) {
 						instalacion = facility.getFacilityId();
 						addRows(instalacion);
 						repaint();
 						revalidate();
 					}
 				}
-		    }
+			}
 		});
-		
-			
+
 		buttonPane.add(new JLabel("Leyenda de colores:"));
-		
+
 		JLabel verde = new JLabel("Tus reservas");
 		verde.setBackground(new Color(0, 255, 60));
 		verde.setOpaque(true);
 		buttonPane.add(verde);
-		
+
 		JLabel cyan = new JLabel("Otros usuarios");
 		cyan.setBackground(new Color(0, 180, 255));
 		cyan.setOpaque(true);
 		buttonPane.add(cyan);
-		
+
 		JLabel rojo = new JLabel("Reservas anuladas");
 		rojo.setBackground(new Color(255, 0, 0));
 		rojo.setOpaque(true);
 		buttonPane.add(rojo);
-		
+
 		JLabel gris = new JLabel("Reservas canceladas");
 		gris.setBackground(Color.GRAY);
 		gris.setOpaque(true);
 		buttonPane.add(gris);
-		
+
 		JLabel amarillo = new JLabel("Reservas con actividades");
 		amarillo.setBackground(new Color(234, 255, 0));
 		amarillo.setOpaque(true);
@@ -263,45 +262,44 @@ public class AvailabilityPane extends JPanel {
 			if (booking.getUserName() != null)
 				user = booking.getUserName();
 			boton.setText(user);
-			if (booking.getUserID() == 0){
-				boton.setBackground(new Color(0, 255, 60)); //verde
-				if(ac != null){
-					boton.setBackground(new Color(234, 255, 0)); //amarillo
+			if (booking.getUserID() == 0) {
+				boton.setBackground(new Color(0, 255, 60)); // verde
+				if (ac != null) {
+					boton.setBackground(new Color(234, 255, 0)); // amarillo
 					boton.setText(ac.getActivityName());
 				}
-				if(booking.getState().equals("Annulled"))
-					boton.setBackground(Color.RED);
-				if(booking.getState().equals("Canceled"))
-					boton.setBackground(Color.GRAY);
-			}
-			else
-				boton.setBackground(new Color(0, 180, 255)); //cian
+			} else
+				boton.setBackground(new Color(0, 180, 255)); // cian
+			if (booking.getState().equals("Annulled"))
+				boton.setBackground(Color.RED);
+			if (booking.getState().equals("Canceled"))
+				boton.setBackground(Color.GRAY);
 		} else {
 			if (booking.getUserID() == userID) {
 				boton.setText(booking.getUserName());
-				boton.setBackground(new Color(0, 255, 60)); //verde
-				if(booking.getState().equals("Annulled"))
+				boton.setBackground(new Color(0, 255, 60)); // verde
+				if (booking.getState().equals("Annulled"))
 					boton.setBackground(Color.RED);
-				if(booking.getState().equals("Canceled"))
+				if (booking.getState().equals("Canceled"))
 					boton.setBackground(Color.GRAY);
 			} else {
-				boton.setBackground(new Color(0, 180, 255)); //cian
+				boton.setBackground(new Color(0, 180, 255)); // cian
 				boton.setEnabled(false);
-				if (booking.getUserID() == 0 && ac != null){
+				if (booking.getUserID() == 0 && ac != null) {
 					boton.setEnabled(true);
-					boton.setBackground(new Color(234, 255, 0)); //amarillo
+					boton.setBackground(new Color(234, 255, 0)); // amarillo
 					boton.setText(ac.getActivityName());
-					if(booking.getState().equals("Annulled"))
+					if (booking.getState().equals("Annulled"))
 						boton.setBackground(Color.RED);
-					if(booking.getState().equals("Canceled"))
+					if (booking.getState().equals("Canceled"))
 						boton.setBackground(Color.GRAY);
 				}
 			}
 		}
-//		if(booking.getState().equals("Annulled"))
-//			boton.setBackground(Color.RED);
-//		if(booking.getState().equals("Canceled"))
-//			boton.setBackground(Color.GRAY);
+		// if(booking.getState().equals("Annulled"))
+		// boton.setBackground(Color.RED);
+		// if(booking.getState().equals("Canceled"))
+		// boton.setBackground(Color.GRAY);
 		if (!admin) {
 			boton.addActionListener(l -> {
 				Object[] result = Database.getInstance().getFacilityBookings().stream()
