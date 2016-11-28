@@ -222,7 +222,7 @@ INSERT INTO "FACILITYBOOKING"  VALUES (146,8,0,{ts '2016-11-06 06:00:00.0'},{ts 
 INSERT INTO "FACILITYBOOKING"  VALUES (147,1,0,{ts '2016-11-08 05:00:00.0'},{ts '2016-11-08 07:00:00.0'},'Cash',0,null,null,'Valid',null,null);
 INSERT INTO "FACILITYBOOKING"  VALUES (148,1,0,{ts '2016-11-07 02:00:00.0'},{ts '2016-11-07 03:00:00.0'},'Cash',0,null,null,'Valid',null,null);
 INSERT INTO "FACILITYBOOKING"  VALUES (149,1,1,{ts '2016-11-07 11:00:00.0'},{ts '2016-11-07 13:00:00.0'},'Cash',0,null,null,'Valid',null,null);
-INSERT INTO "FACILITYBOOKING"  VALUES (150,2,2,{ts '2016-11-26 23:21:43.592000000'},{ts '2016-11-27 00:21:43.592000000'},'Cash',0,null,null,'Valid',null,null);
+INSERT INTO "FACILITYBOOKING"  VALUES (150,2,2,{ts '2016-11-26 23:00:00.0'},{ts '2016-11-27 00:00:00.0'},'Cash',0,null,null,'Valid',null,null);
 INSERT INTO "FACILITYBOOKING"  VALUES (151,1,0,{ts '2016-11-28 11:00:00.0'},{ts '2016-11-28 12:00:00.0'},'Fee',0,null,null,'Valid',null,null);
 INSERT INTO "FACILITYBOOKING"  VALUES (152,1,0,{ts '2016-11-28 12:00:00.0'},{ts '2016-11-28 13:00:00.0'},'Fee',0,null,null,'Valid',null,null);
 
