@@ -126,6 +126,10 @@ public class FacilityBooking implements DatabaseItem {
 			createStatement = Database.getInstance().getConnection().prepareStatement(CREATE_QUERY);
 		}
 
+		if (getId() >= facilityBookingId) {
+			facilityBookingId = getId() + 1;
+		}
+
 		createStatement.setInt(1, facilityBookingId);
 		createStatement.setInt(2, facilityId);
 		createStatement.setInt(3, memberId);
